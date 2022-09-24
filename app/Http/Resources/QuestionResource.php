@@ -34,7 +34,7 @@ class QuestionResource extends JsonResource
         return $this->filter([
 
             "type" => $this->type,
-             $this->question,
+            "question"=>$this->question,
             "created_by"                => $this->created_by ? (new AdminResource($this->createdBy)) : null,
             "updated_by"                => $this->updated_by ? (new AdminResource($this->updatedBy)) : null,
 

@@ -139,6 +139,9 @@ class QuestionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Question::destroy($id);
+        $this->apiSuccess();
+        return $this->apiOutput("Question Deleted Successfully", 200);
     }
+    
 }

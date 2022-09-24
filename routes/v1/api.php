@@ -151,6 +151,8 @@ Route::middleware(["auth:admin"])->group(function(){
     //Question
     Route::get('/question', [QuestionController::class, 'index']);
     Route::post('/question/store', [QuestionController::class, 'store']);
+    Route::post('/question/update/{id}', [QuestionController::class, 'update']);
+    Route::post('/question/delete/{id}', [QuestionController::class, 'destroy']);
     // Route::post('/appointment/update/{id}', [AppointmentController::class, 'update']);
     // Route::post('/appointment/delete/{id}', [AppointmentController::class, 'destroy']);
 
