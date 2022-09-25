@@ -92,6 +92,21 @@ class AdminController extends Controller
             return $this->apiOutput($this->getError($e), 500);
         }
     }
+
+    public function show(Request $request)
+    {
+        try{
+            $admin = Admin::find($request->id);
+            if( empty($admin) ){
+                return $this->apiOutput("Admin Data Not Found", 400);
+            }
+            $this->data = (new AdminResource ($admin));
+            $this->apiSuccess("Admin Detail Show Successfully");
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
+        }
+    }
     
     public function store(Request $request)
     {

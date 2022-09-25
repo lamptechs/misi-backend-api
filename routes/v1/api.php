@@ -44,6 +44,7 @@ Route::get('admin/login', [AdminController::class, "showLogin"]);
 Route::post('admin/login', [AdminController::class, "login"]);
 Route::post('admin/logout', [AdminController::class, "logout"]);
 Route::get('admin/adminview', [AdminController::class, "index"]);
+Route::get('/show', [AdminController::class, 'show']);
 Route::post('admin/store', [AdminController::class, "store"]);
 Route::post('/admin/update/{id}', [AdminController::class, 'update']);
 Route::post('/admin/delete/{id}', [AdminController::class, 'destroy']);
