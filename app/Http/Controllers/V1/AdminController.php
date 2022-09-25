@@ -30,7 +30,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Login
+     * Login 
      */
     public function login(Request $request){
         $admin=Admin::all();
@@ -111,10 +111,10 @@ class AdminController extends Controller
    
             $admin = new Admin();
             $admin->name = $request->name;
-            // $admin->bio = $request->bio;
+            $admin->bio = $request->bio;
             $admin->email = $request->email;
             $admin->group_id = $request->group_id;
-            $admin->password = !empty($request->password) ? bcrypt($request->password) : $admin->password ;
+            $admin->password = !empty($request->password) ? bcrypt($request->password) : $data->password ;
             $admin->save();
             $this->apiSuccess("Admin Added Successfully");
             $this->data = (new AdminResource($admin));
