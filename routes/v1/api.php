@@ -76,6 +76,7 @@ Route::middleware(["auth:admin"])->group(function(){
     //Group Create
     
     Route::get('/groups',[GroupController::class,'index']);
+    Route::get('/groups/show', [GroupController::class, 'show']);
     Route::post('/groups/store',[GroupController::class,'store']);
     Route::post('/groups/update/{id}',[GroupController::class,'update']);
     Route::post('/groups/delete/{id}',[GroupController::class,'destroy']);

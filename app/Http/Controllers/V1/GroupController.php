@@ -85,9 +85,20 @@ class GroupController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
+        try{
+            $group = Group::find($request->id);
+            if( empty($group) ){
+                return $this->apiOutput("Patient Data Not Found", 400);
+            }
+            $this->data = (new GroupResource($group));
+            $this->apiSuccess("Group Showed Successfully");
+            return $this->apiOutput();
+
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
+        }
     }
 
     /**
@@ -146,6 +157,8 @@ class GroupController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+   
     public function destroy($id)
     {
         $group = Group::find($id);
