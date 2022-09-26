@@ -42,15 +42,31 @@ class PibFormulaResource extends JsonResource
     {
         return $this->filter([
             "id"         => $this->id,
-            "name" => $this->name,
-            "patient_info" => (new UserResource($this->patient))->hide(["created_by", "updated_by"]),
-            "type" => $this->type,
-            "number" => $this->number,
-            "expiration_date" => $this->expiration_date,
-            "question"      =>  ScaleResource::collection($this->scale),
-            // "question"          => (new QuestionResource($this->question))->hide(["created_by", "updated_by"]),
-            "created_by"  => $this->created_by ? (new AdminResource($this->createdBy)) : null,
-            "updated_by"  => $this->updated_by ? (new AdminResource($this->updatedBy)) : null
+            "patient_id" => $this->patient_id,
+            "pib_name" => $this->pib_name,
+            "type_of_legitimation"=> $this->type_of_legitimation,
+            "document_number"=> $this->document_number,
+            "identify_expire_date"=> $this->identify_expire_date,
+            "patient_code"=> $this->patient_code,
+            "create_by"=> $this->create_by,
+            "ticket_id"=> $this->ticket_id,
+            "deleted_by"=> $this->deleted_by,
+            "deleted_date"=> $this->deleted_date,
+            "status"=> $this->status,
+            "remarks"=> $this->remarks,
+            "modified_by"   => $this->modified_by,
+            "modified_date"   => $this->modified_date,
+            "created_by"   => $this->created_by,
+            "created_date"   => $this->created_date,
+
+            // "therapist_type"          => (new TherapistTypeResource($this->therapistType))->hide(["created_by", "updated_by"]),
+            // "blood_group"          => (new BloodGroupResource($this->blood))->hide(["created_by", "updated_by"]),
+            // "country"          => (new CountryResource($this->country))->hide(["created_by", "updated_by"]),
+            // "state"          => (new StateResource($this->state))->hide(["created_by", "updated_by"]),
+            // "upload_files"      => TherapistUploadResource::collection($this->fileInfo),
+            // "file_details"          => (new TherapistUploadResource($this->fileInfo))->hide(["created_by", "updated_by"]),
+            // "created_by"  => $this->created_by ? (new AdminResource($this->createdBy)) : null,
+            // "updated_by"  => $this->updated_by ? (new AdminResource($this->updatedBy)) : null
         ]);
     }
 }

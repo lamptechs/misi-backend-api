@@ -58,6 +58,9 @@ class TicketResource extends JsonResource
             "status"  => $this->status,
             "created_by"                => $this->created_by ? (new AdminResource($this->createdBy)) : null,
             "updated_by"                => $this->updated_by ? (new AdminResource($this->updatedBy)) : null,
+            "comment"=>$this->comment,
+            "assign_to_user" => $this->assign_to_user,
+            "assign_to_user_status" => $this->assign_to_user_status,
             
            
         ]);

@@ -53,6 +53,16 @@ Route::post('/admin/delete/{id}', [AdminController::class, 'destroy']);
  * Protect the Route Throw API Token
  */
 Route::middleware(["auth:admin"])->group(function(){
+
+
+    //Pib Formula Section
+    Route::prefix('pib')->group(function(){
+        Route::get('/', [PibFormulaController::class, 'index']);
+        Route::get('/show', [PibFormulaController::class, 'show']);
+        Route::post('/store', [PibFormulaController::class, 'store']);
+        Route::post('/update/{id}', [PibFormulaController::class, 'update']);
+        Route::post('/delete/{id}', [PibFormulaController::class, 'destroy']);
+    });
     
     //Patient Create
     Route::prefix('patient')->group(function(){
@@ -217,7 +227,9 @@ Route::middleware(["auth:admin"])->group(function(){
     Route::post('/degree/store', [DegreeController::class, 'store']);
     Route::post('/degree/update/{id}', [DegreeController::class, 'update']);
     Route::post('/degree/delete/{id}', [DegreeController::class, 'destroy']);
-    
+
+    //PIB
+    Route::get('/index', [PibFormulaController::class, 'index']);
 });
 
 
