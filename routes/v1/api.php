@@ -21,6 +21,7 @@ use App\Http\Controllers\V1\PibFormulaController;
 use App\Http\Controllers\V1\QuestionController;
 use App\Http\Controllers\V1\QuestionScaleController;
 use App\Http\Controllers\V1\GroupController;
+use App\Http\Controllers\V1\PitFormulaController;
 use App\Http\Controllers\V1\Therapist\TherapistScheduleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -54,6 +55,15 @@ Route::post('/admin/delete/{id}', [AdminController::class, 'destroy']);
  */
 Route::middleware(["auth:admin"])->group(function(){
 
+
+    //Pit Formula Section
+    Route::prefix('pit')->group(function(){
+        Route::get('/', [PitFormulaController::class, 'index']);
+        Route::get('/show', [PitFormulaController::class, 'show']);
+        Route::post('/store', [PitFormulaController::class, 'store']);
+        Route::post('/update/{id}', [PitFormulaController::class, 'update']);
+        Route::post('/delete/{id}', [PitFormulaController::class, 'destroy']);
+    });
 
     //Pib Formula Section
     Route::prefix('pib')->group(function(){
