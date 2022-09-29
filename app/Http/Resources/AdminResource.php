@@ -24,6 +24,15 @@ class AdminResource extends JsonResource
     }
 
     /**
+     * Collection
+     */
+    public static function collection($resource){
+        return tap(new AdminResourceCollection($resource), function ($collection) {
+            $collection->collects = __CLASS__;
+        });
+    }
+
+    /**
      * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -32,13 +41,13 @@ class AdminResource extends JsonResource
     public function toArray($request)
     {
         return $this->filter([
-            "id"         => $this->id,
-            "name"      => $this->name,
-            "email"     => $this->email,
-            "groupid"   =>$this->group_id,
-            "department"          => (new GroupResource($this->groupid))->hide(["created_by", "updated_by"]),
-            "created_by"  => $this->created_by ? (new AdminResource($this->createdBy)) : null,
-            "updated_by"  => $this->updated_by ? (new AdminResource($this->updatedBy)) : null
+            "id"            => $this->id ?? "",
+            "name"          => $this->name ?? "",
+            "email"         => $this->email ?? "",
+            "groupid"       => $this->group_id ?? "",
+            "department"    => (new GroupResource($this->groupid))->hide(["created_by", "updated_by"]),
+            "created_by"    => $this->created_by ? (new AdminResource($this->createdBy)) : null,
+            "updated_by"    => $this->updated_by ? (new AdminResource($this->updatedBy)) : null
         ]);
     }
 }

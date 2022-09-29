@@ -68,10 +68,10 @@ class UserResource extends JsonResource
             "blood_group"       => (new BloodGroupResource($this->blood))->hide(["created_by", "updated_by"]),
             "country"           => (new CountryResource($this->country))->hide(["created_by", "updated_by"]),
             "state"             => (new StateResource($this->state))->hide(["created_by", "updated_by"]),
-            "created_by"        => new AdminResource($this->createdBy),
-            "updated_by"        => new AdminResource($this->updatedBy),
+            "created_by"        => (new AdminResource($this->createdBy))->hide(["groupid","department", "created_by","updated_by"]),
+            "updated_by"        => (new AdminResource($this->updatedBy))->hide(["groupid","department", "created_by","updated_by"]),
             "upload_files"      => PatientUploadResource::collection($this->fileInfo),
-            "group"             =>$this->group,
+            "group"             => $this->group,
             // "question and scale" => ScaleResource::collection($this->scale)
         ]);
     }

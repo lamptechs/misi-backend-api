@@ -25,21 +25,15 @@ class Ticket extends Model
         
     }
     public function ticketDepartment(){
-       
-        return $this->belongsTo(TicketDepartment::class, 'ticket_department_id');
-        
+        return $this->belongsTo(TicketDepartment::class, 'ticket_department_id'); 
     }
 
     public function department(){
-       
         return $this->belongsTo(Admin::class, 'assign_to_user');
-        
     }
 
     public function group(){
-       
-        return $this->belongsTo(Group::class, 'group_id');
-        
+        return $this->belongsTo(Group::class, 'group_id'); 
     }
 
    

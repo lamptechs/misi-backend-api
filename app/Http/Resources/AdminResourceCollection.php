@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class GroupResource extends JsonResource
+class AdminResourceCollection extends ResourceCollection
 {
     protected $withoutFields = [];
 
@@ -24,6 +24,15 @@ class GroupResource extends JsonResource
     }
 
     /**
+     * Process The Collection
+     */
+    protected function processCollection($request){
+        return $this->collection->map(function (AdminResource $resource) use ($request) {
+            return $resource->hide($this->withoutFields)->toArray($request);
+        })->all();
+    }
+
+    /**
      * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -31,10 +40,6 @@ class GroupResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->filter([
-            "id"            => $this->id,
-            "name"          => $this->name,
-            "description"   => $this->description,
-        ]);
+        return $this->processCollection($request);
     }
 }

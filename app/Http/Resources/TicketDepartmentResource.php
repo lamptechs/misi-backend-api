@@ -37,9 +37,8 @@ class TicketDepartmentResource extends JsonResource
             "name" => $this->name,
             "status"                    => $this->status,
             "remarks"                   => $this->remarks,
-            "created_by"                => $this->created_by ? (new AdminResource($this->createdBy)) : null,
-            "updated_by"                => $this->updated_by ? (new AdminResource($this->updatedBy)) : null
-
+            "created_by"                => (new AdminResource($this->createdBy))->hide(["groupid","department", "created_by","updated_by"]),
+            "updated_by"                => (new AdminResource($this->updatedBy))->hide(["groupid","department", "created_by","updated_by"]),
         ]);
     }
 }
