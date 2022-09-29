@@ -26,11 +26,11 @@ class TicketResource extends JsonResource
     /**
      * Collection
      */
-    public static function collection($resource){
-        return tap(new TicketCollection($resource), function ($collection) {
-            $collection->collects = __CLASS__;
-        });
-    }
+    // public static function collection($resource){
+    //     return tap(new TicketCollection($resource), function ($collection) {
+    //         $collection->collects = __CLASS__;
+    //     });
+    // }
 
     /**
      * Transform the resource into an array.
@@ -41,25 +41,25 @@ class TicketResource extends JsonResource
     public function toArray($request)
     {
         return $this->filter([
-            "id"     => $this->id,
-            "department"          => (new GroupResource($this->group))->hide(["created_by", "updated_by"]),
+            "id"                    => $this->id,
+            "department"            => (new GroupResource($this->group))->hide(["created_by", "updated_by"]),
             // "department"          => (new AdminResource($this->groupid))->hide(["created_by", "updated_by"]),
-            "admin_name"          => (new AdminResource($this->department))->hide(["created_by", "updated_by"]),
+            "admin_name"            => (new AdminResource($this->department))->hide(["created_by", "updated_by"]),
             "patient_info"          => (new UserResource($this->patient))->hide(["created_by", "updated_by"]),
-            "therapist_info"          => (new TherapistResource($this->therapist))->hide(["created_by", "updated_by"]),
-            "ticket_department_info"          => (new TicketDepartmentResource($this->ticketDepartment))->hide(["created_by", "updated_by"]),
-            "location"=> $this->location,
-            "language"=> $this->language,
-            "date"=> $this->date,
-            "strike"=> $this->strike,
-            "strike_history"=> $this->strike_history,
-            "ticket_history"=> $this->ticket_history,
-            "remarks" => $this->remarks,
-            "status"  => $this->status,
-            "created_by"                => $this->created_by ? (new AdminResource($this->createdBy)) : null,
-            "updated_by"                => $this->updated_by ? (new AdminResource($this->updatedBy)) : null,
-            "comment"=>$this->comment,
-            "assign_to_user" => $this->assign_to_user,
+            "therapist_info"        => (new TherapistResource($this->therapist))->hide(["created_by", "updated_by"]),
+            "ticket_department_info"=> (new TicketDepartmentResource($this->ticketDepartment))->hide(["created_by", "updated_by"]),
+            "location"              => $this->location,
+            "language"              => $this->language,
+            "date"                  => $this->date,
+            "strike"                => $this->strike,
+            "strike_history"        => $this->strike_history,
+            "ticket_history"        => $this->ticket_history,
+            "remarks"               => $this->remarks,
+            "status"                => $this->status,
+            "created_by"            => $this->created_by ? (new AdminResource($this->createdBy)) : null,
+            "updated_by"            => $this->updated_by ? (new AdminResource($this->updatedBy)) : null,
+            "comment"               =>$this->comment,
+            "assign_to_user"        => $this->assign_to_user,
             "assign_to_user_status" => $this->assign_to_user_status,
             
            
