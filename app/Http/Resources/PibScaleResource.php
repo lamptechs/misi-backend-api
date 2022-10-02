@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PibFormulaResource extends JsonResource
+class PibScaleResource extends JsonResource
 {
     protected $withoutFields = [];
 
@@ -27,7 +27,7 @@ class PibFormulaResource extends JsonResource
      * Collection
      */
     public static function collection($resource){
-        return tap(new PibFormulaCollection($resource), function ($collection) {
+        return tap(new PibScaleCollection($resource), function ($collection) {
             $collection->collects = __CLASS__;
         });
     }
@@ -43,19 +43,15 @@ class PibFormulaResource extends JsonResource
         return $this->filter([
             "id"         => $this->id,
             "patient_id" => $this->patient_id,
-            "pib_name" => $this->pib_name,
-            "type_of_legitimation"=> $this->type_of_legitimation,
-            "document_number"=> $this->document_number,
-            "identify_expire_date"=> $this->identify_expire_date,
-            "patient_code"=> $this->patient_code,
-            "create_by"=> $this->create_by,
-            "ticket_id"=> $this->ticket_id,
+            "pib_formula_id" => $this->pib_formula_id,
+            "question_id"=> $this->question_id,
+            "scale_value"=> $this->scale_value,
             "deleted_by"=> $this->deleted_by,
             "deleted_date"=> $this->deleted_date,
             "status"=> $this->status,
             "remarks"=> $this->remarks,
-            "modified_by"   => $this->modified_by,
-            "modified_date"   => $this->modified_date,
+            "modified_by"=> $this->modified_by,
+            "modified_date"=> $this->modified_date,
             "created_by"   => $this->created_by,
             "created_date"   => $this->created_date,
 

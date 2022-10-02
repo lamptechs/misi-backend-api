@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PibFormulaResource extends JsonResource
+class TicketHistoryActivityResource extends JsonResource
 {
     protected $withoutFields = [];
 
@@ -27,7 +27,7 @@ class PibFormulaResource extends JsonResource
      * Collection
      */
     public static function collection($resource){
-        return tap(new PibFormulaCollection($resource), function ($collection) {
+        return tap(new TicketHistoryActivityCollection($resource), function ($collection) {
             $collection->collects = __CLASS__;
         });
     }
@@ -42,20 +42,21 @@ class PibFormulaResource extends JsonResource
     {
         return $this->filter([
             "id"         => $this->id,
-            "patient_id" => $this->patient_id,
-            "pib_name" => $this->pib_name,
-            "type_of_legitimation"=> $this->type_of_legitimation,
-            "document_number"=> $this->document_number,
-            "identify_expire_date"=> $this->identify_expire_date,
-            "patient_code"=> $this->patient_code,
-            "create_by"=> $this->create_by,
-            "ticket_id"=> $this->ticket_id,
+            "ticket_id " => $this->ticket_id ,
+            "assign_to_therapist"=> $this->assign_to_therapist,
+            "appointment_group"=> $this->appointment_group,
+            "call_strike"=> $this->call_strike,
+            "strike_history"=> $this->strike_history,
+            "ticket_history"=> $this->ticket_history,
+            "status"=> $this->status,
+            "language"=> $this->language,
+            "assign_to_user"=> $this->assign_to_user,
+            "assign_to_user_status"=> $this->assign_to_user_status,
             "deleted_by"=> $this->deleted_by,
             "deleted_date"=> $this->deleted_date,
-            "status"=> $this->status,
             "remarks"=> $this->remarks,
-            "modified_by"   => $this->modified_by,
-            "modified_date"   => $this->modified_date,
+            "modified_by"=> $this->modified_by,
+            "modified_date"=> $this->modified_date,
             "created_by"   => $this->created_by,
             "created_date"   => $this->created_date,
 
