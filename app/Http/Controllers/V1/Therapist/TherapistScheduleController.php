@@ -2,31 +2,47 @@
 
 namespace App\Http\Controllers\V1\Therapist;
 
+use App\Http\Components\Traits\Schedule;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TherapistResource;
 use App\Http\Resources\TherapistScheduleResource;
+use App\Http\Resources\TherapistScheduleSettingsResource;
 use App\Models\Therapist;
 //use App\Http\Resources\TherapistServiceResource;
 use App\Models\TherapistSchedule;
+use App\Models\TherapistScheduleSettings;
+use Carbon\Carbon;
 //use App\Models\TherapistService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class TherapistScheduleController extends Controller
 {
+
+    use Schedule;
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         try{
-            $this->data = TherapistScheduleResource::collection(TherapistSchedule::all());
-            $this->apiSuccess("Therapist Schedule Loaded Successfully");
-            // return $this->apiOutput("Therapist Loaded Successfully",200);
+            $schedule = TherapistSchedule::orderBy("date", "ASC")->orderBY("id", "ASC");
+            if( !empty($request->date) ){
+                $schedule->where("date", ">=", Carbon::parse($request->date)->format("Y-m-d"));
+            }else{
+                $schedule->where("date", ">=", date("Y-m-d"));
+            }
+            if( !empty($request->therapist_id) ){
+                $schedule->where("therapist_id", $request->therapist_id);
+            }
+            $schedules = $schedule->get();
+            $this->data = TherapistScheduleResource::collection( $schedules);
+            $this->apiSuccess("Therapist Schedules Loaded Successfully");
             return $this->apiOutput();
 
         }catch(Exception $e){
@@ -39,9 +55,24 @@ class TherapistScheduleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        try{
+            $validator = Validator::make($request->all(), [
+                "therapist_id"  => ["required", "exists:therapists,id"]
+            ]);
+            if($validator->fails()){
+                return $this->apiOutput($this->getValidationError($validator), 400);
+            }
+
+            $schedule_settings = TherapistScheduleSettings::where("therapist_id", $request->therapist_id)->first();
+            $this->data = new TherapistScheduleSettingsResource($schedule_settings);
+            $this->apiSuccess("Therapist Schedule Settings Loaded Successfully");
+            return $this->apiOutput();
+
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
+        }
     }
 
     /**
@@ -52,14 +83,18 @@ class TherapistScheduleController extends Controller
      */
    
     public function store(Request $request)
-    {
-      //return 10;
-      
+    {  
+        $days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];   
         $validator = Validator::make($request->all(),[
-            'first_name' => 'required',
-            'last_name' => 'required',
-            "email"     => ["required", "email", "unique:therapists"],
-            "phone"     => ["required", "numeric", "unique:therapists"]
+            "therapist_id"  => ["required", "exists:therapists,id"],
+            "interval_time" => ["required", "numeric", "min:10"],
+            "start_time"    => ["required", "date_format:H:i"],
+            "end_time"      => ["required", "date_format:H:i"],
+            'start_date'    => ['required', 'date'],
+            'end_date'      => ['required', 'date', 'after_or_equal:start_date'],
+            "holiday"       => ["required", "array", Rule::in($days)]
+        ],[
+            "holiday.in"    => "Day Name in not Match. use small letter in days name",   
         ]);
             
         if ($validator->fails()) {
@@ -69,42 +104,16 @@ class TherapistScheduleController extends Controller
         try{
 
             DB::beginTransaction();
-            
-            $data = $this->getModel();
-            $data->created_by = $request->user()->id;
-
-            $data->first_name = $request->first_name;                  
-            $data->last_name = $request->last_name;         
-            $data->email = $request->email;
-            $data->phone = $request->phone;
-            $data->address = $request->address;
-            $data->language = $request->language;
-            $data->bsn_number = $request->bsn_number;
-            $data->dob_number = $request->dob_number;
-            $data->insurance_number = $request->insurance_number;
-            $data->emergency_contact = $request->emergency_contact ?? 0;
-            $data->gender = $request->gender;
-            //$data->date_of_birth = /*$request->date_of_birth*/ Carbon::now();
-            $data->date_of_birth = $request->date_of_birth;
-            $data->status = $request->status;
-            $data->therapist_type_id = $request->therapist_type_id;
-            $data->blood_group_id = $request->blood_group_id;
-            $data->state_id = $request->state_id;
-            $data->country_id = $request->country_id;
-            $data->password = bcrypt($request->password);
-            
-            $data->save();
-            $this->saveFileInfo($request, $data);
-            
+            $settings = $this->addOrUpdateScheduleSettings($request);
+            $this->generateSchedule($settings, $request);
             DB::commit();
-            $this->apiSuccess("Therapist Info Added Successfully");
-            $this->data = (new TherapistResource($data));
+            $schedules = TherapistSchedule::orderBy("date", "ASC")->orderBY("id", "ASC")
+                ->whereBetween("date", [$request->start_date, $request->end_date])
+                ->where("therapist_id", $settings->therapist_id)->get();
+            
+            $this->data = $this->data = TherapistScheduleResource::collection( $schedules);
+            $this->apiSuccess("Therapist Schedule Added Successfully");
             return $this->apiOutput();        
-            try{
-                // event(new Registered($data));
-            }catch(Exception $e){
-                //
-            }
         }
         catch(Exception $e){
             DB::rollBack();
@@ -119,41 +128,27 @@ class TherapistScheduleController extends Controller
      */
     public function show(Request $request)
     {
+        $validator = Validator::make($request->all(),[
+            "id"  => ["required", "exists:therapist_schedules,id"],
+        ],[
+            "id.required" => "Therapist Schedule ID Required",
+        ]); 
+        if ($validator->fails()) {
+            return $this->apiOutput($this->getValidationError($validator), 400);
+        }
         try{
-            $therapist = TherapistSchedule::find($request->id);
-            if( empty($therapist) ){
+            $schedule = TherapistSchedule::find($request->id);
+            if( empty($schedule) ){
                 return $this->apiOutput("Therapist Data Not Found", 400);
             }
-            $this->data = (new TherapistScheduleResource ($therapist));
-            $this->apiSuccess("Therapist Detail Show Successfully");
+            $this->data = (new TherapistScheduleResource ($schedule));
+            $this->apiSuccess("Schedule Detail loaded Successfully");
             return $this->apiOutput();
         }catch(Exception $e){
             return $this->apiOutput($this->getError($e), 500);
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
 
     /**
      * Remove the specified resource from storage.
@@ -161,8 +156,22 @@ class TherapistScheduleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            "id"  => ["required", "exists:therapist_schedules,id"],
+        ],[
+            "id.required" => "Therapist Schedule ID Required",
+        ]); 
+        if ($validator->fails()) {
+            return $this->apiOutput($this->getValidationError($validator), 400);
+        }
+        $schedule = TherapistSchedule::where("id", $request->id)->first();
+        if($schedule->status != "open"){
+            return $this->apiOutput("Sorry! You Can't Delete this schedule at this time", 400);
+        } 
+        $schedule->delete();
+        $this->apiSuccess("Schedule Deleted Successfully");
+        return $this->apiOutput();
     }
 }

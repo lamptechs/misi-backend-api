@@ -157,11 +157,13 @@ Route::middleware(["auth:admin"])->group(function(){
     
 
     //Therapist Schedule
-    Route::get('/therapist_schedule', [TherapistScheduleController::class, 'index']);
-    Route::get('/show', [TherapistScheduleController::class, 'show']);
-    Route::post('/therapist_schedule/store', [TherapistScheduleController::class, 'store']);
-    // Route::post('/therapist_schedule/update/{id}', [TherapistScheduleController::class, 'update']);
-    // Route::post('/therapist_schedule/delete/{id}', [TherapistScheduleController::class, 'destroy']);
+    Route::prefix('therapist-schedule')->group(function () {
+        Route::get('/list', [TherapistScheduleController::class, 'index']);
+        Route::get('/create', [TherapistScheduleController::class, 'create']);
+        Route::post('/create', [TherapistScheduleController::class, 'store']);
+        Route::get('/show', [TherapistScheduleController::class, 'show']);
+        Route::post('delete', [TherapistScheduleController::class, 'destroy']);
+    });
     
     //Appointment
     Route::get('/appointment', [AppointmentController::class, 'index']);
@@ -253,7 +255,7 @@ Route::post('therapist/logout', [TherapistController::class, "logout"]);
 /**
  * Therapist Authentication
  */
-Route::middleware(["auth:therapist"])->group(function(){
+Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
     
 });
 
@@ -267,7 +269,7 @@ Route::post('patient/logout', [PatientController::class, "logout"]);
 /**
  * Patient Authentication
  */
-Route::middleware(["auth:patient"])->group(function(){
+Route::middleware(["auth:patient"])->prefix("patient")->group(function(){
 
 });
 

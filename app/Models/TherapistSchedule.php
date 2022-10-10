@@ -17,4 +17,7 @@ class TherapistSchedule extends Model
     public function therapist(){
         return $this->belongsTo(Therapist::class, 'therapist_id'); 
     }
+    public function patient(){
+        return $this->belongsTo(User::class, 'patient_id'); 
+    }
 }

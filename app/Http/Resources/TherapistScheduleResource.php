@@ -35,18 +35,16 @@ class TherapistScheduleResource extends JsonResource
     public function toArray($request)
     {
         return $this->filter([
-            "id"         => $this->id,
-            "schedule_day" => $this->schedule_day,
-            "start_date"   => $this->start_date,
-            "end_date"     => $this->end_date,
-            "start_time"   => $this->start_time,
-            "end_time"     => $this->end_time,
-            "consulting_time"     => $this->consulting_time,
-            "remarks"             => $this->remarks,
-            "status"              => $this->status,
-            "therapist"          => (new TherapistResource($this->therapist))->hide(["created_by", "updated_by"]),
-            "created_by"  => $this->created_by ? (new AdminResource($this->createdBy)) : null,
-            "updated_by"  => $this->updated_by ? (new AdminResource($this->updatedBy)) : null
+            "id"            => $this->id,
+            "date"          => $this->date,
+            "start_time"    => $this->start_time,
+            "end_time"      => $this->end_time,
+            "status"        => $this->status,
+            "remarks"       => $this->remarks,
+            "patient"       => (new UserResource($this->patient))->hide(["created_by", "updated_by", "upload_files", "group"]),
+            "therapist"     => (new TherapistResource($this->therapist))->hide(["created_by", "updated_by"]),
+            "created_by"    => (new AdminResource($this->createdBy))->hide(["department", "created_by", "updated_by"]),
+            "updated_by"    => (new AdminResource($this->updatedBy))->hide(["department", "created_by", "updated_by"]),
         ]);
     }
 }
