@@ -22,55 +22,6 @@ class PitScaleController extends Controller
         return new PitScale();
     }
 
-    /**
-     * Show Login
-     */
-    // public function showLogin(Request $request){
-    //     $this->data = [
-    //         "email"     => "required",
-    //         "password"  => "required",
-    //     ];
-    //     $this->apiSuccess("This credentials are required for Login ");
-    //     return $this->apiOutput();
-    // }
-
-    /**
-     * Login
-     */
-    // public function login(Request $request){
-    //     try{
-    //         $validator = Validator::make($request->all(), [
-    //             "email"     => ["required"],
-    //             "password"  => ["required"]
-    //         ]);
-    //         if($validator->fails()){
-    //             return $this->apiOutput($this->getValidationError($validator), 400);
-    //         }
-    //         $pibscale = $this->getModel()->where("email", $request->email)->first();
-    //         if( !Hash::check($request->password, $pibscale->password) ){
-    //             return $this->apiOutput("Sorry! Password Dosen't Match", 401);
-    //         }
-    //         if( !$pibscale->status ){
-    //             return $this->apiOutput("Sorry! your account is temporaly blocked", 401);
-    //         }
-    //         // Issueing Access Token
-    //         // $this->access_token = $pibformula->createToken($request->ip() ?? "therapist_access_token")->plainTextToken;
-    //         $this->apiSuccess("Login Successfully");
-    //         return $this->apiOutput();
-
-    //     }catch(Exception $e){
-    //         return $this->apiOutput($this->getError($e), 500);
-    //     }
-    // }
-    // public function logout(Request $request){
-    //     $user = $request->user();
-    //     foreach ($user->tokens as $token) {
-    //         $token->delete();
-    //    }
-    //    $this->apiSuccess("Logout Successfull");
-    //    return $this->apiOutput();
-
-    // }
 
     /**
      * Display a listing of the resource.
@@ -98,16 +49,7 @@ class PitScaleController extends Controller
     public function store(Request $request)
     {
 
-        // $validator = Validator::make($request->all(),[
-        //     'patient_id' => 'required',
-        //     'pib_name' => 'required',
-        //     "document_number"     => ["required"],
-        //     "create_by"     => ["required"]
-        // ]);
 
-        // if ($validator->fails()) {
-        //     return $this->apiOutput($this->getValidationError($validator), 400);
-        // }
 
         try{
 
@@ -147,22 +89,7 @@ class PitScaleController extends Controller
         }
     }
 
-    // Save File Info
-    // public function saveFileInfo($request, $data){
-    //     $file_path = $this->uploadImage($request, 'file', $this->therapist_uploads, 720);
 
-    //     if( !is_array($file_path) ){
-    //         $file_path = (array) $file_path;
-    //     }
-    //     foreach($file_path as $path){
-    //         $data = new TherapistUpload();
-    //         $data->therapist_id = $therapist->id;
-    //         $data->file_name    = $request->file_name ?? "Therapist Upload";
-    //         $data->file_url     = $path;
-    //         $data->save();
-    //     }
-
-    // }
 
             /**
      * Display the specified resource.
@@ -226,11 +153,7 @@ class PitScaleController extends Controller
             //$this->updateFileInfo($request, $data);
             DB::commit();
 
-            //try{
-                // event(new Registered($data));
-            //}catch(Exception $e){
-                //
-            //}
+
 
             $this->apiSuccess("PIT Info Updated Successfully");
             $this->data = (new PitScaleResource($data));

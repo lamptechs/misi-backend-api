@@ -57,7 +57,7 @@ Route::post('/admin/delete/{id}', [AdminController::class, 'destroy']);
  * Protect the Route Throw API Token
  */
 Route::middleware(["auth:admin"])->group(function(){
-    
+
         //Ticket History Activity Section
         Route::prefix('tickethistory')->group(function(){
             Route::get('/', [TicketHistoryActivityController::class, 'index']);
@@ -187,14 +187,6 @@ Route::middleware(["auth:admin"])->group(function(){
 
 
     //Therapist Schedule
-<<<<<<< HEAD
-    Route::get('/therapist_schedule', [TherapistScheduleController::class, 'index']);
-    Route::get('/show', [TherapistScheduleController::class, 'show']);
-    Route::post('/therapist_schedule/store', [TherapistScheduleController::class, 'store']);
-    // Route::post('/therapist_schedule/update/{id}', [TherapistScheduleController::class, 'update']);
-    // Route::post('/therapist_schedule/delete/{id}', [TherapistScheduleController::class, 'destroy']);
-
-=======
     Route::prefix('therapist-schedule')->group(function () {
         Route::get('/list', [TherapistScheduleController::class, 'index']);
         Route::get('/create', [TherapistScheduleController::class, 'create']);
@@ -202,8 +194,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::get('/show', [TherapistScheduleController::class, 'show']);
         Route::post('delete', [TherapistScheduleController::class, 'destroy']);
     });
-    
->>>>>>> 36d9d9796fe8f476045749903d1067b6a4b678b7
+
     //Appointment
     Route::get('/appointment', [AppointmentController::class, 'index']);
     Route::get('/appointment/show', [AppointmentController::class, 'show']);
@@ -294,13 +285,8 @@ Route::post('therapist/logout', [TherapistController::class, "logout"]);
 /**
  * Therapist Authentication
  */
-<<<<<<< HEAD
-Route::middleware(["auth:therapist"])->group(function(){
-
-=======
 Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
-    
->>>>>>> 36d9d9796fe8f476045749903d1067b6a4b678b7
+
 });
 
 

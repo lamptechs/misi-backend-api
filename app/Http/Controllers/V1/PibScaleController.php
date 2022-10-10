@@ -22,55 +22,6 @@ class PibScaleController extends Controller
         return new PibScale();
     }
 
-    /**
-     * Show Login
-     */
-    // public function showLogin(Request $request){
-    //     $this->data = [
-    //         "email"     => "required",
-    //         "password"  => "required",
-    //     ];
-    //     $this->apiSuccess("This credentials are required for Login ");
-    //     return $this->apiOutput();
-    // }
-
-    /**
-     * Login
-     */
-    // public function login(Request $request){
-    //     try{
-    //         $validator = Validator::make($request->all(), [
-    //             "email"     => ["required"],
-    //             "password"  => ["required"]
-    //         ]);
-    //         if($validator->fails()){
-    //             return $this->apiOutput($this->getValidationError($validator), 400);
-    //         }
-    //         $pibscale = $this->getModel()->where("email", $request->email)->first();
-    //         if( !Hash::check($request->password, $pibscale->password) ){
-    //             return $this->apiOutput("Sorry! Password Dosen't Match", 401);
-    //         }
-    //         if( !$pibscale->status ){
-    //             return $this->apiOutput("Sorry! your account is temporaly blocked", 401);
-    //         }
-    //         // Issueing Access Token
-    //         // $this->access_token = $pibformula->createToken($request->ip() ?? "therapist_access_token")->plainTextToken;
-    //         $this->apiSuccess("Login Successfully");
-    //         return $this->apiOutput();
-
-    //     }catch(Exception $e){
-    //         return $this->apiOutput($this->getError($e), 500);
-    //     }
-    // }
-    // public function logout(Request $request){
-    //     $user = $request->user();
-    //     foreach ($user->tokens as $token) {
-    //         $token->delete();
-    //    }
-    //    $this->apiSuccess("Logout Successfull");
-    //    return $this->apiOutput();
-
-    // }
 
     /**
      * Display a listing of the resource.
@@ -98,16 +49,6 @@ class PibScaleController extends Controller
     public function store(Request $request)
     {
 
-        // $validator = Validator::make($request->all(),[
-        //     'patient_id' => 'required',
-        //     'pib_name' => 'required',
-        //     "document_number"     => ["required"],
-        //     "create_by"     => ["required"]
-        // ]);
-
-        // if ($validator->fails()) {
-        //     return $this->apiOutput($this->getValidationError($validator), 400);
-        // }
 
         try{
 

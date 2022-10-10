@@ -201,12 +201,12 @@ class PibFormulaController extends Controller
     public function update(Request $request,$id)
     {
 
-        try{
-        $validator = Validator::make($request->all(),[
-            //"id"  => ['required', "exists:therapists,id"],
+        // try{
+        // $validator = Validator::make($request->all(),[
+        //     //"id"  => ['required', "exists:therapists,id"],
 
 
-        ]);
+        // ]);
 
         if ($validator->fails()) {
             return $this->apiOutput($this->getValidationError($validator), 400);
