@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class PibFormula extends Model
 {
+    // use HasFactory;
     use HasFactory;
+
     public function createdBy(){
         return $this->belongsTo(Admin::class, "created_by")->withTrashed();
     }
@@ -15,20 +17,10 @@ class PibFormula extends Model
         return $this->belongsTo(Admin::class, "updated_by")->withTrashed();
     }
     public function patient(){
-       
         return $this->belongsTo(User::class, 'patient_id');
-        
     }
-    public function question(){
-       
-        return $this->belongsTo(Question::class, 'question_id');
-        
-    }
-    public function scale(){
-        return $this->hasMany(Scale::class, 'pib_id');
+    public function Ticket(){
+        return $this->belongsTo(Ticket::class, 'ticket_id');
     }
 
-    // protected $casts = [
-    //    'question_id' => "array"
-    // ];
 }

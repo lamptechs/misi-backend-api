@@ -5,11 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PitFormula extends Model
+class PitScale extends Model
 {
-    // use HasFactory;
     use HasFactory;
-
     public function createdBy(){
         return $this->belongsTo(Admin::class, "created_by")->withTrashed();
     }
@@ -19,7 +17,11 @@ class PitFormula extends Model
     public function patient(){
         return $this->belongsTo(User::class, 'patient_id');
     }
-    public function Ticket(){
-        return $this->belongsTo(Ticket::class, 'ticket_id');
+
+    public function pitformula(){
+        return $this->hasMany(PitFormula::class, 'pit_formula_id');
+    }
+    public function question(){
+        return $this->belongsTo(Question::class, 'question_id');
     }
 }

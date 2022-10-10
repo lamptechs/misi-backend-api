@@ -9,7 +9,7 @@ class PibFormulaResource extends JsonResource
     protected $withoutFields = [];
 
     /**
-     * Set Hidden Item 
+     * Set Hidden Item
      */
     public function hide(array $hide = []){
         $this->withoutFields = $hide;
