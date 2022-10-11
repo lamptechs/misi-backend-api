@@ -281,7 +281,36 @@ Route::post('therapist/logout', [TherapistController::class, "logout"]);
  * Therapist Authentication
  */
 Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
+    
+    Route::get('/', [TherapistController::class, 'index']);
+    Route::get('/show', [TherapistController::class, 'show']);
+    Route::post('/store', [TherapistController::class, 'store']);
+    Route::post('/update/{id}', [TherapistController::class, 'update']);
+    Route::post('/delete/{id}', [TherapistController::class, 'destroy']);
+   
 
+    /**
+     * Therapist Tickets
+     */
+    Route::prefix('ticket')->group(function(){
+        Route::get('/', [TicketController::class, 'index']);
+        Route::get('/show', [TicketController::class, 'show']);
+        Route::post('/store', [TicketController::class, 'store']);
+        Route::post('/update', [TicketController::class, 'update']);
+        Route::post('/assignedupdate', [TicketController::class, 'assignedupdate']);
+        Route::post('/ticketstatus', [TicketController::class, 'canclledTicket']);
+        Route::post('/delete/{id}', [TicketController::class, 'destroy']);
+    });
+    
+    Route::prefix('appointment')->group(function(){
+        Route::get('/', [AppointmentController::class, 'index']);
+        Route::get('/show', [AppointmentController::class, 'show']);
+        Route::post('/store', [AppointmentController::class, 'store']);
+        Route::post('/update/{id}', [AppointmentController::class, 'update']);
+        Route::post('ticketstatus', [AppointmentController::class, 'appointmentstatus']);
+        Route::post('/delete/{id}', [AppointmentController::class, 'destroy']);
+    });
+    
 });
 
 
@@ -295,7 +324,34 @@ Route::post('patient/logout', [PatientController::class, "logout"]);
  * Patient Authentication
  */
 Route::middleware(["auth:patient"])->prefix("patient")->group(function(){
-
+    
+    Route::get('/', [PatientController::class, 'index']);
+    Route::get('/show', [PatientController::class, 'show']);
+    Route::post('/store', [PatientController::class, 'store']);
+    Route::post('/update/{id}', [PatientController::class, 'update']);
+    Route::post('/delete/{id}', [PatientController::class, 'destroy']);
+    
+    
+    Route::prefix('ticket')->group(function(){
+        Route::get('/', [TicketController::class, 'index']);
+        Route::get('/show', [TicketController::class, 'show']);
+        Route::post('/store', [TicketController::class, 'store']);
+        Route::post('/update', [TicketController::class, 'update']);
+        Route::post('/assignedupdate', [TicketController::class, 'assignedupdate']);
+        Route::post('/ticketstatus', [TicketController::class, 'canclledTicket']);
+        Route::post('/delete/{id}', [TicketController::class, 'destroy']);
+    });
+    
+    
+    // Appointment
+    Route::prefix('ticket')->group(function(){
+        Route::get('/', [AppointmentController::class, 'index']);
+        Route::get('/show', [AppointmentController::class, 'show']);
+        Route::post('/store', [AppointmentController::class, 'store']);
+        Route::post('/update/{id}', [AppointmentController::class, 'update']);
+        Route::post('ticketstatus', [AppointmentController::class, 'appointmentstatus']);
+        Route::post('/delete/{id}', [AppointmentController::class, 'destroy']);
+    });
 });
 
 
