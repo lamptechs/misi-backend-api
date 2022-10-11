@@ -116,19 +116,7 @@ class AppointmentController extends Controller
         }
     }
 
-    // public function edit(Request $request){
-    //     try{
-    //         $appointment =Appointmnet:: find($request->id);
-    //         if( empty($appointment) ){
-    //             return $this->apiOutput("Appointment Data Not Found", 400);
-    //         }
-    //         $this->data = (new Appointmnet($appointment));
-    //         $this->apiSuccess("Appointment Detail Show Successfully");
-    //         return $this->apiOutput();
-    //     }catch(Exception $e){
-    //         return $this->apiOutput($this->getError($e), 500);
-    //     }
-    // }
+   
 
     /**
      * Update the specified resource in storage.

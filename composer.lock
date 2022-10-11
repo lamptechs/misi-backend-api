@@ -1051,6 +1051,7 @@
         },
         {
             "name": "laravel/framework",
+<<<<<<< HEAD
             "version": "v8.83.25",
             "source": {
                 "type": "git",
@@ -1061,6 +1062,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/laravel/framework/zipball/b77b908a9426efa41d6286a2ef4c3adbf5398ca1",
                 "reference": "b77b908a9426efa41d6286a2ef4c3adbf5398ca1",
+=======
+            "version": "v8.83.24",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/framework.git",
+                "reference": "a684da6197ae77eee090637ae4411b2f321adfc7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/a684da6197ae77eee090637ae4411b2f321adfc7",
+                "reference": "a684da6197ae77eee090637ae4411b2f321adfc7",
+>>>>>>> 4a539bf (Patient Login Api added)
                 "shasum": ""
             },
             "require": {
@@ -1220,7 +1233,11 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
+<<<<<<< HEAD
             "time": "2022-09-30T13:00:40+00:00"
+=======
+            "time": "2022-09-22T18:59:47+00:00"
+>>>>>>> 4a539bf (Patient Login Api added)
         },
         {
             "name": "laravel/sanctum",
@@ -1605,6 +1622,7 @@
         },
         {
             "name": "league/flysystem",
+<<<<<<< HEAD
             "version": "1.1.10",
             "source": {
                 "type": "git",
@@ -1615,6 +1633,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/3239285c825c152bcc315fe0e87d6b55f5972ed1",
                 "reference": "3239285c825c152bcc315fe0e87d6b55f5972ed1",
+=======
+            "version": "1.1.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/flysystem.git",
+                "reference": "094defdb4a7001845300334e7c1ee2335925ef99"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/094defdb4a7001845300334e7c1ee2335925ef99",
+                "reference": "094defdb4a7001845300334e7c1ee2335925ef99",
+>>>>>>> 4a539bf (Patient Login Api added)
                 "shasum": ""
             },
             "require": {
@@ -1687,7 +1717,11 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/flysystem/issues",
+<<<<<<< HEAD
                 "source": "https://github.com/thephpleague/flysystem/tree/1.1.10"
+=======
+                "source": "https://github.com/thephpleague/flysystem/tree/1.1.9"
+>>>>>>> 4a539bf (Patient Login Api added)
             },
             "funding": [
                 {
@@ -1695,7 +1729,11 @@
                     "type": "other"
                 }
             ],
+<<<<<<< HEAD
             "time": "2022-10-04T09:16:37+00:00"
+=======
+            "time": "2021-12-09T09:40:50+00:00"
+>>>>>>> 4a539bf (Patient Login Api added)
         },
         {
             "name": "league/mime-type-detection",
@@ -3034,6 +3072,7 @@
         },
         {
             "name": "symfony/console",
+<<<<<<< HEAD
             "version": "v5.4.13",
             "source": {
                 "type": "git",
@@ -3044,6 +3083,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/console/zipball/3f97f6c7b7e26848a90c0c0cfb91eeb2bb8618be",
                 "reference": "3f97f6c7b7e26848a90c0c0cfb91eeb2bb8618be",
+=======
+            "version": "v5.4.12",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/console.git",
+                "reference": "c072aa8f724c3af64e2c7a96b796a4863d24dba1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/console/zipball/c072aa8f724c3af64e2c7a96b796a4863d24dba1",
+                "reference": "c072aa8f724c3af64e2c7a96b796a4863d24dba1",
+>>>>>>> 4a539bf (Patient Login Api added)
                 "shasum": ""
             },
             "require": {
@@ -3113,7 +3164,11 @@
                 "terminal"
             ],
             "support": {
+<<<<<<< HEAD
                 "source": "https://github.com/symfony/console/tree/v5.4.13"
+=======
+                "source": "https://github.com/symfony/console/tree/v5.4.12"
+>>>>>>> 4a539bf (Patient Login Api added)
             },
             "funding": [
                 {
@@ -3129,7 +3184,11 @@
                     "type": "tidelift"
                 }
             ],
+<<<<<<< HEAD
             "time": "2022-08-26T13:50:20+00:00"
+=======
+            "time": "2022-08-17T13:18:05+00:00"
+>>>>>>> 4a539bf (Patient Login Api added)
         },
         {
             "name": "symfony/css-selector",
@@ -3564,6 +3623,7 @@
         },
         {
             "name": "symfony/http-foundation",
+<<<<<<< HEAD
             "version": "v5.4.13",
             "source": {
                 "type": "git",
@@ -3574,6 +3634,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/http-foundation/zipball/54be067587a4f2b7fffb7a699f9481ec3daf9379",
                 "reference": "54be067587a4f2b7fffb7a699f9481ec3daf9379",
+=======
+            "version": "v5.4.12",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/http-foundation.git",
+                "reference": "f4bfe9611b113b15d98a43da68ec9b5a00d56791"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/f4bfe9611b113b15d98a43da68ec9b5a00d56791",
+                "reference": "f4bfe9611b113b15d98a43da68ec9b5a00d56791",
+>>>>>>> 4a539bf (Patient Login Api added)
                 "shasum": ""
             },
             "require": {
@@ -3620,7 +3692,11 @@
             "description": "Defines an object-oriented layer for the HTTP specification",
             "homepage": "https://symfony.com",
             "support": {
+<<<<<<< HEAD
                 "source": "https://github.com/symfony/http-foundation/tree/v5.4.13"
+=======
+                "source": "https://github.com/symfony/http-foundation/tree/v5.4.12"
+>>>>>>> 4a539bf (Patient Login Api added)
             },
             "funding": [
                 {
@@ -3636,6 +3712,7 @@
                     "type": "tidelift"
                 }
             ],
+<<<<<<< HEAD
             "time": "2022-09-17T07:31:22+00:00"
         },
         {
@@ -3650,6 +3727,22 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/http-kernel/zipball/4f25330c216b7bb178603b2e25fb7a9325015507",
                 "reference": "4f25330c216b7bb178603b2e25fb7a9325015507",
+=======
+            "time": "2022-08-19T07:33:17+00:00"
+        },
+        {
+            "name": "symfony/http-kernel",
+            "version": "v5.4.12",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/http-kernel.git",
+                "reference": "37f660fa3bcd78fe4893ce23ebe934618ec099be"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/37f660fa3bcd78fe4893ce23ebe934618ec099be",
+                "reference": "37f660fa3bcd78fe4893ce23ebe934618ec099be",
+>>>>>>> 4a539bf (Patient Login Api added)
                 "shasum": ""
             },
             "require": {
@@ -3732,7 +3825,11 @@
             "description": "Provides a structured process for converting a Request into a Response",
             "homepage": "https://symfony.com",
             "support": {
+<<<<<<< HEAD
                 "source": "https://github.com/symfony/http-kernel/tree/v5.4.13"
+=======
+                "source": "https://github.com/symfony/http-kernel/tree/v5.4.12"
+>>>>>>> 4a539bf (Patient Login Api added)
             },
             "funding": [
                 {
@@ -3748,6 +3845,7 @@
                     "type": "tidelift"
                 }
             ],
+<<<<<<< HEAD
             "time": "2022-09-30T07:40:28+00:00"
         },
         {
@@ -3762,6 +3860,22 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/mime/zipball/bb2ccf759e2b967dcd11bdee5bdf30dddd2290bd",
                 "reference": "bb2ccf759e2b967dcd11bdee5bdf30dddd2290bd",
+=======
+            "time": "2022-08-26T14:40:40+00:00"
+        },
+        {
+            "name": "symfony/mime",
+            "version": "v5.4.12",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/mime.git",
+                "reference": "03876e9c5a36f5b45e7d9a381edda5421eff8a90"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/mime/zipball/03876e9c5a36f5b45e7d9a381edda5421eff8a90",
+                "reference": "03876e9c5a36f5b45e7d9a381edda5421eff8a90",
+>>>>>>> 4a539bf (Patient Login Api added)
                 "shasum": ""
             },
             "require": {
@@ -3815,7 +3929,11 @@
                 "mime-type"
             ],
             "support": {
+<<<<<<< HEAD
                 "source": "https://github.com/symfony/mime/tree/v5.4.13"
+=======
+                "source": "https://github.com/symfony/mime/tree/v5.4.12"
+>>>>>>> 4a539bf (Patient Login Api added)
             },
             "funding": [
                 {
@@ -3831,7 +3949,11 @@
                     "type": "tidelift"
                 }
             ],
+<<<<<<< HEAD
             "time": "2022-09-01T18:18:29+00:00"
+=======
+            "time": "2022-08-19T14:24:03+00:00"
+>>>>>>> 4a539bf (Patient Login Api added)
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -4887,6 +5009,7 @@
         },
         {
             "name": "symfony/string",
+<<<<<<< HEAD
             "version": "v5.4.13",
             "source": {
                 "type": "git",
@@ -4897,6 +5020,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/string/zipball/2900c668a32138a34118740de3e4d5a701801f53",
                 "reference": "2900c668a32138a34118740de3e4d5a701801f53",
+=======
+            "version": "v5.4.12",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/string.git",
+                "reference": "2fc515e512d721bf31ea76bd02fe23ada4640058"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/string/zipball/2fc515e512d721bf31ea76bd02fe23ada4640058",
+                "reference": "2fc515e512d721bf31ea76bd02fe23ada4640058",
+>>>>>>> 4a539bf (Patient Login Api added)
                 "shasum": ""
             },
             "require": {
@@ -4953,7 +5088,11 @@
                 "utf8"
             ],
             "support": {
+<<<<<<< HEAD
                 "source": "https://github.com/symfony/string/tree/v5.4.13"
+=======
+                "source": "https://github.com/symfony/string/tree/v5.4.12"
+>>>>>>> 4a539bf (Patient Login Api added)
             },
             "funding": [
                 {
@@ -4969,7 +5108,11 @@
                     "type": "tidelift"
                 }
             ],
+<<<<<<< HEAD
             "time": "2022-09-01T01:52:16+00:00"
+=======
+            "time": "2022-08-12T17:03:11+00:00"
+>>>>>>> 4a539bf (Patient Login Api added)
         },
         {
             "name": "symfony/translation",
@@ -5148,6 +5291,7 @@
         },
         {
             "name": "symfony/var-dumper",
+<<<<<<< HEAD
             "version": "v5.4.13",
             "source": {
                 "type": "git",
@@ -5158,6 +5302,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/var-dumper/zipball/2bf2ccab581bec363191672f0df40e0c85569e1c",
                 "reference": "2bf2ccab581bec363191672f0df40e0c85569e1c",
+=======
+            "version": "v5.4.11",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/var-dumper.git",
+                "reference": "b8f306d7b8ef34fb3db3305be97ba8e088fb4861"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/b8f306d7b8ef34fb3db3305be97ba8e088fb4861",
+                "reference": "b8f306d7b8ef34fb3db3305be97ba8e088fb4861",
+>>>>>>> 4a539bf (Patient Login Api added)
                 "shasum": ""
             },
             "require": {
@@ -5217,7 +5373,11 @@
                 "dump"
             ],
             "support": {
+<<<<<<< HEAD
                 "source": "https://github.com/symfony/var-dumper/tree/v5.4.13"
+=======
+                "source": "https://github.com/symfony/var-dumper/tree/v5.4.11"
+>>>>>>> 4a539bf (Patient Login Api added)
             },
             "funding": [
                 {
@@ -5233,7 +5393,11 @@
                     "type": "tidelift"
                 }
             ],
+<<<<<<< HEAD
             "time": "2022-09-06T13:23:31+00:00"
+=======
+            "time": "2022-07-20T13:00:38+00:00"
+>>>>>>> 4a539bf (Patient Login Api added)
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
@@ -5959,6 +6123,7 @@
         },
         {
             "name": "laravel/sail",
+<<<<<<< HEAD
             "version": "v1.16.2",
             "source": {
                 "type": "git",
@@ -5969,6 +6134,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/laravel/sail/zipball/7d1ed5f856ec8b9708712e3fc0708fcabe114659",
                 "reference": "7d1ed5f856ec8b9708712e3fc0708fcabe114659",
+=======
+            "version": "v1.16.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/sail.git",
+                "reference": "73030c18b769f27e6f6aacf7848d024fa9a55560"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/sail/zipball/73030c18b769f27e6f6aacf7848d024fa9a55560",
+                "reference": "73030c18b769f27e6f6aacf7848d024fa9a55560",
+>>>>>>> 4a539bf (Patient Login Api added)
                 "shasum": ""
             },
             "require": {
@@ -6015,7 +6192,11 @@
                 "issues": "https://github.com/laravel/sail/issues",
                 "source": "https://github.com/laravel/sail"
             },
+<<<<<<< HEAD
             "time": "2022-09-28T13:13:22+00:00"
+=======
+            "time": "2022-08-31T16:38:14+00:00"
+>>>>>>> 4a539bf (Patient Login Api added)
         },
         {
             "name": "mockery/mockery",

@@ -103,7 +103,6 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::post('/update/{id}', [PibFormulaController::class, 'update']);
         Route::post('/delete/{id}', [PibFormulaController::class, 'destroy']);
     });
-
     //Patient Create
     Route::prefix('patient')->group(function(){
         Route::get('', [PatientController::class, 'index']);
@@ -120,7 +119,6 @@ Route::middleware(["auth:admin"])->group(function(){
     Route::post('/groups/store',[GroupController::class,'store']);
     Route::post('/groups/update/{id}',[GroupController::class,'update']);
     Route::post('/groups/delete/{id}',[GroupController::class,'destroy']);
-
     //Group Create
     // Route::prefix('groups')->group(function(){
     //     Route::get('', [GroupController::class, 'index']);
@@ -129,7 +127,6 @@ Route::middleware(["auth:admin"])->group(function(){
     //     Route::post('/update/{id}', [GroupController::class, 'update']);
     //     Route::post('/delete/{id}', [GroupController::class, 'destroy']);
     // });
-
     //Therapist Type
     Route::get('/therapist_type', [TherapistTypeController::class, 'index']);
     Route::post('/therapist_type/store', [TherapistTypeController::class, 'store']);
@@ -144,7 +141,6 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::post('/update', [TicketDepartmentController::class, 'update']);
         Route::post('/delete/{id}', [TicketDepartmentController::class, 'destroy']);
     });
-
 
     //Ticket
     Route::prefix('ticket')->group(function(){
@@ -165,7 +161,6 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::post('/update/{id}', [TherapistController::class, 'update']);
         Route::post('/delete/{id}', [TherapistController::class, 'destroy']);
     });
-
     //Therapist Service
     Route::prefix('therapistService')->group(function(){
         Route::get('/', [TherapistServiceController::class, 'index']);
@@ -174,7 +169,6 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::post('/update/{id}', [TherapistServiceController::class, 'update']);
         Route::post('/delete/{id}', [TherapistServiceController::class, 'destroy']);
     });
-
 
     //Therapist Degree
     Route::prefix('therapist_degree')->group(function(){
@@ -251,7 +245,6 @@ Route::middleware(["auth:admin"])->group(function(){
     Route::post('/blood_group/store', [BloodGroupController::class, 'store']);
     Route::post('/blood_group/update/{id}', [BloodGroupController::class, 'update']);
     Route::post('/blood_group/delete/{id}', [BloodGroupController::class, 'destroy']);
-
     //State
     Route::get('/state', [StateController::class, 'index']);
     Route::get('/state/show', [StateController::class, 'show']);

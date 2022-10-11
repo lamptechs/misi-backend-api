@@ -63,12 +63,6 @@ class AdminController extends Controller
         }
     }
     public function logout(Request $request){
-        
-        // Session::flush('access_token');
-        // // $user = $request->user();
-        // // $request->user()->access_token->delete();
-        // $this->apiSuccess("Logout Successfull");
-        // return $this->apiOutput();
         $user = auth('sanctum')->user();
         // 
         foreach ($user->tokens as $token) {
