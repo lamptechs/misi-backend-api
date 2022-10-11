@@ -34,7 +34,7 @@ return new class extends Migration
             $table->string('insurance_number')->nullable();
             $table->string('emergency_contact')->nullable();
             $table->string('age')->nullable();
-            $table->string('bro')->nullable();
+            $table->string('bio')->nullable();
             $table->enum('gender',["Male", "Female", "Other"])->nullable();
             $table->enum("marital_status", ["Single", "Married", "Divorced"])->nullable();
             $table->text("medical_history")->nullable();
