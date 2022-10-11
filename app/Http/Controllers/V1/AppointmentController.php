@@ -64,6 +64,7 @@ class AppointmentController extends Controller
                 return $this->apiOutput("Sorry! You can't book this schedule. please try again.", 400);
             }
             $schedule->status = "booked";
+            $schedule->patient_id = $request->patient_id;
             $schedule->save();
 
             $data = $this->getModel();
@@ -83,6 +84,7 @@ class AppointmentController extends Controller
             $data->remarks      = $request->remarks ?? null;
             $data->status       = $request->status;
             $data->save();
+            
             DB::commit();
             $this->apiSuccess("Appointment Created Successfully");
             $this->data = (new AppointmentResource($data));
