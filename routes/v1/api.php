@@ -196,11 +196,13 @@ Route::middleware(["auth:admin"])->group(function(){
     });
 
     //Appointment
-    Route::get('/appointment', [AppointmentController::class, 'index']);
-    Route::get('/appointment/show', [AppointmentController::class, 'show']);
-    Route::post('/appointment/store', [AppointmentController::class, 'store']);
-    Route::post('/appointment/update/{id}', [AppointmentController::class, 'update']);
-    Route::post('/appointment/delete/{id}', [AppointmentController::class, 'destroy']);
+    Route::prefix('appointment')->group(function(){
+        Route::get('/', [AppointmentController::class, 'index']);
+        Route::get('/show', [AppointmentController::class, 'show']);
+        Route::post('/store', [AppointmentController::class, 'store']);
+        Route::post('/update/{id}', [AppointmentController::class, 'update']);
+        Route::post('/delete/{id}', [AppointmentController::class, 'destroy']);
+    });
 
     //Question
     Route::get('/question', [QuestionController::class, 'index']);

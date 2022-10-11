@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AppointmentResource;
 use App\Models\Appointmnet;
+use App\Models\TherapistSchedule;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -30,7 +31,6 @@ class AppointmentController extends Controller
         try{
             $this->data = AppointmentResource::collection(Appointmnet::all());
             $this->apiSuccess("Appointment Load has been Successfully done");
-            // return $this->apiOutput("Therapist Loaded Successfully",200);
             return $this->apiOutput();
 
         }catch(Exception $e){
@@ -38,15 +38,6 @@ class AppointmentController extends Controller
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -57,34 +48,47 @@ class AppointmentController extends Controller
     public function store(Request $request)
     {
         try{
+            $validator = Validator::make($request->all(), [
+                "therapist_id"  => ["required", "exists:therapists,id"],
+                "patient_id"    => ["required", "exists:users,id"],
+                "therapist_schedule_id" => ["required", "exists:therapist_schedules,id"],
+            ]);
+            if($validator->fails()){
+                return $this->apiOutput($this->getValidationError($validator), 400);
+            }
+
             DB::beginTransaction();
 
-            $data = $this->getModel();
-            $data->created_by = $request->user()->id;
+            $schedule = TherapistSchedule::where("id", $request->therapist_schedule_id)->first();
+            if($schedule->status != "open"){
+                return $this->apiOutput("Sorry! You can't book this schedule. please try again.", 400);
+            }
+            $schedule->status = "booked";
+            $schedule->save();
 
+            $data = $this->getModel();
+            $data->created_by   = $request->user()->id;
             $data->therapist_id = $request->therapist_id;
             $data->patient_id   = $request->patient_id;
             $data->therapist_schedule_id = $request->therapist_schedule_id;
-            $data->number = $request->number;
-            $data->history = $request->history ?? null;
-            //$data->date = Carbon::now();
-            $data->date = $request->date;
-            $data->time = $request->time;
-            //$data->appointment_date = $request->appointment_date;
-            //$data->appointment_time = $request->appointment_time;
-            $data->fee = $request->fee;
-            $data->language = $request->language;
-            $data->type = $request->type;
+            $data->number       = $request->number;
+            $data->history      = $request->history ?? null;
+            $data->date         = $schedule->date;
+            $data->start_time   = $schedule->start_time;
+            $data->end_time     = $schedule->end_time;
+            $data->fee          = $request->fee;
+            $data->language     = $request->language;
+            $data->type         = $request->type;
             $data->therapist_comment = $request->comment ?? null;
-            $data->remarks = $request->remarks ?? null;
-            $data->status = $request->status;
+            $data->remarks      = $request->remarks ?? null;
+            $data->status       = $request->status;
             $data->save();
             DB::commit();
             $this->apiSuccess("Appointment Created Successfully");
             $this->data = (new AppointmentResource($data));
             return $this->apiOutput();
         }catch(Exception $e){
-            return $this->apiOutput($this->getError( $e), 500);
+            return $this->apiOutput($this->getError($e), 500);
             DB::rollBack();
         }
     }
