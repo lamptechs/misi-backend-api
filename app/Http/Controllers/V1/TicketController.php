@@ -122,13 +122,13 @@ class TicketController extends Controller
         try{
         $validator = Validator::make(
             $request->all(),[
-                "id"            => ["required", "exists:tickets,id"],
-                'patient_id'    => ['required'],
+               // "id"            => ["required", "exists:tickets,id"],
+                //'patient_id'    => ['required'],
                 //'therapist_id'  => ['required'],
-                "ticket_department_id" => ['required'],
-                "language"      => ['required', "string"],
+                //"ticket_department_id" => ['required'],
+                //"language"      => ['required', "string"],
                 //"strike"        => ['required', "string"],
-                "status"        => ['required']
+                //"status"        => ['required']
     
             ]);
             
