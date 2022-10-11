@@ -169,7 +169,6 @@ class PibFormulaController extends Controller
     //     }
 
     // }
-
             /**
      * Display the specified resource.
      *
@@ -190,7 +189,6 @@ class PibFormulaController extends Controller
             return $this->apiOutput($this->getError($e), 500);
         }
     }
-
         /**
      * Update the specified resource in storage.
      *
@@ -251,7 +249,6 @@ class PibFormulaController extends Controller
             return $this->apiOutput($this->getError( $e), 500);
         }
     }
-
             /**
      * Remove the specified resource from storage.
      *

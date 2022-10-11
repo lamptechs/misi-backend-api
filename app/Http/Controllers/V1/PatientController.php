@@ -14,6 +14,7 @@ use Exception;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Session;
 
 class PatientController extends Controller
 {
@@ -41,6 +42,7 @@ class PatientController extends Controller
      * Login
      */
     public function login(Request $request){
+        $patient=User::all();
         try{
             $validator = Validator::make($request->all(), [
                 "email"     => ["required", "email", "exists:users,email"],
@@ -57,8 +59,14 @@ class PatientController extends Controller
                 return $this->apiOutput("Sorry! your account is temporaly blocked", 401);
             }
             // Issueing Access Token
+             //$this->access_token = $admin->createToken($request->ip() ?? "admin_access_token")->plainTextToken;
+           
+            // $this->access_token = $patient->createToken($request->ip() ?? "patient_access_token")->plainTextToken;
+            // Session::put('access_token',$this->access_token);
             $this->access_token = $patient->createToken($request->ip() ?? "patient_access_token")->plainTextToken;
+            Session::put('access_token',$this->access_token);
             $this->apiSuccess("Login Successfully");
+            $this->data = (new UserResource($patient));
             return $this->apiOutput();
 
         }catch(Exception $e){
