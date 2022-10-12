@@ -55,9 +55,9 @@ class PatientController extends Controller
             if( !Hash::check($request->password, $patient->password) ){
                 return $this->apiOutput("Sorry! Password Dosen't Match", 401);
             }
-            if( !$patient->status ){
-                return $this->apiOutput("Sorry! your account is temporaly blocked", 401);
-            }
+            // if( !$patient->status ){
+            //     return $this->apiOutput("Sorry! your account is temporaly blocked", 401);
+            // }
             // Issueing Access Token
              //$this->access_token = $admin->createToken($request->ip() ?? "admin_access_token")->plainTextToken;
            
