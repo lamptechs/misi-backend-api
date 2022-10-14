@@ -112,12 +112,10 @@ class TherapistController extends Controller
         }
 
         try{
-
             DB::beginTransaction();
-            
+
             $data = $this->getModel();
             $data->created_by = $request->user()->id;
-
             $data->first_name = $request->first_name;                  
             $data->last_name = $request->last_name;         
             $data->email = $request->email;
@@ -145,11 +143,6 @@ class TherapistController extends Controller
             $this->apiSuccess("Therapist Info Added Successfully");
             $this->data = (new TherapistResource($data));
             return $this->apiOutput();        
-            try{
-                // event(new Registered($data));
-            }catch(Exception $e){
-                //
-            }
         }
         catch(Exception $e){
             DB::rollBack();
@@ -261,12 +254,6 @@ class TherapistController extends Controller
             // $this->updateFileInfo($request, $data);        
             DB::commit();
             
-            //try{
-                // event(new Registered($data));
-            //}catch(Exception $e){
-                //
-            //}
-            
             $this->apiSuccess("Therapist Info Updated Successfully");
             $this->data = (new TherapistResource($data));
             return $this->apiOutput(); 
@@ -303,6 +290,20 @@ class TherapistController extends Controller
             $data->delete();
             $this->apiSuccess();
             return $this->apiOutput("Therapist Deleted Successfully", 200);
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }
+    }
+
+    /**
+     * Therapist Profile
+     */
+    public function getProfile(Request $request){
+        try{
+            $therapist = $request->user();
+            $this->data["therapist"] = (new TherapistResource($therapist))->hide(["created_by", "updated_by"]);
+            $this->apiSuccess();
+            return $this->apiOutput("Therapist Profile loaded Successfully", 200);
         }catch(Exception $e){
             return $this->apiOutput($this->getError( $e), 500);
         }
