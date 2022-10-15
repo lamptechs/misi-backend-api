@@ -172,6 +172,7 @@ class TicketController extends Controller
            }
             $ticket = Ticket::find($request->id);
             $ticket->date = now();
+
             //$ticket->updated_by = $request->user()->id ?? null;
             $ticket->updated_by = $request->updated_by;
             $ticket->assign_to_user = $request->assign_to_user;
@@ -180,6 +181,29 @@ class TicketController extends Controller
             // $ticket->updated_at = Carbon::Now();
             $ticket->save();
             $this->apiSuccess("Assigned Ticket Info Updated successfully");
+            $this->data = (new TicketResource($ticket));
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }
+    }
+
+
+    public function assignedticketstatus(Request $request)
+    {
+        try{
+        $validator = Validator::make(
+            $request->all(),[
+                "id"            => ["required", "exists:tickets,id"]
+            ]);
+            
+           if ($validator->fails()) {    
+                $this->apiOutput($this->getValidationError($validator), 200);
+           }
+            $ticket = Ticket::find($request->id);
+            $ticket->ticket_status ="Cancelled";
+            $ticket->save();
+            $this->apiSuccess("Assigned Ticket Cancelled successfully");
             $this->data = (new TicketResource($ticket));
             return $this->apiOutput();
         }catch(Exception $e){
