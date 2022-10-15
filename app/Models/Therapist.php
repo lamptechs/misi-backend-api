@@ -9,10 +9,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class Therapist extends Model
+class Therapist extends Authenticatable
 {
     //use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
-    use HasFactory;
+    use HasFactory,HasApiTokens;
 
     public function createdBy(){
         return $this->belongsTo(Admin::class, "created_by")->withTrashed();
