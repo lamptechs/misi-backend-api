@@ -18,7 +18,6 @@ use App\Http\Controllers\V1\TicketDepartmentController;
 use App\Http\Controllers\V1\TicketController;
 use App\Http\Controllers\V1\DegreeController;
 use App\Http\Controllers\V1\QuestionController;
-use App\Http\Controllers\V1\QuestionScaleController;
 use App\Http\Controllers\V1\GroupController;
 use App\Http\Controllers\V1\Therapist\TherapistScheduleController;
 use App\Http\Controllers\V1\PibFormulaController;
@@ -282,13 +281,9 @@ Route::post('therapist/logout', [TherapistController::class, "logout"]);
  */
 Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
     
-    Route::get('/', [TherapistController::class, 'index']);
-    Route::get('/show', [TherapistController::class, 'show']);
-    Route::post('/store', [TherapistController::class, 'store']);
-    Route::post('/update/{id}', [TherapistController::class, 'update']);
-    Route::post('/delete/{id}', [TherapistController::class, 'destroy']);
+    Route::get('/profile', [TherapistController::class, 'getProfile']);
+    Route::post('profile/update', [TherapistController::class, 'updateProfile']);
    
-
     /**
      * Therapist Tickets
      */
@@ -344,7 +339,7 @@ Route::middleware(["auth:patient"])->prefix("patient")->group(function(){
     
     
     // Appointment
-    Route::prefix('ticket')->group(function(){
+    Route::prefix('appointment')->group(function(){
         Route::get('/', [AppointmentController::class, 'index']);
         Route::get('/show', [AppointmentController::class, 'show']);
         Route::post('/store', [AppointmentController::class, 'store']);
