@@ -195,6 +195,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::get('/show', [AppointmentController::class, 'show']);
         Route::post('/store', [AppointmentController::class, 'store']);
         Route::post('/update/{id}', [AppointmentController::class, 'update']);
+        Route::post('/appointmentticketstatus', [AppointmentController::class, 'assignedappointmentticketstatus']);
         Route::post('/delete/{id}', [AppointmentController::class, 'destroy']);
     });
 
