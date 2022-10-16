@@ -145,10 +145,10 @@ class PatientController extends Controller
                 $data->first_name = $request->first_name;                  
                 $data->last_name = $request->last_name;
                 
-                //$file_path = $this->uploadImage($request, 'file', $this->patient_uploads,720);
+                //$file_path = $this->uploadFile($request, 'file', $this->patient_uploads,720);
                 
                 if($request->hasFile('image')){
-                    $data->image_url = $this->uploadImage($request, 'image', $this->patient_uploads, null,null,$data->image_url);
+                    $data->image_url = $this->uploadFile($request, 'image', $this->patient_uploads, null,null,$data->image_url);
                 }
                 
                 //$data->image =  $request-> image;
@@ -176,7 +176,7 @@ class PatientController extends Controller
                 $data->remarks = $request->remarks ?? '';
                 $data->password = bcrypt($request->password);
                 if($request->hasFile('picture')){
-                    $data->image_url = $this->uploadImage($request, 'picture', $this->patient_uploads, null,null,$data->image_url);
+                    $data->image_url = $this->uploadFile($request, 'picture', $this->patient_uploads, null,null,$data->image_url);
                 }
 
                 $data->save();
@@ -212,7 +212,7 @@ class PatientController extends Controller
      */
     public function saveFileInfo($request, $patient){
 
-        $file_path = $this->uploadImage($request, 'file', $this->patient_uploads,720);
+        $file_path = $this->uploadFile($request, 'file', $this->patient_uploads,720);
       
           
         if( !is_array($file_path) ){
@@ -241,7 +241,7 @@ class PatientController extends Controller
             $data->updated_by   = $request->user()->id ?? null;
             $data->patient_id   = $patient->id;
             $data->file_name    = $request->file_name ?? "Patient Upload updated";
-            $data->file_url     = $this->uploadImage($request, 'file', $this->patient_uploads,null,null,$data->file_url);
+            $data->file_url     = $this->uploadFile($request, 'file', $this->patient_uploads,null,null,$data->file_url);
             $data->file_type    = $request->file_type;
             $data->status       = $request->status;
             $data->remarks      = $request->remarks ?? '';
@@ -335,7 +335,7 @@ class PatientController extends Controller
             $data->remarks = $request->remarks ?? '';
             $data->password = bcrypt($request->password);
             if($request->hasFile('picture')){
-                $data->image_url = $this->uploadImage($request, 'picture', $this->patient_uploads, null,null,$data->image_url);
+                $data->image_url = $this->uploadFile($request, 'picture', $this->patient_uploads, null,null,$data->image_url);
             }
             //$this->updateFileInfo($request, $data);
 

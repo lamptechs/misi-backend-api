@@ -154,7 +154,7 @@ class TherapistController extends Controller
 
     // Save File Info
     public function saveFileInfo($request, $therapist){
-        $file_path = $this->uploadImage($request, 'file', $this->therapist_uploads, 720);
+        $file_path = $this->uploadFile($request, 'file', $this->therapist_uploads, 720);
   
         if( !is_array($file_path) ){
             $file_path = (array) $file_path;
@@ -199,24 +199,21 @@ class TherapistController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,$id)
+    public function update(Request $request)
     {
-        //return 10;
-        // $temp=Therapist::all();
-        // return $temp;
-
-        // $temp=Therapist::find($id);
-        // return $temp;
         try{
         $validator = Validator::make($request->all(),[
-            //"id"        => ['required', "exists:therapists,id"],
-            // 'first_name' =>['required'],
-            // 'last_name' => ['required'],
-            // "email"     => ["required", "email", "unique:therapists"],
-            // "phone"     => ["required", "numeric", "unique:therapists"]
-            //"email"     => ["required", "email", /*"unique:therapists"*/Rule::unique('therapists', 'email')->ignore($request->id)],
-            //"phone"     => ["required", "numeric",/* "unique:therapists"*/ Rule::unique('therapists', 'phone')->ignore($request->id)]
-
+            "id"        => ['required', "exists:therapists,id"],
+            'first_name' =>['required', "string", "min:2"],
+            'last_name' => ['nullable', "string", "min:2"],
+            "email"     => ["required", "email", Rule::unique('therapists', 'email')->ignore($request->id)],
+            "phone"     => ["required", "numeric", Rule::unique('therapists', 'phone')->ignore($request->id)],
+            "address"   => ["nullable", "string"],
+            "language"   => ["nullable", "string"],
+            "bsn_number" => ["nullable", "string"],
+            "dob_number" => ["nullable", "string"],
+            "gender"     => ["required", "string"],
+            "profile_pic"=> ["nullable", "file"],
         ]);
         
         if ($validator->fails()) {
@@ -225,8 +222,6 @@ class TherapistController extends Controller
             DB::beginTransaction();
             //$data = $this->getModel()->find($request->id);
             $data = Therapist::find($request->id);
-            
-            
             $data->updated_by = $request->user()->id ?? null;
             
             $data->first_name = $request->first_name;                  
@@ -240,7 +235,6 @@ class TherapistController extends Controller
             $data->insurance_number = $request->insurance_number;
             $data->emergency_contact = $request->emergency_contact ?? 0;
             $data->gender = $request->gender;
-            //$data->date_of_birth = /*$request->date_of_birth*/ Carbon::now();
             $data->date_of_birth = $request->date_of_birth;
             $data->status = $request->status;
             $data->therapist_type_id = $request->therapist_type_id;
@@ -248,16 +242,13 @@ class TherapistController extends Controller
             $data->state_id = $request->state_id;
             $data->country_id = $request->country_id;
             //$data->password = bcrypt($request->password);
-            
-            if($request->hasFile('picture')){
-                $data->image_url = $this->uploadImage($request, 'picture', $this->patient_uploads, null,null,$data->image_url);
-            }
+            $data->profile_pic =  $this->uploadFile($request, "profile_pic", $this->therapist_uploads, "150", null, $data->profile_pic);
             $data->save();
-            // $this->updateFileInfo($request, $data);        
-            DB::commit();
-            
+            $this->updateFileInfo($request, $data->id);
+
+            DB::commit();            
             $this->apiSuccess("Therapist Info Updated Successfully");
-            $this->data = (new TherapistResource($data));
+            $this->data = (new TherapistResource($data))->hide(["updated_by", "created_by"]);
             return $this->apiOutput(); 
         }
         catch(Exception $e){
@@ -268,14 +259,16 @@ class TherapistController extends Controller
 
      //Update File Info
     public function updateFileInfo($request, $id){
-        //return 10;
-        $data = TherapistUpload::find($request->id);
-        $data->updated_by   = $request->user()->id  ?? null;
-       // $data->updated_by   = $request->user()->id;
-        $data->therapist_id = $request->id;
-        $data->file_name    = $request->file_name ?? "Therapist Upload Updated";
-        $data->file_url     = $this->uploadImage($request, 'file', $this->therapist_uploads,null,null,$data->file_url);
-        $data->save();    
+        $upload_files = $this->uploadFile($request, 'file', $this->therapist_uploads);
+        if( is_array($upload_files) ){
+            foreach($upload_files as $file){
+                $upload = new TherapistUpload();
+                $upload->therapist_id = $id;
+                $upload->file_name    = $request->file_name ?? "Therapist Upload Updated";
+                $upload->file_url     = $file;
+                $upload->save();    
+            }
+        }
     }
 
     /**

@@ -90,7 +90,7 @@ class PibScaleController extends Controller
 
     // Save File Info
     // public function saveFileInfo($request, $data){
-    //     $file_path = $this->uploadImage($request, 'file', $this->therapist_uploads, 720);
+    //     $file_path = $this->uploadFile($request, 'file', $this->therapist_uploads, 720);
 
     //     if( !is_array($file_path) ){
     //         $file_path = (array) $file_path;
