@@ -92,7 +92,7 @@ class TherapistScheduleController extends Controller
             'end_date'      => ['required', 'date', 'after_or_equal:start_date'],
             "holiday"       => ["required", "array", Rule::in($days)]
         ],[
-            "holiday.in"    => "Day Name in not Match. use small letter in days name",   
+            "holiday.in"    => "Day Name is not Match. use small letter in days name",   
         ]);
             
         if ($validator->fails()) {

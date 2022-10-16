@@ -184,6 +184,30 @@ class AppointmentController extends Controller
 
     }
 
+    public function assignedappointmentticketstatus(Request $request)
+    {
+    
+        try{
+        $validator = Validator::make(
+            $request->all(),[
+                "id"            => ["required", "exists:appointmnets,id"]
+            ]);
+            
+           if ($validator->fails()) {    
+                $this->apiOutput($this->getValidationError($validator), 200);
+           }
+            $ticket = Appointmnet::find($request->id);
+            $ticket->appointment_ticket_status ="Cancelled";
+            $ticket->save();
+            $this->apiSuccess("Assigned Ticket Cancelled successfully");
+            $this->data = (new AppointmentResource($ticket));
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }
+    }
+
+
     /**
      * Remove the specified resource from storage.
      *

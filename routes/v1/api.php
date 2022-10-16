@@ -148,6 +148,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::post('/store', [TicketController::class, 'store']);
         Route::post('/update', [TicketController::class, 'update']);
         Route::post('/assignedupdate', [TicketController::class, 'assignedupdate']);
+        Route::post('/ticketstatus', [TicketController::class, 'assignedticketstatus']);
         Route::post('/delete/{id}', [TicketController::class, 'destroy']);
     });
 
@@ -194,6 +195,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::get('/show', [AppointmentController::class, 'show']);
         Route::post('/store', [AppointmentController::class, 'store']);
         Route::post('/update/{id}', [AppointmentController::class, 'update']);
+        Route::post('/appointmentticketstatus', [AppointmentController::class, 'assignedappointmentticketstatus']);
         Route::post('/delete/{id}', [AppointmentController::class, 'destroy']);
     });
 
