@@ -158,7 +158,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::get('/', [TherapistController::class, 'index']);
         Route::get('/show', [TherapistController::class, 'show']);
         Route::post('/store', [TherapistController::class, 'store']);
-        Route::post('/update/{id}', [TherapistController::class, 'update']);
+        Route::post('/update', [TherapistController::class, 'update']);
         Route::post('/delete/{id}', [TherapistController::class, 'destroy']);
     });
     //Therapist Service

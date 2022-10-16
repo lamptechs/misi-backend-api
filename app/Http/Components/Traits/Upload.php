@@ -62,7 +62,7 @@ trait Upload{
      * the Image Orginal Ratio.
      * ---------------------------------------------
      */
-    protected function uploadImage($request, $fileName, $dir, $width = null, $height =  null, $oldFile = ""){
+    protected function uploadFile($request, $fileName, $dir, $width = null, $height =  null, $oldFile = ""){
         if(!$request->hasFile($fileName)){
             return $oldFile;
         }
@@ -74,25 +74,30 @@ trait Upload{
 
         if(is_array($request->$fileName) ){
             foreach($request->$fileName as $key => $file){
-                $image = $request->file($fileName)[$key];
-                $filename = $fileName.'_'.time().$key.'.'.$image->getClientOriginalExtension();
+                $file = $request->file($fileName)[$key];
+                $filename = $fileName.'_'.time().$key.'.'.$file->getClientOriginalExtension();
                 $path = $dir.$filename;
 
-                if( empty($height) && empty($width)){
-                    Image::make($image)->save($path);
-                }
-                elseif( empty($height) && !empty($width) ){
-                    Image::make($image)->resize($width,null,function($constant){
-                        $constant->aspectRatio();
-                    })->save($path);
-                }        
-                elseif( !empty($height) && empty($width) ){
-                    Image::make($image)->resize(null,$height,function($constant){
-                        $constant->aspectRatio();
-                    })->save($path);
-                }
-                else{
-                    Image::make($image)->resize($width,$height)->save($path);
+                if( $this->isImage($path) ){
+                    if( empty($height) && empty($width)){
+                        Image::make($file)->save($path);
+                    }
+                    elseif( empty($height) && !empty($width) ){
+                        Image::make($file)->resize($width,null,function($constant){
+                            $constant->aspectRatio();
+                        })->save($path);
+                    }        
+                    elseif( !empty($height) && empty($width) ){
+                        Image::make($file)->resize(null,$height,function($constant){
+                            $constant->aspectRatio();
+                        })->save($path);
+                    }
+                    else{
+                        Image::make($file)->resize($width,$height)->save($path);
+                    }
+                }else{
+                    $_dir = trim(str_replace("storage/", "", $dir), "/");
+                    $path = "storage/".Storage::disk("public")->putFile($_dir, $file);
                 }
                 $path_arr[] = $path;
             }
@@ -123,7 +128,7 @@ trait Upload{
     }
 
     //upload image nid
-    protected function uploadImageNid($request, $fileName, $dir, $width = null, $height =  null, $oldFile = ""){
+    protected function uploadFileNid($request, $fileName, $dir, $width = null, $height =  null, $oldFile = ""){
         if(!$request->hasFile($fileName)){
             return $oldFile;
         }
@@ -183,19 +188,25 @@ trait Upload{
         return $path_arr;
     }
 
-
-    // Upload Image
-    // protected function addImage($file){
-    //     return Storage::disk("public")->putFile("upload", $file);
-    // }
-
+    /**
+     * Check Image or not
+     * @return boolean
+     */
+    function isImage($file_path){
+        $extension = pathinfo($file_path, PATHINFO_EXTENSION);
+        $imgExtArr = ['jpg', 'jpeg', 'png'];
+        if(in_array($extension, $imgExtArr)){
+            return true;
+        }
+        return false;
+    }
     
     /*
      * ---------------------------------------------
      * Upload any Kind of file
      * ---------------------------------------------
      */
-    protected function UploadAnyFile($request,$fileName,$dir,$oldFile){
+    protected function UploadAnyFile($request, $fileName, $dir, $oldFile){
         if(!$request->hasFile($fileName)){
             return $oldFile;
         }
@@ -203,32 +214,11 @@ trait Upload{
         $this->CheckDir($dir);
         $this->RemoveFile($oldFile); 
         $file = $request->file($fileName);  
-        $Newfilename = 'video_'.time().'.mp4';
-        $file->move($dir,$Newfilename); 
-        return $dir.$Newfilename;
+        $new_file_name = 'file_'.time().'.'.$file->getClientOriginalExtension();
+        $file->move($dir,$new_file_name); 
+        return $dir.$new_file_name;
     }
     
-    /**
-     * ------------------------------------------------------------
-     * Upload Multiple Image
-     * ------------------------------------------------------------
-     */
-    protected function UploadMultipleImage($request,$fileName,$dir,$width,$height) {
-        if($request->hasfile($fileName))
-        {
-            $this->CheckDir($dir);
-            ini_set('memory_limit', '1024M');
-            $count = 0;
-            $allImage= [];
-            foreach($request->file($fileName) as $image)
-            {
-                $filename = $fileName.$count.time().'.'.$image->getClientOriginalExtension();
-                $path = $dir.$filename;
-                Image::make($image)->resize($width,$height)->save($path);
-                $allImage[$count] = $path;
-                $count++;
-            }
-            return $allImage;
-        }
-    }
+    
+    
 }
