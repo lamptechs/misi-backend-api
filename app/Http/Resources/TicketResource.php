@@ -53,6 +53,7 @@ class TicketResource extends JsonResource
             "comment"               =>$this->comment,
             "assign_to_user"        => $this->assign_to_user,
             "assign_to_user_status" => $this->assign_to_user_status,
+            "ticket_status" => $this->ticket_status,
             "created_by"            => (new AdminResource($this->createdBy))->hide(["groupid","department", "created_by","updated_by"]),
             "updated_by"            => (new AdminResource($this->updatedBy))->hide(["groupid","department", "created_by","updated_by"]),
             "therapist_info"        => (new TherapistResource($this->therapist))->hide(["created_by", "updated_by"]),
