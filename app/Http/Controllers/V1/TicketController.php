@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\V1;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Ticket;
-Use Carbon\Carbon;
-use Illuminate\Support\Facades\Validator;
 use Exception;
-use App\Http\Resources\TicketResource;
+use App\Models\Ticket;
 use Illuminate\Support\Str;
+Use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Models\TicketHistoryActivity;
+use App\Http\Resources\TicketResource;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\TicketHistoryActivityResource;
 
 class TicketController extends Controller
 {
@@ -39,26 +42,26 @@ class TicketController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         try{
            $validator = Validator::make( $request->all(),[
                 'patient_id' => 'required',
-                'therapist_id' => 'required'    
+                'therapist_id' => 'required'
             ]);
-            
+
             if ($validator->fails()) {
-    
+
                 $this->apiOutput($this->getValidationError($validator), 200);
             }
-   
+
             $ticket = new Ticket();
             //$ticket = Str::of(patient_id)->padRight(5);
             //Str::substr($testString, 6);
-            //$ticket->patient_id = $request->Str::substr(patient_id,5); 
+            //$ticket->patient_id = $request->Str::substr(patient_id,5);
             //$ticket->patient_id = Str::of($request->patient_id)->limit(5);
             //print_r(explode('-',$str,0));
-           
-            
+
+
             //$ticket->patient_id = $request->patient_id;
             //$patientidno = $ticket->patient_id;
             //$patientidsub = explode('-',$patientidno,0);
@@ -81,6 +84,22 @@ class TicketController extends Controller
             $ticket->created_by = $request->user()->id ?? null;
             // $ticket->created_at = Carbon::Now();
             $ticket->save();
+
+            $data= new Ticket();
+
+           // $ticket_id=$data->ticket_id;
+            $patient_id=$data->patient_id;
+            $user_id=$data->$data->user()->id ?? null;
+            $activity_message="new ticket test";
+
+            //$data = $this->getModel();
+            $data->ticket_id  = $request->ticket_id->orderBy("id", "DSC")->get() ;
+
+            $lastTicketID = $data->ticket_id;
+
+            $this->saveTicketHistory($lastTicketID, $patient_id,$user_id,$activity_message);
+
+
             $this->apiSuccess();
             $this->data = (new TicketResource($ticket));
             return $this->apiOutput();
@@ -97,8 +116,8 @@ class TicketController extends Controller
      */
     public function show(Request $request)
     {
-        try{    
-            $ticket = Ticket::find($request->id);   
+        try{
+            $ticket = Ticket::find($request->id);
             if( empty($ticket) ){
                 return $this->apiOutput("Ticket Data Not Found", 400);
             }
@@ -129,17 +148,26 @@ class TicketController extends Controller
                 //"language"      => ['required', "string"],
                 //"strike"        => ['required', "string"],
                 //"status"        => ['required']
-    
+
             ]);
-            
-           if ($validator->fails()) {    
+
+           if ($validator->fails()) {
                 $this->apiOutput($this->getValidationError($validator), 200);
            }
-   
+
             $ticket = Ticket::find($request->id);
+
+            $ticket_id=$ticket->ticket_id;
+            $patient_id = $ticket->patient_id;
+            $user_id = $ticket->user()->id ?? null;;
+            //$activity_message = $ticket->activity_message;
+
+
             $ticket->patient_id = $request->patient_id;
             $ticket->therapist_id = $request->therapist_id ?? null;
+
             $ticket->ticket_department_id = $request->ticket_department_id;
+
             $ticket->location = $request->location ?? null;
             $ticket->language = $request->language ?? null;
             $ticket->date = now();
@@ -151,6 +179,20 @@ class TicketController extends Controller
             $ticket->updated_by = $request->user()->id ?? null;
             // $ticket->updated_at = Carbon::Now();
             $ticket->save();
+
+            if($ticket->location!=$request->location)
+            {
+                $activity_message= " Ticket Location " . $request->location. " has updated";
+                $this->saveTicketHistory($ticket_id,$patient_id,$user_id,$activity_message);
+            }
+
+
+            if($activity_message != $ticket->activity_message)
+            {
+                $msg= " First Name Update";
+                $this->saveActivity($request , $msg);
+            }
+
             $this->apiSuccess("Ticket Info Updated successfully");
             $this->data = (new TicketResource($ticket));
             return $this->apiOutput();
@@ -166,8 +208,8 @@ class TicketController extends Controller
             $request->all(),[
                 "id"            => ["required", "exists:tickets,id"]
             ]);
-            
-           if ($validator->fails()) {    
+
+           if ($validator->fails()) {
                 $this->apiOutput($this->getValidationError($validator), 200);
            }
             $ticket = Ticket::find($request->id);
@@ -222,5 +264,39 @@ class TicketController extends Controller
         Ticket::destroy($id);
         $this->apiSuccess();
         return $this->apiOutput("Ticket Deleted Successfully", 200);
+    }
+
+
+    public function saveTicketHistory($ticket_id,$patient_id,$user_id,$activity_message){
+
+
+            try{
+
+                DB::beginTransaction();
+
+                $data =new TicketHistoryActivity();
+                $data->ticket_id  = $ticket_id ;
+                $data->patient_id  = $patient_id;
+                $data->user_id = $user_id;
+                $data->date_time  = $activity_message;
+                $data->save();
+
+                // $this->saveFileInfo($request, $data);
+
+                DB::commit();
+                $this->apiSuccess("Ticket History Activity Info Added Successfully");
+                $this->data = (new TicketHistoryActivityResource($data));
+                return $this->apiOutput();
+                try{
+                    // event(new Registered($data));
+                }catch(Exception $e){
+                    //
+                }
+            }
+            catch(Exception $e){
+                DB::rollBack();
+                return $this->apiOutput($this->getError( $e), 500);
+            }
+
     }
 }
