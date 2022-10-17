@@ -103,7 +103,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::post('/delete/{id}', [PibFormulaController::class, 'destroy']);
     });
     //Patient Create
-    Route::prefix('patient')->group(function(){
+    Route::prefix('patientinfo')->group(function(){
         Route::get('', [PatientController::class, 'index']);
         Route::get('/show', [PatientController::class, 'show']);
         Route::post('/store', [PatientController::class, 'store']);
@@ -154,7 +154,7 @@ Route::middleware(["auth:admin"])->group(function(){
 
 
     //Therapist Section
-    Route::prefix('therapist')->group(function(){
+    Route::prefix('therapistinfo')->group(function(){
         Route::get('/', [TherapistController::class, 'index']);
         Route::get('/show', [TherapistController::class, 'show']);
         Route::post('/store', [TherapistController::class, 'store']);
@@ -282,7 +282,7 @@ Route::post('therapist/logout', [TherapistController::class, "logout"]);
  * Therapist Authentication
  */
 Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
-    
+    Route::get('', [TherapistController::class, 'index']);
     Route::get('/profile', [TherapistController::class, 'getProfile']);
     Route::post('profile/update', [TherapistController::class, 'updateProfile']);
    
