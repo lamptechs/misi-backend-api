@@ -2,8 +2,10 @@
 
 namespace App\Http\Components\Traits;
 
-use App\ActivityLog as AppActivityLog;
 use Exception;
+use App\ActivityLog as AppActivityLog;
+use App\Models\AppActivityLog as Enter;
+use App\Models\AppActivityLog as ModelsAppActivityLog;
 
 trait ActivityLog{
     /**
@@ -13,7 +15,7 @@ trait ActivityLog{
         try{
             $admin = $request->user("admin");
             $advisor = $request->user();
-            $activity_log = new AppActivityLog();
+            $activity_log = new ModelsAppActivityLog();
             $name = "";
             if(isset($advisor) && $advisor->getTable() == "advisors"){
                 $name = $advisor->first_name;
