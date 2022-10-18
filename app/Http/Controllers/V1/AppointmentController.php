@@ -130,8 +130,8 @@ class AppointmentController extends Controller
         // $temp= Appointmnet::all();
         // return $temp;
 
-        $temp= Appointmnet::find($id);
-        return $temp;
+        // $temp= Appointmnet::find($id);
+        // return $temp;
         // return 10;
 
         try{
