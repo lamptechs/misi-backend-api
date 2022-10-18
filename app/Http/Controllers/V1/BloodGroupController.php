@@ -19,6 +19,7 @@ class BloodGroupController extends Controller
      */
     public function index()
     {
+        
         try{
             $this->data = BloodGroupResource::collection(BloodGroup::all());
             $this->apiSuccess("Blood Group Loaded Successfully");
@@ -68,9 +69,20 @@ class BloodGroupController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
+        return 10;
+        try{
+            $bloodgroup = BloodGroup::find($request->id);
+            if( empty($bloodgroup) ){
+                return $this->apiOutput("Appointment Data Not Found", 400);
+            }
+            $this->data = (new BloodGroupResource ($bloodgroup));
+            $this->apiSuccess("BloodGroup Detail Show Successfully");
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
+        }
     }
 
 

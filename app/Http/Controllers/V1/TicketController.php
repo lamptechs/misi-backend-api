@@ -85,19 +85,19 @@ class TicketController extends Controller
             // $ticket->created_at = Carbon::Now();
             $ticket->save();
 
-            $data= new Ticket();
+        //     $data= new Ticket();
 
-           // $ticket_id=$data->ticket_id;
-            $patient_id=$data->patient_id;
-            $user_id=$data->$data->user()->id ?? null;
-            $activity_message="new ticket test";
+        //    // $ticket_id=$data->ticket_id;
+        //     $patient_id=$data->patient_id;
+        //     $user_id=$data->$data->user()->id ?? null;
+        //     $activity_message="new ticket test";
 
-            //$data = $this->getModel();
-            $data->ticket_id  = $request->ticket_id->orderBy("id", "DSC")->get() ;
+        //     //$data = $this->getModel();
+        //     $data->ticket_id  = $request->ticket_id->orderBy("id", "DSC")->get() ;
 
-            $lastTicketID = $data->ticket_id;
+        //     $lastTicketID = $data->ticket_id;
 
-            $this->saveTicketHistory($lastTicketID, $patient_id,$user_id,$activity_message);
+        //     $this->saveTicketHistory($lastTicketID, $patient_id,$user_id,$activity_message);
 
 
             $this->apiSuccess();
@@ -267,36 +267,36 @@ class TicketController extends Controller
     }
 
 
-    public function saveTicketHistory($ticket_id,$patient_id,$user_id,$activity_message){
+    // public function saveTicketHistory($ticket_id,$patient_id,$user_id,$activity_message){
 
 
-            try{
+    //         try{
 
-                DB::beginTransaction();
+    //             DB::beginTransaction();
 
-                $data =new TicketHistoryActivity();
-                $data->ticket_id  = $ticket_id ;
-                $data->patient_id  = $patient_id;
-                $data->user_id = $user_id;
-                $data->date_time  = $activity_message;
-                $data->save();
+    //             $data =new TicketHistoryActivity();
+    //             $data->ticket_id  = $ticket_id ;
+    //             $data->patient_id  = $patient_id;
+    //             $data->user_id = $user_id;
+    //             $data->date_time  = $activity_message;
+    //             $data->save();
 
-                // $this->saveFileInfo($request, $data);
+    //             // $this->saveFileInfo($request, $data);
 
-                DB::commit();
-                $this->apiSuccess("Ticket History Activity Info Added Successfully");
-                $this->data = (new TicketHistoryActivityResource($data));
-                return $this->apiOutput();
-                try{
-                    // event(new Registered($data));
-                }catch(Exception $e){
-                    //
-                }
-            }
-            catch(Exception $e){
-                DB::rollBack();
-                return $this->apiOutput($this->getError( $e), 500);
-            }
+    //             DB::commit();
+    //             $this->apiSuccess("Ticket History Activity Info Added Successfully");
+    //             $this->data = (new TicketHistoryActivityResource($data));
+    //             return $this->apiOutput();
+    //             try{
+    //                 // event(new Registered($data));
+    //             }catch(Exception $e){
+    //                 //
+    //             }
+    //         }
+    //         catch(Exception $e){
+    //             DB::rollBack();
+    //             return $this->apiOutput($this->getError( $e), 500);
+    //         }
 
-    }
+    // }
 }
