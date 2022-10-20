@@ -59,6 +59,8 @@ class TherapistResource extends JsonResource
             "blood_group"       => (new BloodGroupResource($this->blood))->hide(["created_by", "updated_by"]),
             "country"           => (new CountryResource($this->country))->hide(["created_by", "updated_by"]),
             "state"             => (new StateResource($this->state))->hide(["created_by", "updated_by"]),
+            "image"             => $this->image,
+            "image_url"         => asset($this->image_url),
             "upload_files"      => TherapistUploadResource::collection($this->fileInfo),
             // "file_details"          => (new TherapistUploadResource($this->fileInfo))->hide(["created_by", "updated_by"]),
             "created_by"        => (new AdminResource($this->createdBy))->hide(["groupid","department", "created_by","updated_by"]),
