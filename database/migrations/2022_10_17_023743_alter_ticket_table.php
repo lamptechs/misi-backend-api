@@ -13,6 +13,7 @@ class AlterTicketTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists("tickets");
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
             $table->foreignId("patient_id")->nullable()->references("id")->on("users");
@@ -40,6 +41,6 @@ class AlterTicketTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists("tickets");
     }
 }
