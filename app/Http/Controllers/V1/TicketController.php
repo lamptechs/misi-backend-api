@@ -139,66 +139,49 @@ class TicketController extends Controller
     public function update(Request $request)
     {
         try{
-        $validator = Validator::make(
-            $request->all(),[
-               // "id"            => ["required", "exists:tickets,id"],
-                //'patient_id'    => ['required'],
-                //'therapist_id'  => ['required'],
-                //"ticket_department_id" => ['required'],
-                //"language"      => ['required', "string"],
-                //"strike"        => ['required', "string"],
-                //"status"        => ['required']
-
-            ]);
-
-           if ($validator->fails()) {
-                $this->apiOutput($this->getValidationError($validator), 200);
-           }
-
-            $ticket = Ticket::find($request->id);
-
-            $ticket_id=$ticket->ticket_id;
-            $patient_id = $ticket->patient_id;
-            $user_id = $ticket->user()->id ?? null;;
-            //$activity_message = $ticket->activity_message;
-
-
-            $ticket->patient_id = $request->patient_id;
-            $ticket->therapist_id = $request->therapist_id ?? null;
-
-            $ticket->ticket_department_id = $request->ticket_department_id;
-
-            $ticket->location = $request->location ?? null;
-            $ticket->language = $request->language ?? null;
-            $ticket->date = now();
-            $ticket->strike = $request->strike ?? null;
-            $ticket->strike_history = $request->strike_history ?? null;
-            $ticket->ticket_history = $request->ticket_history ?? null;
-            $ticket->remarks = $request->remarks ?? null;
-            $ticket->status = $request->status;
-            $ticket->updated_by = $request->user()->id ?? null;
-            // $ticket->updated_at = Carbon::Now();
-            $ticket->save();
-
-            if($ticket->location!=$request->location)
-            {
-                $activity_message= " Ticket Location " . $request->location. " has updated";
-                $this->saveTicketHistory($ticket_id,$patient_id,$user_id,$activity_message);
+            $validator = Validator::make(
+                $request->all(),[
+                   // "id"            => ["required", "exists:tickets,id"],
+                    //'patient_id'    => ['required'],
+                    //'therapist_id'  => ['required'],
+                    //"ticket_department_id" => ['required'],
+                    //"language"      => ['required', "string"],
+                    //"strike"        => ['required', "string"],
+                    //"status"        => ['required']
+    
+                ]);
+    
+               if ($validator->fails()) {
+                    $this->apiOutput($this->getValidationError($validator), 200);
+               }
+    
+                $ticket = Ticket::find($request->id);
+    
+    
+    
+                $ticket->patient_id = $request->patient_id;
+                $ticket->therapist_id = $request->therapist_id ?? null;
+    
+                $ticket->ticket_department_id = $request->ticket_department_id;
+    
+                $ticket->location = $request->location ?? null;
+                $ticket->language = $request->language ?? null;
+                $ticket->date = now();
+                $ticket->strike = $request->strike ?? null;
+                $ticket->strike_history = $request->strike_history ?? null;
+                $ticket->ticket_history = $request->ticket_history ?? null;
+                $ticket->remarks = $request->remarks ?? null;
+                $ticket->status = $request->status;
+                $ticket->updated_by = $request->user()->id ?? null;
+                // $ticket->updated_at = Carbon::Now();
+                $ticket->save();
+    
+                $this->apiSuccess("Ticket Info Updated successfully");
+                $this->data = (new TicketResource($ticket));
+                return $this->apiOutput();
+            }catch(Exception $e){
+                return $this->apiOutput($this->getError( $e), 500);
             }
-
-
-            if($activity_message != $ticket->activity_message)
-            {
-                $msg= " First Name Update";
-                $this->saveActivity($request , $msg);
-            }
-
-            $this->apiSuccess("Ticket Info Updated successfully");
-            $this->data = (new TicketResource($ticket));
-            return $this->apiOutput();
-        }catch(Exception $e){
-            return $this->apiOutput($this->getError( $e), 500);
-        }
     }
 
     public function assignedupdate(Request $request)

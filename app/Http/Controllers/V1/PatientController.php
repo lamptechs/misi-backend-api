@@ -97,7 +97,6 @@ class PatientController extends Controller
      */
     public function index()
     {
-        
         try{
             $this->data = UserResource::collection(User::all());
             $this->apiSuccess("Patient Loaded Successfully");
