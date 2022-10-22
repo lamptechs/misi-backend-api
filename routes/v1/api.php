@@ -1,6 +1,6 @@
 <?php
 
-
+use App\Http\Controllers\V1\Admin\EmailController;
 use App\Http\Controllers\V1\AdminController;
 use App\Http\Controllers\V1\AppointmentController;
 use App\Http\Controllers\V1\Therapist\TherapistController;
@@ -126,6 +126,8 @@ Route::middleware(["auth:admin"])->group(function(){
     //     Route::post('/update/{id}', [GroupController::class, 'update']);
     //     Route::post('/delete/{id}', [GroupController::class, 'destroy']);
     // });
+
+
     //Therapist Type
     Route::get('/therapist_type', [TherapistTypeController::class, 'index']);
     Route::post('/therapist_type/store', [TherapistTypeController::class, 'store']);
@@ -272,6 +274,19 @@ Route::middleware(["auth:admin"])->group(function(){
 
     //PIB
     Route::get('/index', [PibFormulaController::class, 'index']);
+
+    /**
+     * Email Template
+     */
+    Route::prefix('email-template')->group(function(){
+        Route::get('/list', [EmailController::class, 'index']);
+        Route::get('/create', [EmailController::class, 'create']);
+        Route::post('/create', [EmailController::class, 'store']);
+        Route::post('/update', [EmailController::class, 'update']);
+        Route::get('view', [EmailController::class, 'view']);
+        Route::get('/delete', [EmailController::class, 'delete']);
+    });
+
 });
 
 
