@@ -34,6 +34,7 @@ class EmailTemplateResource extends JsonResource
         return $this->filter([
             "id"            => $this->id,
             "email_type"    => $this->email_type,
+            "subject"       => $this->subject,
             "mail_send"     => $this->mail_send,
             "cc"            => $this->cc,
             "template"      => $this->template,
