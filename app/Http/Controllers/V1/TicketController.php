@@ -162,7 +162,15 @@ class TicketController extends Controller
                 $ticket->patient_id = $request->patient_id;
                 $ticket->therapist_id = $request->therapist_id ?? null;
     
-                $ticket->ticket_department_id = $request->ticket_department_id;
+                // /$ticket->ticket_department_id = $request->ticket_department_id;
+
+                if($ticket->ticket_department_id != $request->ticket_department_id)
+                {
+
+                    $ticket->assign_to_user = '';
+                    $ticket->group_id='';
+                    $ticket->assign_to_user_status ="";
+                }
     
                 $ticket->location = $request->location ?? null;
                 $ticket->language = $request->language ?? null;
