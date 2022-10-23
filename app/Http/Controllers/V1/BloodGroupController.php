@@ -19,7 +19,9 @@ class BloodGroupController extends Controller
      */
     public function index()
     {
-        
+        //return 10;
+        // $temp=BloodGroup::all();
+        // return $temp;
         try{
             $this->data = BloodGroupResource::collection(BloodGroup::all());
             $this->apiSuccess("Blood Group Loaded Successfully");
@@ -71,7 +73,6 @@ class BloodGroupController extends Controller
      */
     public function show(Request $request)
     {
-        return 10;
         try{
             $bloodgroup = BloodGroup::find($request->id);
             if( empty($bloodgroup) ){

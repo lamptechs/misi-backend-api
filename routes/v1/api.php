@@ -1,6 +1,6 @@
 <?php
 
-
+use App\Http\Controllers\V1\Admin\EmailController;
 use App\Http\Controllers\V1\AdminController;
 use App\Http\Controllers\V1\AppointmentController;
 use App\Http\Controllers\V1\Therapist\TherapistController;
@@ -47,7 +47,7 @@ Route::get('admin/login', [AdminController::class, "showLogin"]);
 Route::post('admin/login', [AdminController::class, "login"]);
 Route::post('admin/logout', [AdminController::class, "logout"]);
 Route::get('admin/adminview', [AdminController::class, "index"]);
-Route::get('/show', [AdminController::class, 'show']);
+Route::get('admin/show', [AdminController::class, 'show']);
 Route::post('admin/store', [AdminController::class, "store"]);
 Route::post('/admin/update/{id}', [AdminController::class, 'update']);
 Route::post('/admin/delete/{id}', [AdminController::class, 'destroy']);
@@ -137,6 +137,8 @@ Route::middleware(["auth:admin"])->group(function(){
     //     Route::post('/update/{id}', [GroupController::class, 'update']);
     //     Route::post('/delete/{id}', [GroupController::class, 'destroy']);
     // });
+
+
     //Therapist Type
     Route::get('/therapist_type', [TherapistTypeController::class, 'index']);
     Route::post('/therapist_type/store', [TherapistTypeController::class, 'store']);
@@ -252,11 +254,14 @@ Route::middleware(["auth:admin"])->group(function(){
     Route::post('/occupation/delete/{id}', [OccupationController::class, 'destroy']);
 
     //Blood Group
-    Route::get('/blood_group', [BloodGroupController::class, 'index']);
-    Route::get('/blood_group/show', [BloodGroupController::class, 'show']);
-    Route::post('/blood_group/store', [BloodGroupController::class, 'store']);
-    Route::post('/blood_group/update/{id}', [BloodGroupController::class, 'update']);
-    Route::post('/blood_group/delete/{id}', [BloodGroupController::class, 'destroy']);
+    Route::prefix('blood')->group(function(){
+        Route::get('/get', [BloodGroupController::class, 'index']);
+        Route::get('/show', [BloodGroupController::class, 'show']);
+        Route::post('/store', [BloodGroupController::class, 'store']);
+        Route::post('/update/{id}', [BloodGroupController::class, 'update']);
+        Route::post('/delete/{id}', [BloodGroupController::class, 'destroy']);
+    });
+    
     //State
     Route::get('/state', [StateController::class, 'index']);
     Route::get('/state/show', [StateController::class, 'show']);
@@ -280,6 +285,19 @@ Route::middleware(["auth:admin"])->group(function(){
 
     //PIB
     Route::get('/index', [PibFormulaController::class, 'index']);
+
+    /**
+     * Email Template
+     */
+    Route::prefix('email-template')->group(function(){
+        Route::get('/list', [EmailController::class, 'index']);
+        Route::get('/create', [EmailController::class, 'create']);
+        Route::post('/create', [EmailController::class, 'store']);
+        Route::post('/update', [EmailController::class, 'update']);
+        Route::get('view', [EmailController::class, 'view']);
+        Route::get('/delete', [EmailController::class, 'delete']);
+    });
+
 });
 
 
