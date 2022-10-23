@@ -13,8 +13,20 @@ use Illuminate\Validation\Rule;
 class EmailController extends Controller
 {
     protected $template_type = [
-        "contact_mail"      => "Contact Email",
-        "signup_mail"       => "Signuo Email",
+        "contact_mail"                          => "Contact Email",
+        "signup_mail"                           => "Signup Email",
+        "patient_registration_confirmation"     => "Patient Registration Confirmation",
+        "therapist_registration_confirmation"   => "Therapist Registration Confirmation",
+        "appointment_confirmation"              => "Appointment Confirmation",
+        "appointment_cancellation"              => "Appointment Cancellation",
+        "appointment_reschedule"                => "Appointment Reschedule",
+        "admin_registration_confirmation"       => "Admin Registration Confirmation",
+        "therapist_password_change"             => "Therapist Password Change",
+        "patient_password_change"               => "Patient Password Change",
+        "admin_password_change"                 => "Admin Password Change",
+        "admin_email_verification"              => "Admin Email Verification",
+        "patient_verification"                  => "Patient Email Verification",
+        "therapist_email_verification"          => "Therapist Email Verification",
     ];
     /**
      * Email Template List
@@ -54,6 +66,7 @@ class EmailController extends Controller
             $template_type = $this->template_type;
             $validator = Validator::make($request->all(), [
                 "email_type"    => ["required", "string", Rule::in(array_keys($template_type))],
+                "subject"       => ["required", "string"],
                 "mail_send"     => ["required", "boolean"],
                 "cc"            => ["nullable", "string"],
                 "template"      => ["nullable", "string"]
@@ -64,6 +77,7 @@ class EmailController extends Controller
             
             $template = new EmailTemplate();
             $template->email_type   = $request->email_type;
+            $template->subject      = $request->subject;
             $template->mail_send    = $request->mail_send;
             $template->cc           = $request->cc;
             $template->template     = $request->template;
@@ -86,6 +100,7 @@ class EmailController extends Controller
             $template_type = $this->template_type;
             $validator = Validator::make($request->all(), [
                 "id"            => ["required", "exists:email_templates,id"],
+                "subject"       => ["required", "string"],
                 "email_type"    => ["required", "string", Rule::in(array_keys($template_type))],
                 "mail_send"     => ["required", "boolean"],
                 "cc"            => ["nullable", "string"],
@@ -97,6 +112,7 @@ class EmailController extends Controller
             
             $template = EmailTemplate::find($request->id);
             $template->email_type   = $request->email_type;
+            $template->subject      = $request->subject;
             $template->mail_send    = $request->mail_send;
             $template->cc           = $request->cc;
             $template->template     = $request->template;

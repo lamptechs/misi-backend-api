@@ -16,6 +16,7 @@ class CreateEmailTemplatesTable extends Migration
         Schema::create('email_templates', function (Blueprint $table) {
             $table->id();
             $table->string("email_type");
+            $table->string("subject");
             $table->boolean("mail_send")->default(true);
             $table->string("cc")->nullable();
             $table->text("template")->nullable();
