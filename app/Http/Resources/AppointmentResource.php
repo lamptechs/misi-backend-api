@@ -57,6 +57,9 @@ class AppointmentResource extends JsonResource
             "therapist_comment" => $this->therapist_comment,
             "remarks"     => $this->remarks,
             "status"   => $this->status,
+            "image"             => $this->image,
+            "image_url"         => asset($this->image_url),
+            //"upload_files"      => AppointmentUploadResource::collection($this->fileInfo),
             "appointment ticket status" => $this->appointment_ticket_status,
             //"created_by"  => $this->created_by ? (new AdminResource($this->createdBy)) : null,
             //"updated_by"  => $this->updated_by ? (new AdminResource($this->updatedBy)) : null
