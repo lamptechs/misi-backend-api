@@ -72,7 +72,6 @@ class UserResource extends JsonResource
             "updated_by"        => (new AdminResource($this->updatedBy))->hide(["groupid","department", "created_by","updated_by"]),
             "upload_files"      => PatientUploadResource::collection($this->fileInfo),
             "group"             => $this->group,
-            // "question and scale" => ScaleResource::collection($this->scale)
         ]);
     }
 }

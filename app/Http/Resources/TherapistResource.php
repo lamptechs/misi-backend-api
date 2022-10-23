@@ -62,7 +62,6 @@ class TherapistResource extends JsonResource
             "image"             => $this->image,
             "image_url"         => asset($this->image_url),
             "upload_files"      => TherapistUploadResource::collection($this->fileInfo),
-            // "file_details"          => (new TherapistUploadResource($this->fileInfo))->hide(["created_by", "updated_by"]),
             "created_by"        => (new AdminResource($this->createdBy))->hide(["groupid","department", "created_by","updated_by"]),
             "updated_by"        => (new AdminResource($this->updatedBy))->hide(["groupid","department", "created_by","updated_by"]),
         ]);

@@ -70,11 +70,19 @@ Route::middleware(["auth:admin"])->group(function(){
          * Ticket
          */
         Route::prefix('admin/ticket')->group(function(){
-            Route::get('/', [TicketHistoryActivityController::class, 'index']);
-            Route::get('/show', [TicketHistoryActivityController::class, 'show']);
-            Route::post('/store', [TicketHistoryActivityController::class, 'store']);
-            Route::post('/update/{id}', [TicketHistoryActivityController::class, 'update']);
-            Route::post('/delete/{id}', [TicketHistoryActivityController::class, 'destroy']);
+            Route::get('/', [TicketController::class, 'index']);
+            Route::get('/show', [TicketController::class, 'show']);
+            Route::post('/store', [TicketController::class, 'store']);
+            Route::post('/update', [TicketController::class, 'update']);
+            Route::post('/delete', [TicketController::class, 'deleteTicket']);
+
+            // Reply On Ticket
+            Route::prefix("reply")->group(function(){
+                Route::get('/', [TicketController::class, 'addReply']);
+                Route::get('edit', [TicketController::class, 'editReply']);
+                Route::get('update', [TicketController::class, 'updateReply']);
+                Route::get('delete', [TicketController::class, 'deleteReply']);
+            });
         });
 
         //Pit Scale Section
