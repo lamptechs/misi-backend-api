@@ -43,8 +43,8 @@ class TherapistScheduleResource extends JsonResource
             "remarks"       => $this->remarks,
             "patient"       => (new UserResource($this->patient))->hide(["created_by", "updated_by", "upload_files", "group"]),
             "therapist"     => (new TherapistResource($this->therapist))->hide(["created_by", "updated_by"]),
-            "created_by"    => (new AdminResource($this->createdBy))->hide(["department", "created_by", "updated_by"]),
-            "updated_by"    => (new AdminResource($this->updatedBy))->hide(["department", "created_by", "updated_by"]),
+            "created_by"    => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
+            "updated_by"    => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null
         ]);
     }
 }

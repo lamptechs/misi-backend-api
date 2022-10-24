@@ -52,8 +52,8 @@ class TicketResource extends JsonResource
             "status"                => $this->status ?? false,
             "total_replies"         => count($this->replies),
             
-            "created_by"            => (new AdminResource($this->createdBy))->hide(["groupid","department", "created_by","updated_by"]),
-            "updated_by"            => (new AdminResource($this->updatedBy))->hide(["groupid","department", "created_by","updated_by"]),
+            "created_by"    => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
+            "updated_by"    => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
             "therapist"             => (new TherapistResource($this->therapist))->hide(["created_by", "updated_by", "upload_files", "image", "therapist_type", "blood_group", "country", "state"]),
             "patient"               => (new UserResource($this->patient))->hide(["created_by", "updated_by", "blood_group", "group", "upload_files", "updated_by", "created_by", "state", "country"]),
             "ticket_department"     => (new TicketDepartmentResource($this->ticketDepartment))->hide(["created_by", "updated_by"]),

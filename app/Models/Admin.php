@@ -24,7 +24,7 @@ class Admin extends Authenticatable
         return $this->belongsTo(Admin::class, "updated_by")->withTrashed();
     }
 
-     public function groupid(){
+     public function groupId(){
         return $this->belongsTo(Group::class, "group_id");
     }
 }

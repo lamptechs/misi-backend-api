@@ -47,8 +47,8 @@ class TherapistServiceResource extends JsonResource
             "therapist"         => (new TherapistResource($this->therapist))->hide(["created_by", "updated_by"]),
             "service_category"  => (new ServiceCategoryResource($this->category))->hide(["created_by", "updated_by"]),
             "service_subcategory"=> (new ServiceSubCategoryResource($this->subCategory))->hide(["created_by", "updated_by"]),
-            "created_by"         => $this->created_by ? (new AdminResource($this->createdBy))->hide(["groupid","department", "created_by","updated_by"]) : null,
-            "updated_by"         => $this->updated_by ? (new AdminResource($this->updatedBy))->hide(["groupid","department", "created_by","updated_by"]) : null,
+            "created_by"    => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
+            "updated_by"    => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null
         ]);
     }
 }

@@ -46,8 +46,8 @@ class TicketReplyResource extends JsonResource
             "ticket_id"         => $this->ticket_id,
             "comment"           => $this->comment ?? "",
             "file"              => !empty($this->file) ? asset($this->file) : null,
-            "created_by"        => (new AdminResource($this->createdBy))->hide(["groupid","department", "created_by","updated_by"]),
-            "updated_by"        => (new AdminResource($this->updatedBy))->hide(["groupid","department", "created_by","updated_by"]),            
+            "created_by"    => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
+            "updated_by"    => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null
         ]);
     }
 }

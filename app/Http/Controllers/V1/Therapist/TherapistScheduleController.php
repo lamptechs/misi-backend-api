@@ -39,7 +39,7 @@ class TherapistScheduleController extends Controller
                 $schedule->where("therapist_id", $request->therapist_id);
             }
             $schedules = $schedule->get();
-            $this->data = TherapistScheduleResource::collection( $schedules);
+            $this->data = TherapistScheduleResource::collection($schedules)->hide(["patient", "therapist", "created_by", "updated_by"]);
             $this->apiSuccess("Therapist Schedules Loaded Successfully");
             return $this->apiOutput();
 
