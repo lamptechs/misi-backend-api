@@ -41,14 +41,14 @@ class ServiceSubCategoryResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->filter([
+        return $this->filterFields([
             "id"                       => $this->id,
             "name"                      => $this->name,
             "status"                    => $this->status,
             "remarks"                   => $this->remarks,
             "service_category"          => (new ServiceCategoryResource($this->category))->hide(["created_by", "updated_by"]),
-            "created_by"                => $this->created_by ? (new AdminResource($this->createdBy)) : null,
-            "updated_by"                => $this->updated_by ? (new AdminResource($this->updatedBy)) : null,
+            "created_by"                => $this->created_by ? (new AdminResource($this->createdBy))->hide(["groupid","department", "created_by","updated_by"]) : null,
+            "updated_by"                => $this->updated_by ? (new AdminResource($this->updatedBy))->hide(["groupid","department", "created_by","updated_by"]) : null,
         ]);
     }
 }

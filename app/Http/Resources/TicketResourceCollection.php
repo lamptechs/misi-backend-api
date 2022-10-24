@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class ScaleResource extends JsonResource
+class TicketResourceCollection extends ResourceCollection
 {
     protected $withoutFields = [];
 
@@ -19,17 +19,17 @@ class ScaleResource extends JsonResource
     /**
      * Filter Hide Items
      */
-    protected function filterFields($data){
+    protected function filter($data){
         return collect($data)->forget($this->withoutFields)->toArray();
     }
 
     /**
-     * Collection
+     * Process The Collection
      */
-    public static function collection($resource){
-        return tap(new ScaleCollection($resource), function ($collection) {
-            $collection->collects = __CLASS__;
-        });
+    protected function processCollection($request){
+        return $this->collection->map(function (TicketResource $resource) use ($request) {
+            return $resource->hide($this->withoutFields)->toArray($request);
+        })->all();
     }
 
     /**
@@ -40,10 +40,8 @@ class ScaleResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->filterFields([
-            "question"          => (new QuestionResource($this->question))->hide(["created_by", "updated_by"]),
-            "scale" => $this->scale
-
-        ]);
+        return $this->processCollection($request);
     }
+
+
 }

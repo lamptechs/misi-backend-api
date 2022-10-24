@@ -40,15 +40,15 @@ class TherapistServiceResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->filter([
-            "id"         => $this->id,
-            "therapist"          => (new TherapistResource($this->therapist))->hide(["created_by", "updated_by"]),
-            "service_category"          => (new ServiceCategoryResource($this->category))->hide(["created_by", "updated_by"]),
-            "service_subcategory"          => (new ServiceSubCategoryResource($this->subCategory))->hide(["created_by", "updated_by"]),
-            "name"    => $this->name,
-            "status"  => $this->status,
-            "created_by"                => $this->created_by ? (new AdminResource($this->createdBy)) : null,
-            "updated_by"                => $this->updated_by ? (new AdminResource($this->updatedBy)) : null,
+        return $this->filterFields([
+            "id"                => $this->id,
+            "name"              => $this->name,
+            "status"            => $this->status,
+            "therapist"         => (new TherapistResource($this->therapist))->hide(["created_by", "updated_by"]),
+            "service_category"  => (new ServiceCategoryResource($this->category))->hide(["created_by", "updated_by"]),
+            "service_subcategory"=> (new ServiceSubCategoryResource($this->subCategory))->hide(["created_by", "updated_by"]),
+            "created_by"         => $this->created_by ? (new AdminResource($this->createdBy))->hide(["groupid","department", "created_by","updated_by"]) : null,
+            "updated_by"         => $this->updated_by ? (new AdminResource($this->updatedBy))->hide(["groupid","department", "created_by","updated_by"]) : null,
         ]);
     }
 }

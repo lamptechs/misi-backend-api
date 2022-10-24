@@ -46,8 +46,8 @@ class AdminResource extends JsonResource
             "email"         => $this->email ?? "",
             "groupid"       => $this->group_id ?? "",
             "department"    => $this->group_id ? (new GroupResource($this->groupid))->hide(["created_by", "updated_by"]) : null,
-            "created_by"    => $this->created_by ? (new AdminResource($this->createdBy)) : null,
-            "updated_by"    => $this->updated_by ? (new AdminResource($this->updatedBy)) : null
+            "created_by"    => $this->created_by ? (new AdminResource($this->createdBy))->hide(["groupid","department", "created_by","updated_by"]) : null,
+            "updated_by"    => $this->updated_by ? (new AdminResource($this->updatedBy))->hide(["groupid","department", "created_by","updated_by"]) : null
         ]);
     }
 }

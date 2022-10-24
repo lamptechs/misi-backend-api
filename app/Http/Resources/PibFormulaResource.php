@@ -40,7 +40,7 @@ class PibFormulaResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->filter([
+        return $this->filterFields([
             "id"         => $this->id,
             "patient_id" => $this->patient_id,
             "pib_name" => $this->pib_name,
@@ -58,15 +58,6 @@ class PibFormulaResource extends JsonResource
             "modified_date"   => $this->modified_date,
             "created_by"   => $this->created_by,
             "created_date"   => $this->created_date,
-
-            // "therapist_type"          => (new TherapistTypeResource($this->therapistType))->hide(["created_by", "updated_by"]),
-            // "blood_group"          => (new BloodGroupResource($this->blood))->hide(["created_by", "updated_by"]),
-            // "country"          => (new CountryResource($this->country))->hide(["created_by", "updated_by"]),
-            // "state"          => (new StateResource($this->state))->hide(["created_by", "updated_by"]),
-            // "upload_files"      => TherapistUploadResource::collection($this->fileInfo),
-            // "file_details"          => (new TherapistUploadResource($this->fileInfo))->hide(["created_by", "updated_by"]),
-            // "created_by"  => $this->created_by ? (new AdminResource($this->createdBy)) : null,
-            // "updated_by"  => $this->updated_by ? (new AdminResource($this->updatedBy)) : null
         ]);
     }
 }

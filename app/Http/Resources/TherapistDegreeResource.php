@@ -40,12 +40,12 @@ class TherapistDegreeResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->filter([
+        return $this->filterFields([
             "id"         => $this->id,
             "therapist"          => (new TherapistResource($this->therapist))->hide(["created_by", "updated_by"]),
             "degree"          => (new DegreeResource($this->degree))->hide(["created_by", "updated_by"]),
-            "created_by"                => $this->created_by ? (new AdminResource($this->createdBy)) : null,
-            "updated_by"                => $this->updated_by ? (new AdminResource($this->updatedBy)) : null,
+            "created_by"                => $this->created_by ? (new AdminResource($this->createdBy))->hide(["groupid","department", "created_by","updated_by"]) : null,
+            "updated_by"                => $this->updated_by ? (new AdminResource($this->updatedBy))->hide(["groupid","department", "created_by","updated_by"]) : null,
         ]);
     }
 }

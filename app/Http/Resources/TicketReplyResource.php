@@ -23,6 +23,16 @@ class TicketReplyResource extends JsonResource
         return collect($data)->forget($this->withoutFields)->toArray();
     }
 
+
+    /**
+     * Collection
+     */
+    public static function collection($resource){
+        return tap(new TicketReplyCollection($resource), function ($collection) {
+            $collection->collects = __CLASS__;
+        });
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -31,7 +41,7 @@ class TicketReplyResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->filter([
+        return $this->filterFields([
             "id"                => $this->id,
             "ticket_id"         => $this->ticket_id,
             "comment"           => $this->comment ?? "",

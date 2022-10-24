@@ -41,7 +41,7 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->filter([
+        return $this->filterFields([
             "id"                => $this->id,
             "source"            => $this->source,
             "first_name"        => $this->first_name,

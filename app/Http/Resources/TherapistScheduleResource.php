@@ -34,7 +34,7 @@ class TherapistScheduleResource extends JsonResource
 
     public function toArray($request)
     {
-        return $this->filter([
+        return $this->filterFields([
             "id"            => $this->id,
             "date"          => $this->date,
             "start_time"    => $this->start_time,

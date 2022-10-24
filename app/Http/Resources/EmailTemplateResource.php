@@ -39,8 +39,8 @@ class EmailTemplateResource extends JsonResource
             "cc"            => $this->cc,
             "template"      => $this->template,
             
-            "created_by"    => $this->created_by ? (new AdminResource($this->createdBy))->hide(["department", "updated_by", "created_by"]) : null,
-            "updated_by"    => $this->updated_by ? (new AdminResource($this->updatedBy))->hide(["department", "updated_by", "created_by"]) : null,
+            "created_by"    => $this->created_by ? (new AdminResource($this->createdBy))->hide(["groupid","department", "created_by","updated_by"]) : null,
+            "updated_by"    => $this->updated_by ? (new AdminResource($this->updatedBy))->hide(["groupid","department", "created_by","updated_by"]) : null,
 
         ]);
     }

@@ -31,7 +31,7 @@ class PatientUploadResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->filter([
+        return $this->filterFields([
 
             "id" => $this->id,
             "patient_id" => $this->patient_id,
@@ -40,8 +40,8 @@ class PatientUploadResource extends JsonResource
             "file_type"  => $this->file_type,
             "status"     => $this->status,
             "remarks"    => $this->remarks,
-            "created_by" => $this->created_by ? (new AdminResource($this->createdBy)) : null,
-            "updated_by" => $this->updated_by ? (new AdminResource($this->updatedBy)) : null,
+            "created_by" => $this->created_by ? (new AdminResource($this->createdBy))->hide(["groupid","department", "created_by","updated_by"]) : null,
+            "updated_by" => $this->updated_by ? (new AdminResource($this->updatedBy))->hide(["groupid","department", "created_by","updated_by"]) : null,
 
         ]);
     }

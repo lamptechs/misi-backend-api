@@ -71,17 +71,18 @@ Route::middleware(["auth:admin"])->group(function(){
          */
         Route::prefix('admin/ticket')->group(function(){
             Route::get('/', [TicketController::class, 'index']);
+            Route::post('/create', [TicketController::class, 'store']);
             Route::get('/show', [TicketController::class, 'show']);
-            Route::post('/store', [TicketController::class, 'store']);
             Route::post('/update', [TicketController::class, 'update']);
             Route::post('/delete', [TicketController::class, 'deleteTicket']);
 
             // Reply On Ticket
             Route::prefix("reply")->group(function(){
-                Route::get('/', [TicketController::class, 'addReply']);
-                Route::get('edit', [TicketController::class, 'editReply']);
-                Route::get('update', [TicketController::class, 'updateReply']);
-                Route::get('delete', [TicketController::class, 'deleteReply']);
+                Route::get('/', [TicketController::class, 'replyList']);
+                Route::post('/create', [TicketController::class, 'addReply']);
+                Route::get('/edit', [TicketController::class, 'editReply']);
+                Route::post('/update', [TicketController::class, 'updateReply']);
+                Route::get('/delete', [TicketController::class, 'deleteReply']);
             });
         });
 

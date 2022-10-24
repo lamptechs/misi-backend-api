@@ -4,15 +4,10 @@ namespace App\Http\Controllers\V1;
 
 use Exception;
 use App\Models\Ticket;
-use Illuminate\Support\Str;
-Use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\TicketHistoryActivity;
 use App\Http\Resources\TicketResource;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Resources\TicketHistoryActivityResource;
 use App\Http\Resources\TicketReplyResource;
 use App\Models\TicketReply;
 
@@ -48,7 +43,7 @@ class TicketController extends Controller
             }
 
             $tickets = $tickets->get();
-            $this->data = TicketResource::collection($tickets);
+            $this->data = TicketResource::collection($tickets)->hide(["replies", "created_by", "updated_by", "therapist", "patient"]);
             $this->apiSuccess("Ticket Loaded Successfully");
             return $this->apiOutput();
 
@@ -68,8 +63,9 @@ class TicketController extends Controller
            $validator = Validator::make( $request->all(),[
                 'patient_id'    => ['nullable', "exists:users,id"],
                 'therapist_id'  => ['nullable', "exists:therapists,id"],
-                "location"      => ["nullable", "string"],
-                "language"      => ["required", "string"],
+                "ticket_department_id" => ["required"],
+                "location"      => ["required", "string", "min:2"],
+                "language"      => ["required", "string", "min:2"],
                 "strike"        => ["required", "string"],
                 "strike_history"=> ["nullable", "string"],
                 "remarks"       => ["nullable", "string"],
@@ -78,7 +74,7 @@ class TicketController extends Controller
             ]);
 
             if ($validator->fails()) {
-                $this->apiOutput($this->getValidationError($validator), 200);
+                return $this->apiOutput($this->getValidationError($validator), 200);
             }
 
             $ticket = new Ticket();            
@@ -96,7 +92,7 @@ class TicketController extends Controller
             $ticket->created_by = $request->user()->id ?? null;
             $ticket->save();
             $this->apiSuccess();
-            $this->data = (new TicketResource($ticket))->hide(["ticket_department", "patient", "therapist", "updated_by", "created_by"]);
+            $this->data = (new TicketResource($ticket))->hide(["ticket_department", "updated_by", "created_by"]);
             return $this->apiOutput();
         }catch(Exception $e){
             return $this->apiOutput($this->getError( $e), 500);
@@ -139,10 +135,11 @@ class TicketController extends Controller
                 "remarks"       => ["nullable", "string"],
                 "ticket_history"=> ["nullable", "string"],
                 "status"        => ["required", "boolean"],
+                "ticket_department_id" => ["required"],
             ]);
 
             if ($validator->fails()) {
-                $this->apiOutput($this->getValidationError($validator), 200);
+                return $this->apiOutput($this->getValidationError($validator), 200);
             }
     
             $ticket = Ticket::find($request->id);
@@ -161,7 +158,7 @@ class TicketController extends Controller
             $ticket->save();
 
             $this->apiSuccess("Ticket Info Updated successfully");
-            $this->data = (new TicketResource($ticket));
+            $this->data = (new TicketResource($ticket))->hide(["replies", "created_by", "updated_by"]);
             return $this->apiOutput();
         }catch(Exception $e){
             return $this->apiOutput($this->getError( $e), 500);
@@ -178,7 +175,7 @@ class TicketController extends Controller
             ]);
 
             if ($validator->fails()) {
-                $this->apiOutput($this->getValidationError($validator), 200);
+                return $this->apiOutput($this->getValidationError($validator), 200);
             }
     
             Ticket::where("id", $request->id)->delete();
@@ -188,6 +185,33 @@ class TicketController extends Controller
             return $this->apiOutput($this->getError( $e), 500);
         }
     }
+
+    
+
+    /**
+     * Ticket Reply List
+     */
+    public function replyList(Request $request){
+        try{
+            $validator = Validator::make( $request->all(),[
+                "ticket_id"     => ["required", "exists:tickets,id"],
+            ]);
+
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 200);
+            }
+    
+            $reply = TicketReply::where("ticket_id", $request->ticket_id)
+                ->orderBy("created_at", "desc")->get();
+            $this->data = TicketReplyResource::collection($reply)->hide(["created_by", "updated_by"]);
+            $this->apiSuccess("Ticket reply loaded successfully");
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }
+          
+    }
+
 
     /**
      * Add Ticket Reply
@@ -201,10 +225,10 @@ class TicketController extends Controller
             ]);
     
             if ($validator->fails()) {
-                $this->apiOutput($this->getValidationError($validator), 200);
+                return $this->apiOutput($this->getValidationError($validator), 200);
             }
-            if( empty($request->comment) && $request->hasFile('file') ){
-                $this->apiOutput("Comment or File Upload is required", 200);
+            if( empty($request->comment) && !$request->hasFile('file') ){
+                return $this->apiOutput("Comment or File Upload is required", 200);
             }
     
             $reply = new TicketReply();
@@ -222,7 +246,6 @@ class TicketController extends Controller
             return $this->apiOutput($this->getError( $e), 500);
         }
     }
-
     /**
      * Edit Reply
      */
@@ -234,10 +257,11 @@ class TicketController extends Controller
             ]);
 
             if ($validator->fails()) {
-                $this->apiOutput($this->getValidationError($validator), 200);
+                return $this->apiOutput($this->getValidationError($validator), 200);
             }
-    
-            $reply = TicketReply::where("id", $request->id)->where("ticket_id", $request->ticket_id)->delete();
+            $reply = TicketReply::where("id", $request->id)
+                ->where("ticket_id", $request->ticket_id)
+                ->first();
             $this->data = (new TicketReplyResource($reply));
             $this->apiSuccess("Ticket reply loaded successfully");
             return $this->apiOutput();
@@ -259,13 +283,13 @@ class TicketController extends Controller
             ]);
     
             if ($validator->fails()) {
-                $this->apiOutput($this->getValidationError($validator), 200);
+                return $this->apiOutput($this->getValidationError($validator), 200);
             }
             if( empty($request->comment) && $request->hasFile('file') ){
                 $this->apiOutput("Comment or File Upload is required", 200);
             }
     
-            $reply = new TicketReply();
+            $reply =  TicketReply::where("id", $request->id)->where("ticket_id", $request->ticket_id)->first();
             $reply->ticket_id = $request->ticket_id;
             $reply->comment = $request->comment;
             if($request->hasFile('file')){
@@ -292,7 +316,7 @@ class TicketController extends Controller
             ]);
 
             if ($validator->fails()) {
-                $this->apiOutput($this->getValidationError($validator), 200);
+                return $this->apiOutput($this->getValidationError($validator), 200);
             }
     
             TicketReply::where("id", $request->id)->where("ticket_id", $request->ticket_id)->delete();

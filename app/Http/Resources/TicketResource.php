@@ -40,7 +40,7 @@ class TicketResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->filter([
+        return $this->filterFields([
             "id"                    => $this->id,
             "location"              => $this->location ?? "",
             "language"              => $this->language ?? "",
@@ -57,8 +57,7 @@ class TicketResource extends JsonResource
             "therapist"             => (new TherapistResource($this->therapist))->hide(["created_by", "updated_by", "upload_files", "image", "therapist_type", "blood_group", "country", "state"]),
             "patient"               => (new UserResource($this->patient))->hide(["created_by", "updated_by", "blood_group", "group", "upload_files", "updated_by", "created_by", "state", "country"]),
             "ticket_department"     => (new TicketDepartmentResource($this->ticketDepartment))->hide(["created_by", "updated_by"]),
-            "replies"               => 
-            
+            "replies"               => TicketReplyResource::collection($this->replies)->hide(["updated_by", "created_by"])
         ]);
     }
 }

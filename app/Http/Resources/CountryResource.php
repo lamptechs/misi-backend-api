@@ -35,8 +35,8 @@ class CountryResource extends JsonResource
             "id"         => $this->id,
             "name" => $this->name,
             "status"                    => $this->status,
-            "created_by"                => $this->created_by ? (new AdminResource($this->createdBy)) : null,
-            "updated_by"                => $this->updated_by ? (new AdminResource($this->updatedBy)) : null,
+            "created_by"                => $this->created_by ? (new AdminResource($this->createdBy))->hide(["groupid","department", "created_by","updated_by"]) : null,
+            "updated_by"                => $this->updated_by ? (new AdminResource($this->updatedBy))->hide(["groupid","department", "created_by","updated_by"]) : null,
 
         ]);
     }
