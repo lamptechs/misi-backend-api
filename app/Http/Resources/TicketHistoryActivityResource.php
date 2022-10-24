@@ -40,17 +40,17 @@ class TicketHistoryActivityResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->filter([
-            "id"         => $this->id,
-            "ticket_id " => $this->ticket_id ,
+        return $this->filterFields([
+            "id"                => $this->id,
+            "ticket_id "        => $this->ticket_id ,
             "assign_to_therapist"=> $this->assign_to_therapist,
             "appointment_group"=> $this->appointment_group,
-            "call_strike"=> $this->call_strike,
-            "strike_history"=> $this->strike_history,
-            "ticket_history"=> $this->ticket_history,
-            "status"=> $this->status,
-            "language"=> $this->language,
-            "assign_to_user"=> $this->assign_to_user,
+            "call_strike"       => $this->call_strike,
+            "strike_history"    => $this->strike_history,
+            "ticket_history"    => $this->ticket_history,
+            "status"            => $this->status,
+            "language"          => $this->language,
+            "assign_to_user"    => $this->assign_to_user,
             "assign_to_user_status"=> $this->assign_to_user_status,
             "deleted_by"=> $this->deleted_by,
             "deleted_date"=> $this->deleted_date,

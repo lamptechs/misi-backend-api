@@ -26,7 +26,7 @@ class TherapistScheduleSettingsResource extends JsonResource
 
     public function toArray($request)
     {
-        return $this->filter([
+        return $this->filterFields([
             "id"            => $this->id ?? "",
             "interval_time" => $this->interval_time ?? "",
             "start_time"    => $this->start_time ?? "",

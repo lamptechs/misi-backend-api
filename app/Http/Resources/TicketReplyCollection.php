@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class DegreeResource extends JsonResource
+class TicketReplyCollection extends ResourceCollection
 {
     protected $withoutFields = [];
 
@@ -24,6 +24,15 @@ class DegreeResource extends JsonResource
     }
 
     /**
+     * Process The Collection
+     */
+    protected function processCollection($request){
+        return $this->collection->map(function (TicketReplyResource $resource) use ($request) {
+            return $resource->hide($this->withoutFields)->toArray($request);
+        })->all();
+    }
+
+    /**
      * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -31,13 +40,8 @@ class DegreeResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->filter([
-            "id"            => $this->id,
-            "name"          => $this->name,
-            "status"        => $this->status,
-            "created_by"    => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
-            "updated_by"    => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null
-
-        ]);
+        return $this->processCollection($request);
     }
+
+
 }

@@ -32,12 +32,12 @@ class TicketDepartmentResource extends JsonResource
     public function toArray($request)
     {
         return $this->filter([
-            "id"   => $this->id,
-            "name" => $this->name,
-            "status"                    => $this->status,
-            "remarks"                   => $this->remarks,
-            "created_by"                => (new AdminResource($this->createdBy))->hide(["groupid","department", "created_by","updated_by"]),
-            "updated_by"                => (new AdminResource($this->updatedBy))->hide(["groupid","department", "created_by","updated_by"]),
+            "id"            => $this->id,
+            "name"          => $this->name,
+            "status"        => $this->status,
+            "remarks"       => $this->remarks,
+            "created_by"    => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
+            "updated_by"    => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null
         ]);
     }
 }
