@@ -40,7 +40,7 @@ class PibScaleResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->filter([
+        return $this->filterFields([
             "id"         => $this->id,
             "patient_id" => $this->patient_id,
             "pib_formula_id" => $this->pib_formula_id,

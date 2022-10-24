@@ -138,7 +138,7 @@ class TherapistController extends Controller
             $data->country_id = $request->country_id;
             $data->password = bcrypt($request->password);
             if($request->hasFile('picture')){
-                $data->image_url = $this->uploadFile($request, 'picture', $this->patient_uploads, null,null,$data->image_url);
+                $data->image_url = $this->uploadFile($request, 'picture', $this->therapist_uploads, null,null,$data->image_url);
             }
             
             $data->save();

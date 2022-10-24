@@ -66,6 +66,26 @@ Route::middleware(["auth:admin"])->group(function(){
             Route::post('/delete/{id}', [TicketHistoryActivityController::class, 'destroy']);
         });
 
+        /**
+         * Ticket
+         */
+        Route::prefix('admin/ticket')->group(function(){
+            Route::get('/', [TicketController::class, 'index']);
+            Route::post('/create', [TicketController::class, 'store']);
+            Route::get('/show', [TicketController::class, 'show']);
+            Route::post('/update', [TicketController::class, 'update']);
+            Route::post('/delete', [TicketController::class, 'deleteTicket']);
+
+            // Reply On Ticket
+            Route::prefix("reply")->group(function(){
+                Route::get('/', [TicketController::class, 'replyList']);
+                Route::post('/create', [TicketController::class, 'addReply']);
+                Route::get('/edit', [TicketController::class, 'editReply']);
+                Route::post('/update', [TicketController::class, 'updateReply']);
+                Route::get('/delete', [TicketController::class, 'deleteReply']);
+            });
+        });
+
         //Pit Scale Section
         Route::prefix('pitscale')->group(function(){
             Route::get('/', [PitScaleController::class, 'index']);

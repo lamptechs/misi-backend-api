@@ -40,7 +40,7 @@ class PitScaleResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->filter([
+        return $this->filterFields([
             "id"         => $this->id,
             "patient_id" => $this->patient_id,
             "pit_formula_id" => $this->pit_formula_id,

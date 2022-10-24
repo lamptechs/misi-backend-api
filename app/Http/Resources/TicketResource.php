@@ -40,30 +40,25 @@ class TicketResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->filter([
+        return $this->filterFields([
             "id"                    => $this->id,
-            "location"              => $this->location,
-            "language"              => $this->language,
-            "date"                  => $this->date,
-            "strike"                => $this->strike,
-            "strike_history"        => $this->strike_history,
-            "ticket_history"        => $this->ticket_history,
-            "remarks"               => $this->remarks,
-            "status"                => $this->status,
-            "comment"               =>$this->comment,
-            "assign_to_user"        => $this->assign_to_user,
-            "assign_to_user_status" => $this->assign_to_user_status,
-            "ticket_status" => $this->ticket_status,
-            "created_by"            => (new AdminResource($this->createdBy))->hide(["groupid","department", "created_by","updated_by"]),
-            "updated_by"            => (new AdminResource($this->updatedBy))->hide(["groupid","department", "created_by","updated_by"]),
-            "therapist_info"        => (new TherapistResource($this->therapist))->hide(["created_by", "updated_by"]),
-            "patient_info"          => (new UserResource($this->patient))->hide(["created_by", "updated_by"]),
-            "department"            => (new GroupResource($this->group))->hide(["created_by", "updated_by"]),
-            // "department"            => (new AdminResource($this->groupid))->hide(["created_by", "updated_by"]),
-            // "admin_name"            => (new AdminResource($this->department))->hide(["created_by", "updated_by"]),
-            "ticket_department_info"=> (new TicketDepartmentResource($this->ticketDepartment))->hide(["created_by", "updated_by"]),
-            
-            
+            "location"              => $this->location ?? "",
+            "language"              => $this->language ?? "",
+            "date"                  => $this->date ?? "",
+            "strike"                => $this->strike ?? "",
+            "strike_history"        => $this->strike_history ?? "",
+            "ticket_history"        => $this->ticket_history ?? "",
+            "remarks"               => $this->remarks ?? "",
+            "status"                => $this->status ?? false,
+            "total_replies"         => count($this->replies),
+            "mono_multi_zd"         => $this->mono_multi_zd,
+            "mono_multi_screeing"         => $this->mono_multi_screeing,
+            "created_by"    => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
+            "updated_by"    => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
+            "therapist"             => (new TherapistResource($this->therapist))->hide(["created_by", "updated_by", "upload_files", "image", "therapist_type", "blood_group", "country", "state"]),
+            "patient"               => (new UserResource($this->patient))->hide(["created_by", "updated_by", "blood_group", "group", "upload_files", "updated_by", "created_by", "state", "country"]),
+            "ticket_department"     => (new TicketDepartmentResource($this->ticketDepartment))->hide(["created_by", "updated_by"]),
+            "replies"               => TicketReplyResource::collection($this->replies)->hide(["updated_by", "created_by"])
         ]);
     }
 }

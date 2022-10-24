@@ -3,9 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-// use App\Http\Resources\ServiceCategoryResource;
 
-class ServiceSubCategoryResource extends JsonResource
+class TicketReplyResource extends JsonResource
 {
     protected $withoutFields = [];
 
@@ -24,11 +23,12 @@ class ServiceSubCategoryResource extends JsonResource
         return collect($data)->forget($this->withoutFields)->toArray();
     }
 
+
     /**
      * Collection
      */
     public static function collection($resource){
-        return tap(new ServiceSubCategoryCollection($resource), function ($collection) {
+        return tap(new TicketReplyCollection($resource), function ($collection) {
             $collection->collects = __CLASS__;
         });
     }
@@ -42,11 +42,10 @@ class ServiceSubCategoryResource extends JsonResource
     public function toArray($request)
     {
         return $this->filterFields([
-            "id"                       => $this->id,
-            "name"                      => $this->name,
-            "status"                    => $this->status,
-            "remarks"                   => $this->remarks,
-            "service_category"          => (new ServiceCategoryResource($this->category))->hide(["created_by", "updated_by"]),
+            "id"                => $this->id,
+            "ticket_id"         => $this->ticket_id,
+            "comment"           => $this->comment ?? "",
+            "file"              => !empty($this->file) ? asset($this->file) : null,
             "created_by"    => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
             "updated_by"    => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null
         ]);

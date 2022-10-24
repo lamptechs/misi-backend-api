@@ -5,17 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
-class Admin extends Authenticatable
+class TicketReply extends Model
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
-
-    protected $casts = [
-        "status"    => "boolean",
-    ];
+    use HasFactory, SoftDeletes;
 
     public function createdBy(){
         return $this->belongsTo(Admin::class, "created_by")->withTrashed();
@@ -23,8 +16,7 @@ class Admin extends Authenticatable
     public function updatedBy(){
         return $this->belongsTo(Admin::class, "updated_by")->withTrashed();
     }
-
-     public function groupId(){
-        return $this->belongsTo(Group::class, "group_id");
+    public function ticket(){
+        return $this->belongsTo(Ticket::class, "ticket_id")->withTrashed();
     }
 }

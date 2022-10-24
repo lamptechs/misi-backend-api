@@ -35,9 +35,6 @@ class BloodGroupResource extends JsonResource
             "id"         => $this->id,
             "name"                      => $this->name,
             "status"                    => $this->status,
-            //"created_by"                => $this->created_by ? (new AdminResource($this->createdBy)) : null,
-            //"updated_by"                => $this->updated_by ? (new AdminResource($this->updatedBy)) : null,
-
         ]);
     }
 }

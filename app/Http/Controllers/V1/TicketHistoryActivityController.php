@@ -108,23 +108,7 @@ class TicketHistoryActivityController extends Controller
 
             $data = $this->getModel();
 
-            // $data->ticket_id = $request->ticket_id;
-            // $data->assign_to_therapist = $request->assign_to_therapist;
-            // $data->appointment_group = $request->appointment_group ?? null;
-            // $data->call_strike = $request->call_strike;
-            // $data->strike_history = $request->strike_history;
-            // $data->ticket_history = $request->ticket_history;
-            // $data->status = $request->status;
-            // $data->language = $request->language;
-            // $data->assign_to_user = $request->assign_to_user;
-            // $data->assign_to_user_status = $request->assign_to_user_status;
-            // $data->deleted_by = $request->deleted_by ?? null;
-            // $data->deleted_date = $request->deleted_date ?? null ;
-            // $data->remarks = $request->remarks;
-            // $data->modified_by = $request->modified_by;
-            // $data->modified_date = $request->modified_date ?? null;
-            // $data->created_by = $request->created_by;
-            // $data->created_date = $request->created_date ?? null;
+           
 
             $ticket_id = $data->ticket_id;
             $patient_id = $data->patient_id;

@@ -40,7 +40,7 @@ class TherapistResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->filter([
+        return $this->filterFields([
             "id"                => $this->id,
             "first_name"        => $this->first_name,
             "last_name"         => $this->last_name,
@@ -62,9 +62,8 @@ class TherapistResource extends JsonResource
             "image"             => $this->image,
             "image_url"         => asset($this->image_url),
             "upload_files"      => TherapistUploadResource::collection($this->fileInfo),
-            // "file_details"          => (new TherapistUploadResource($this->fileInfo))->hide(["created_by", "updated_by"]),
-            "created_by"        => (new AdminResource($this->createdBy))->hide(["groupid","department", "created_by","updated_by"]),
-            "updated_by"        => (new AdminResource($this->updatedBy))->hide(["groupid","department", "created_by","updated_by"]),
+            "created_by"    => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
+            "updated_by"    => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null
         ]);
     }
 }
