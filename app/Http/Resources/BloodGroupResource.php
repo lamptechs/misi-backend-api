@@ -32,9 +32,9 @@ class BloodGroupResource extends JsonResource
     public function toArray($request)
     {
         return $this->filter([
-            "id"         => $this->id,
-            "name"                      => $this->name,
-            "status"                    => $this->status,
+            "id"         => $this->id ?? "",
+            "name"       => $this->name ?? "",
+            "status"     => $this->status ?? "",
         ]);
     }
 }

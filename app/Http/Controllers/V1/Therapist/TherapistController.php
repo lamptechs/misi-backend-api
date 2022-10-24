@@ -84,7 +84,8 @@ class TherapistController extends Controller
     public function index()
     {
         try{
-            $this->data = TherapistResource::collection(Therapist::all());
+            $therapists = Therapist::all();
+            $this->data = TherapistResource::collection($therapists);
             $this->apiSuccess("Therapist Loaded Successfully");
             return $this->apiOutput();
 
