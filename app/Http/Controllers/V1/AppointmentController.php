@@ -4,6 +4,7 @@ namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AppointmentResource;
+use App\Models\AppointmentUpload;
 use App\Models\Appointmnet;
 use App\Models\TherapistSchedule;
 use App\Models\User;
@@ -83,7 +84,11 @@ class AppointmentController extends Controller
             $data->therapist_comment = $request->comment ?? null;
             $data->remarks      = $request->remarks ?? null;
             $data->status       = $request->status;
+            if($request->hasFile('picture')){
+                $data->image_url = $this->uploadFile($request, 'picture', $this->appointment_uploads, null,null,$data->image_url);
+            }
             $data->save();
+            $this->saveFileInfo($request, $data);
             
             DB::commit();
             $this->apiSuccess("Appointment Created Successfully");
@@ -93,6 +98,23 @@ class AppointmentController extends Controller
             return $this->apiOutput($this->getError($e), 500);
             DB::rollBack();
         }
+    }
+
+     // Save File Info
+     public function saveFileInfo($request, $appointment){
+        $file_path = $this->uploadFile($request, 'file', $this->appointment_uploads, 720);
+  
+        if( !is_array($file_path) ){
+            $file_path = (array) $file_path;
+        }
+        foreach($file_path as $path){
+            $data = new AppointmentUpload();
+            $data->appointment_id = $appointment->id;
+            $data->file_name    = $request->file_name ?? "Appointment Upload";
+            $data->file_url     = $path;
+            $data->save();
+        }
+       
     }
 
     /**

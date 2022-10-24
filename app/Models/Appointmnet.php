@@ -29,6 +29,10 @@ class Appointmnet extends Model
         return $this->belongsTo(TherapistSchedule::class, 'therapist_schedule_id');
         
     }
+
+    public function fileInfo(){
+        return $this->hasMany(AppointmentUpload::class, 'appointment_id');
+    }
     // protected $casts = [
     //     'time' => 'time:H:i:m',
     //     'date' => 'date:d/m/Y',
