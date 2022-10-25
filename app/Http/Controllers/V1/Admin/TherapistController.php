@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\V1\Therapist;
+namespace App\Http\Controllers\V1\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Therapist;
 use App\Models\TherapistUpload;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Auth\Events\Registered;
 use Exception;
 use App\Http\Resources\TherapistResource;
 use Illuminate\Support\Facades\Hash;

@@ -68,8 +68,8 @@ class UserResource extends JsonResource
             "blood_group"       => (new BloodGroupResource($this->blood))->hide(["created_by", "updated_by"]),
             "country"           => (new CountryResource($this->country))->hide(["created_by", "updated_by"]),
             "state"             => (new StateResource($this->state))->hide(["created_by", "updated_by"]),
-            "created_by"    => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
-            "updated_by"    => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
+            "created_by"        => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
+            "updated_by"        => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
             "upload_files"      => PatientUploadResource::collection($this->fileInfo),
         ]);
     }

@@ -53,6 +53,7 @@ class AppointmentController extends Controller
                 "therapist_id"  => ["required", "exists:therapists,id"],
                 "patient_id"    => ["required", "exists:users,id"],
                 "therapist_schedule_id" => ["required", "exists:therapist_schedules,id"],
+                "status"        => ["required", "boolean"]
             ]);
             if($validator->fails()){
                 return $this->apiOutput($this->getValidationError($validator), 400);
@@ -62,7 +63,7 @@ class AppointmentController extends Controller
 
             $schedule = TherapistSchedule::where("id", $request->therapist_schedule_id)->first();
             if($schedule->status != "open"){
-                return $this->apiOutput("Sorry! You can't book this schedule. please try again.", 400);
+                return $this->apiOutput("Sorry! This time slot has been booked. You can't book this schedule. please try again.", 400);
             }
             $schedule->status = "booked";
             $schedule->patient_id = $request->patient_id;
@@ -149,54 +150,61 @@ class AppointmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // $temp= Appointmnet::all();
-        // return $temp;
-
-        // $temp= Appointmnet::find($id);
-        // return $temp;
-        // return 10;
-
         try{
-        $validator = Validator::make($request->all(),[
-            "id"            => ["required", "exists:appointmnets,id"],
-            'therapist_id'  => ['required', "exists:therapists,id"],
-            "patient_id"    => ['required', "exists:users,id"],
-        ]);
-
-        if ($validator->fails()) {
-            return $this->apiOutput($this->getValidationError($validator), 400);
-        }
+            $validator = Validator::make($request->all(), [
+                "id"                    => ["required", "exists:appointmnets,id"],
+                "therapist_id"  => ["required", "exists:therapists,id"],
+                "patient_id"    => ["required", "exists:users,id"],
+                "therapist_schedule_id" => ["required", "exists:therapist_schedules,id"],
+                "status"        => ["required", "boolean"]
+            ]);
+            if($validator->fails()){
+                return $this->apiOutput($this->getValidationError($validator), 400);
+            }
 
             DB::beginTransaction();
+            $appoinement = Appointmnet::find($request->id);
+            if($appoinement->therapist_schedule_id != $request->therapist_schedule_id){
+                $schedule = TherapistSchedule::where("id", $appoinement->therapist_schedule_id)
+                    ->update(["status" => "open", "patient_id" => null]);
+    
+                $schedule->status = "open";
+                $schedule->patient_id = null;
+                $schedule->save();
 
-            $data = Appointmnet::find($request->id);
-            //$data = $this->getModel()->find($id);
-            $data->updated_by = $request->user()->id;
-
-            $data->therapist_id = $request->therapist_id;
-            $data->patient_id   = $request->patient_id;
-            $data->therapist_schedule_id = $request->therapist_schedule_id;
-            $data->number = $request->number;
-            $data->history = $request->history ?? null;
-            // $data->date = Carbon::createFromFormat($dformat, $date);
-            // $data->time = Carbon::createFromFormat($tformat, $time);
-            //$data->date = Carbon::now();
-            // $data->time = Carbon::now();
-            $data->date = $request->date;
-            $data->time = $request->time;
-            $data->fee = $request->fee;
-            $data->language = $request->language;
-            $data->type = $request->type;
-            $data->therapist_comment = $request->comment ?? null;
-            $data->remarks = $request->remarks ?? null;
-            $data->status = $request->status;
-            $data->created_by = $request->created_by;
-            $data->deleted_at = $request->deleted_at;
-            $data->save();
-
+                $schedule = TherapistSchedule::where("id", $request->therapist_schedule_id)->first();
+                if($schedule->status != "open"){
+                    return $this->apiOutput("Sorry! This time slot has been booked. You can't book this schedule. please try again.", 400);
+                }
+                $schedule->status = "booked";
+                $schedule->patient_id = $request->patient_id;
+                $schedule->save();
+            }
+           
+            $appoinement->updated_by   = $request->user()->id;
+            $appoinement->therapist_id = $request->therapist_id;
+            $appoinement->patient_id   = $request->patient_id;
+            $appoinement->therapist_schedule_id = $request->therapist_schedule_id;
+            $appoinement->number       = $request->number;
+            $appoinement->history      = $request->history ?? null;
+            $appoinement->date         = $schedule->date;
+            $appoinement->start_time   = $schedule->start_time;
+            $appoinement->end_time     = $schedule->end_time;
+            $appoinement->fee          = $request->fee;
+            $appoinement->language     = $request->language;
+            $appoinement->type         = $request->type;
+            $appoinement->therapist_comment = $request->comment ?? null;
+            $appoinement->remarks      = $request->remarks ?? null;
+            $appoinement->status       = $request->status;
+            if($request->hasFile('picture')){
+                $appoinement->image_url = $this->uploadFile($request, 'picture', $this->appointment_uploads, null,null,$appoinement->image_url);
+            }
+            $appoinement->save();
+            $this->saveFileInfo($request, $appoinement);
+        
             DB::commit();
             $this->apiSuccess("Appointment Updated Successfully");
-            $this->data = (new AppointmentResource($data));
+            $this->data = (new AppointmentResource($appoinement));
             return $this->apiOutput();
 
         }catch(Exception $e){
