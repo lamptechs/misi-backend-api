@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\V1\Therapist;
+namespace App\Http\Controllers\V1\Admin;
 
 use Exception;
 use Carbon\Carbon;

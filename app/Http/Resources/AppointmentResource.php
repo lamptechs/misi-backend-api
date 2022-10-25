@@ -58,7 +58,7 @@ class AppointmentResource extends JsonResource
             "appointment ticket status" => $this->appointment_ticket_status,
             "patient_info"          => (new UserResource($this->patient))->hide(["created_by", "updated_by"]),
             "therapist_info"        => (new TherapistResource($this->therapist))->hide(["created_by", "updated_by"]),
-            "therapist_schedule"    => (new TherapistScheduleResource($this->schedule))->hide(["created_by", "updated_by"]),
+            "therapist_schedule"    => (new TherapistScheduleResource($this->schedule))->hide(["created_by", "updated_by", "patient", "therapist"]),
         ]);
     }
 }
