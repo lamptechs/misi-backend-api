@@ -56,9 +56,9 @@ class AppointmentResource extends JsonResource
             "image_url"         => asset($this->image_url),
             "upload_files"      => AppointmentUploadResource::collection($this->fileInfo),
             "appointment ticket status" => $this->appointment_ticket_status,
-            "patient_info"          => (new UserResource($this->patient))->hide(["created_by", "updated_by"]),
-            "therapist_info"        => (new TherapistResource($this->therapist))->hide(["created_by", "updated_by"]),
-            "therapist_schedule"    => (new TherapistScheduleResource($this->schedule))->hide(["created_by", "updated_by", "patient", "therapist"]),
+            "patient_info"          => isset($this->patient) ? (new UserResource($this->patient))->hide(["created_by", "updated_by"]) : null,
+            "therapist_info"        => isset($this->therapist)? (new TherapistResource($this->therapist))->hide(["created_by", "updated_by"]) : null,
+            "therapist_schedule"    => (new TherapistScheduleResource($this->schedule))->hide(["created_by", "updated_by"]),
         ]);
     }
 }
