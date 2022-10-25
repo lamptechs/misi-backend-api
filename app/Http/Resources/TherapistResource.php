@@ -55,15 +55,15 @@ class TherapistResource extends JsonResource
             "gender"            => $this->gender,
             "date_of_birth"     => $this->date_of_birth,
             "status"            => $this->status,
+            "image"             => $this->image,
+            "image_url"         => asset($this->image_url),
             "therapist_type"    => isset($this->therapistType) ? (new TherapistTypeResource($this->therapistType))->hide(["created_by", "updated_by"]) : null,
             "blood_group"       => isset($this->blood) ? (new BloodGroupResource($this->blood))->hide(["created_by", "updated_by"]) : null,
             "country"           => isset($this->country) ? (new CountryResource($this->country))->hide(["created_by", "updated_by"]) : null,
             "state"             => isset($this->state) ? (new StateResource($this->state))->hide(["created_by", "updated_by"]) : null,
-            "image"             => $this->image,
-            "image_url"         => asset($this->image_url),
             "upload_files"      => TherapistUploadResource::collection($this->fileInfo),
-            "created_by"    => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
-            "updated_by"    => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null
+            "created_by"        => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
+            "updated_by"        => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null
         ]);
     }
 }

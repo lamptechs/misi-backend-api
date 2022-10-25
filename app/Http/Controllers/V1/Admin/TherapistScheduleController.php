@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\V1\Therapist;
+namespace App\Http\Controllers\V1\Admin;
 
 use App\Http\Components\Traits\Schedule;
 use App\Http\Controllers\Controller;
@@ -90,7 +90,7 @@ class TherapistScheduleController extends Controller
             "end_time"      => ["required", "date_format:H:i"],
             'start_date'    => ['required', 'date'],
             'end_date'      => ['required', 'date', 'after_or_equal:start_date'],
-            "holiday"       => ["required", "array", Rule::in($days)]
+            "holiday"       => ["required", "array", Rule::in($days)],
         ],[
             "holiday.in"    => "Day Name is not Match. use small letter in days name",   
         ]);

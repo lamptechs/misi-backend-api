@@ -12,7 +12,7 @@ use Laravel\Sanctum\HasApiTokens;
 class Therapist extends Authenticatable
 {
     //use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
-    use HasFactory,HasApiTokens;
+    use HasFactory, HasApiTokens;
 
     public function createdBy(){
         return $this->belongsTo(Admin::class, "created_by")->withTrashed();
