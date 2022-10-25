@@ -163,7 +163,13 @@ class TicketController extends Controller
             $ticket = Ticket::find($request->id);
             $ticket->patient_id = $request->patient_id ?? null;
             $ticket->therapist_id = $request->therapist_id ?? null;
-            $ticket->ticket_department_id = $request->ticket_department_id;
+            
+            if($ticket->ticket_department_id != $request->ticket_department_id)
+            {
+                $ticket->assigned_to_user_name = null;
+                $ticket->assigned_to_user_status= null;
+            }
+            
             $ticket->location = $request->location ?? null;
             $ticket->language = $request->language ?? null;
             $ticket->date = now()->format("Y-m-d");
@@ -189,12 +195,63 @@ class TicketController extends Controller
             $ticket->vtcb_date=$request->vtcb_date?? null;
             $ticket->closure=$request->closure?? null;
             $ticket->aanm_intake_1=$request->aanm_intake_1?? null;
-            $ticket->assigned_to_user_name=$request->assigned_to_user_name?? null;
-            $ticket->assigned_to_user_status=$request->assigned_to_user_status?? null;
+            
             $ticket->save();
 
             $this->apiSuccess("Ticket Info Updated successfully");
             $this->data = (new TicketResource($ticket))->hide(["replies", "created_by", "updated_by"]);
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }
+    }
+     
+    /**
+     * Assigned Ticket Yourself
+     */
+    public function assignedticket(Request $request)
+    {
+        try{
+        $validator = Validator::make(
+            $request->all(),[
+                "id"            => ["required", "exists:tickets,id"]
+            ]);
+           if ($validator->fails()) {
+                $this->apiOutput($this->getValidationError($validator), 200);
+           }
+            $ticket = Ticket::find($request->id);
+            $ticket->date = now();
+            $ticket->updated_by = $request->updated_by;
+            $ticket->assigned_to_user_name = $request->assigned_to_user_name;
+            $ticket->assigned_to_user_status =$request->assigned_to_user_status;
+            $ticket->save();
+            $this->apiSuccess("Assigned Ticket Info Updated successfully");
+            $this->data = (new TicketResource($ticket));
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }
+    }
+
+    /**
+     * Cancel Ticket
+     */
+    public function cancelticket(Request $request)
+    {
+        try{
+        $validator = Validator::make(
+            $request->all(),[
+                "id"            => ["required", "exists:tickets,id"]
+            ]);
+
+           if ($validator->fails()) {
+                $this->apiOutput($this->getValidationError($validator), 200);
+           }
+            $ticket = Ticket::find($request->id);
+            $ticket->status =$request->status;
+            $ticket->save();
+            $this->apiSuccess("Ticket cancelled successfully");
+            $this->data = (new TicketResource($ticket));
             return $this->apiOutput();
         }catch(Exception $e){
             return $this->apiOutput($this->getError( $e), 500);
