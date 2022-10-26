@@ -187,9 +187,9 @@ class AppointmentController extends Controller
             $appoinement->therapist_schedule_id = $request->therapist_schedule_id;
             $appoinement->number       = $request->number;
             $appoinement->history      = $request->history ?? null;
-            $appoinement->date         = $request->date;
-            $appoinement->start_time   = $request->start_time;
-            $appoinement->end_time     = $request->end_time;
+            //$appoinement->date         = $request->date;
+            //$appoinement->start_time   = $request->start_time;
+            //$appoinement->end_time     = $request->end_time;
             $appoinement->fee          = $request->fee;
             $appoinement->language     = $request->language;
             $appoinement->type         = $request->type;
