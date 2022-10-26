@@ -24,6 +24,7 @@ use App\Http\Controllers\V1\PibFormulaController;
 use App\Http\Controllers\V1\PitFormulaController;
 use App\Http\Controllers\V1\PibScaleController;
 use App\Http\Controllers\V1\PitScaleController;
+use App\Http\Controllers\V1\Therapist\TicketController as TherapistTicketController;
 use App\Http\Controllers\V1\TicketHistoryActivityController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -311,13 +312,13 @@ Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
      * Therapist Tickets
      */
     Route::prefix('ticket')->group(function(){
-        Route::get('/', [TicketController::class, 'index']);
-        Route::get('/show', [TicketController::class, 'show']);
-        Route::post('/store', [TicketController::class, 'store']);
-        Route::post('/update', [TicketController::class, 'update']);
-        Route::post('/assignedupdate', [TicketController::class, 'assignedupdate']);
-        Route::post('/ticketstatus', [TicketController::class, 'canclledTicket']);
-        Route::post('/delete/{id}', [TicketController::class, 'destroy']);
+        Route::get('/', [TherapistTicketController::class, 'index']);
+        Route::get('/show', [TherapistTicketController::class, 'show']);
+        Route::post('/store', [TherapistTicketController::class, 'store']);
+        Route::post('/update', [TherapistTicketController::class, 'update']);
+        Route::post('/assignedupdate', [TherapistTicketController::class, 'assignedupdate']);
+        Route::post('/ticketstatus', [TherapistTicketController::class, 'canclledTicket']);
+        Route::post('/delete/{id}', [TherapistTicketController::class, 'destroy']);
     });
     
     Route::prefix('appointment')->group(function(){
