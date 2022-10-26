@@ -52,15 +52,6 @@ class TicketResource extends JsonResource
             "status"                => $this->status ?? false,
             "total_replies"         => count($this->replies),
             "mono_multi_zd"         => $this->mono_multi_zd,
-<<<<<<< HEAD
-            "mono_multi_screeing"    => $this->mono_multi_screeing,
-            "created_by"            => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
-            "updated_by"            => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
-            
-            "therapist"             => (new TherapistResource($this->therapist))->hide(["created_by", "updated_by", "upload_files", "image", "therapist_type", "blood_group", "country", "state"]),
-            "patient"               => (new UserResource($this->patient))->hide(["created_by", "updated_by", "blood_group", "group", "upload_files", "updated_by", "created_by", "state", "country"]),
-            "ticket_department"     => (new TicketDepartmentResource($this->ticketDepartment))->hide(["created_by", "updated_by"]),
-=======
             "mono_multi_screeing"   => $this->mono_multi_screeing,
             "intakes_therapist"     => $this->intakes_therapist,
             "tresonit_number"       =>$this->tresonit_number,
@@ -77,12 +68,11 @@ class TicketResource extends JsonResource
             "closure"               =>$this->closure,
             "aanm_intake_1"         =>$this->aanm_intake_1,
             "assigned_to_user_name" =>$this->assigned_to_user_name,
-            "created_by"    => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
-            "updated_by"    => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
-            "therapist_info"             =>isset($this->therapist) ? (new TherapistResource($this->therapist))->hide(["created_by", "updated_by", "upload_files", "image", "therapist_type", "blood_group", "country", "state"]) :null,
-            "patient_info"               => isset($this->patient) ?(new UserResource($this->patient))->hide(["created_by", "updated_by", "blood_group", "group", "upload_files", "updated_by", "created_by", "state", "country"]) :null,
-            "ticket_department_info"     => (new TicketDepartmentResource($this->ticketDepartment))->hide(["created_by", "updated_by"]),
->>>>>>> 2ad3168d607cf0f4fa9238b75bebea7171b61fb3
+            "created_by"            => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
+            "updated_by"            => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
+            "therapist_info"        => isset($this->therapist) ? (new TherapistResource($this->therapist))->hide(["created_by", "updated_by", "upload_files", "image", "therapist_type", "blood_group", "country", "state"]) :null,
+            "patient_info"          => isset($this->patient) ?(new UserResource($this->patient))->hide(["created_by", "updated_by", "blood_group", "group", "upload_files", "updated_by", "created_by", "state", "country"]) :null,
+            "ticket_department_info"=> isset($this->ticketDepartment) ? (new TicketDepartmentResource($this->ticketDepartment))->hide(["created_by", "updated_by"]) : null,
             "replies"               => TicketReplyResource::collection($this->replies)->hide(["updated_by", "created_by"])
         ]);
     }

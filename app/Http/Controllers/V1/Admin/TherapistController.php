@@ -38,7 +38,6 @@ class TherapistController extends Controller
      * Login
      */
     public function login(Request $request){
-        $therapist=Therapist::all();
         try{
             $validator = Validator::make($request->all(), [
                 "email"     => ["required", "email", "exists:therapists,email"],
