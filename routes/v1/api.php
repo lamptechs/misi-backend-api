@@ -65,6 +65,8 @@ Route::middleware(["auth:admin"])->group(function(){
             Route::get('/show', [TicketController::class, 'show']);
             Route::post('/update', [TicketController::class, 'update']);
             Route::post('/delete', [TicketController::class, 'deleteTicket']);
+            Route::post('/cancelticket', [TicketController::class, 'cancelticket']);
+            Route::post('/assignedticket', [TicketController::class, 'assignedticketgit']);
 
             // Reply On Ticket
             Route::prefix("reply")->group(function(){
