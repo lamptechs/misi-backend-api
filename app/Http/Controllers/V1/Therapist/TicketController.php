@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\V1\Admin;
+namespace App\Http\Controllers\V1\Therapist;
 
-use Exception;
-use App\Models\Ticket;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TicketResource;
+use App\Models\Ticket;
+use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Resources\TicketReplyResource;
-use App\Models\TicketReply;
 
 class TicketController extends Controller
 {
@@ -22,26 +20,25 @@ class TicketController extends Controller
     {
         try{
             $validator = Validator::make( $request->all(),[
+                "date"          => ["nullable", "date", "date_format:Y-m-d"],
                 'patient_id'    => ['nullable', "exists:users,id"],
-                'therapist_id'  => ['nullable', "exists:therapists,id"],
-                "date"          => ["nullable", "date", "date_format:Y-m-d"]
             ]);
-
+            
             if ($validator->fails()) {
-                $this->apiOutput($this->getValidationError($validator), 200);
+                return $this->apiOutput($this->getValidationError($validator), 200);
             }
-
-            $tickets = Ticket::orderBy("date", "DESC")->orderBy("id", "DESC");
+            
+            $therapist = $request->user();
+            $tickets = Ticket::where("therapist_id", $therapist->id)
+                ->orderBy("date", "DESC")->orderBy("id", "DESC");
+            // Filter By Date
             if( !empty($request->date) ){
                 $tickets->where("date", $request->date);
             }
-            if( !empty($request->therapist_id) ){
-                $tickets->where("therapist_id", $request->therapist_id);
-            }
+            // Filter By Paitent
             if( !empty($request->patient_id) ){
                 $tickets->where("patient_id", $request->patient_id);
             }
-
             $tickets = $tickets->get();
             $this->data = TicketResource::collection($tickets)->hide(["replies", "created_by", "updated_by"]);
             $this->apiSuccess("Ticket Loaded Successfully");
@@ -124,7 +121,16 @@ class TicketController extends Controller
     public function show(Request $request)
     {
         try{
-            $ticket = Ticket::find($request->id);
+            $validator = Validator::make( $request->all(),[
+                'id'    => ['required', "exists:tickets,id"],
+            ]);
+            
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 200);
+            }
+
+            $therapist = $request->user();
+            $ticket = Ticket::where("id", $request->id)->where("therapist_id", $therapist->id)->first();
             if( empty($ticket) ){
                 return $this->apiOutput("Ticket Data Not Found", 400);
             }
@@ -195,7 +201,8 @@ class TicketController extends Controller
             $ticket->vtcb_date=$request->vtcb_date?? null;
             $ticket->closure=$request->closure?? null;
             $ticket->aanm_intake_1=$request->aanm_intake_1?? null;
-            
+            $ticket->assigned_to_user_name=$request->assigned_to_user_name?? null;
+            $ticket->assigned_to_user_status=$request->assigned_to_user_status?? null;
             $ticket->save();
 
             $this->apiSuccess("Ticket Info Updated successfully");
