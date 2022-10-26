@@ -147,8 +147,8 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::get('/show', [TicketController::class, 'show']);
         Route::post('/store', [TicketController::class, 'store']);
         Route::post('/update', [TicketController::class, 'update']);
-        Route::post('/assignedupdate', [TicketController::class, 'assignedupdate']);
-        Route::post('/ticketstatus', [TicketController::class, 'assignedticketstatus']);
+        Route::post('/assignedticket', [TicketController::class, 'assignedticket']);
+        Route::post('/ticketstatus', [TicketController::class, 'cancelticket']);
         Route::post('/delete/{id}', [TicketController::class, 'destroy']);
     });
 
@@ -356,8 +356,8 @@ Route::middleware(["auth:patient"])->prefix("patient")->group(function(){
         Route::get('/show', [TicketController::class, 'show']);
         Route::post('/store', [TicketController::class, 'store']);
         Route::post('/update', [TicketController::class, 'update']);
-        Route::post('/assignedupdate', [TicketController::class, 'assignedupdate']);
-        Route::post('/ticketstatus', [TicketController::class, 'canclledTicket']);
+        Route::post('/assignedticket', [TicketController::class, 'assignedticket']);
+        Route::post('/ticketstatus', [TicketController::class, 'cancelticket']);
         Route::post('/delete/{id}', [TicketController::class, 'destroy']);
     });
     
