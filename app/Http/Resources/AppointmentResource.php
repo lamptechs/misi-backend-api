@@ -58,7 +58,7 @@ class AppointmentResource extends JsonResource
             "appointment ticket status" => $this->appointment_ticket_status,
             "patient_info"          => isset($this->patient) ? (new UserResource($this->patient))->hide(["created_by", "updated_by"]) : null,
             "therapist_info"        => isset($this->therapist)? (new TherapistResource($this->therapist))->hide(["created_by", "updated_by"]) : null,
-            "therapist_schedule"    => (new TherapistScheduleResource($this->schedule))->hide(["created_by", "updated_by"]),
+            "therapist_schedule"    => isset($this->schedule)? (new TherapistScheduleResource($this->schedule))->hide(["created_by", "updated_by"]) : null,
         ]);
     }
 }
