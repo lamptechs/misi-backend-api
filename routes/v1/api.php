@@ -20,6 +20,7 @@ use App\Http\Controllers\V1\DegreeController;
 use App\Http\Controllers\V1\QuestionController;
 use App\Http\Controllers\V1\GroupController;
 use App\Http\Controllers\V1\Admin\TherapistScheduleController;
+use App\Http\Controllers\V1\Patient\TicketController as PatientTicketController;
 use App\Http\Controllers\V1\PibFormulaController;
 use App\Http\Controllers\V1\PitFormulaController;
 use App\Http\Controllers\V1\PibScaleController;
@@ -352,6 +353,7 @@ Route::middleware(["auth:patient"])->prefix("patient")->group(function(){
     
     
     Route::prefix('ticket')->group(function(){
+<<<<<<< HEAD
         Route::get('/', [TicketController::class, 'index']);
         Route::get('/show', [TicketController::class, 'show']);
         Route::post('/store', [TicketController::class, 'store']);
@@ -359,6 +361,14 @@ Route::middleware(["auth:patient"])->prefix("patient")->group(function(){
         Route::post('/assignedticket', [TicketController::class, 'assignedticket']);
         Route::post('/ticketstatus', [TicketController::class, 'cancelticket']);
         Route::post('/delete/{id}', [TicketController::class, 'destroy']);
+=======
+        Route::get('/', [PatientTicketController::class, 'index']);
+        Route::get('/show', [PatientTicketController::class, 'show']);
+        Route::post('/store', [PatientTicketController::class, 'store']);
+        Route::post('/update', [PatientTicketController::class, 'update']);
+        Route::post('/ticketstatus', [PatientTicketController::class, 'canclledTicket']);
+        Route::post('/delete/{id}', [PatientTicketController::class, 'destroy']);
+>>>>>>> 1d54afc7efc9ebe9c0b1b4252d494648f3d54847
     });
     
     
