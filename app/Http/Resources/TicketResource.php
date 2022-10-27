@@ -69,6 +69,8 @@ class TicketResource extends JsonResource
             "aanm_intake_1"         =>$this->aanm_intake_1,
             "assigned_to_user_name" =>$this->assigned_to_user_name,
             "assigned_to_user_status"=>$this->assigned_to_user_status,
+            "cancel_ticket_type"=>$this->cancel_ticket_type,
+            "cancel_reason"=>$this->cancel_reason,
             "created_by"            => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
             "updated_by"            => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
             "therapist_info"        => isset($this->therapist) ? (new TherapistResource($this->therapist))->hide(["created_by", "updated_by", "upload_files", "image", "therapist_type", "blood_group", "country", "state"]) :null,

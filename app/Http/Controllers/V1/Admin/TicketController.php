@@ -252,9 +252,11 @@ class TicketController extends Controller
            }
             $ticket = Ticket::find($request->id);
             $ticket->status =$request->status;
+            $ticket->cancel_ticket_type=$request->cancel_ticket_type;
+            $ticket->cancel_reason=$request->cancel_reason;
             $ticket->save();
             $this->apiSuccess("Ticket cancelled successfully");
-            $this->data = (new TicketResource($ticket));
+            $this->data = (new TicketResource($ticket))->hide(["therapist_info","patient_info", "created_by", "updated_by"]);
             return $this->apiOutput();
         }catch(Exception $e){
             return $this->apiOutput($this->getError( $e), 500);
