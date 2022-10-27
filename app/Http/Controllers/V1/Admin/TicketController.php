@@ -170,6 +170,8 @@ class TicketController extends Controller
                 $ticket->assigned_to_user_status= null;
             }
             
+            $ticket->ticket_department_id = $request->ticket_department_id;
+            
             $ticket->location = $request->location ?? null;
             $ticket->language = $request->language ?? null;
             $ticket->date = now()->format("Y-m-d");
@@ -195,7 +197,8 @@ class TicketController extends Controller
             $ticket->vtcb_date=$request->vtcb_date?? null;
             $ticket->closure=$request->closure?? null;
             $ticket->aanm_intake_1=$request->aanm_intake_1?? null;
-            
+            //$ticket->assigned_to_user_name=$request->assigned_to_user_name?? null;
+            //$ticket->assigned_to_user_status=$request->assigned_to_user_status?? null;
             $ticket->save();
 
             $this->apiSuccess("Ticket Info Updated successfully");
@@ -248,7 +251,7 @@ class TicketController extends Controller
                 $this->apiOutput($this->getValidationError($validator), 200);
            }
             $ticket = Ticket::find($request->id);
-            $ticket->ticket_status =$request->ticket_status;
+            $ticket->status =$request->status;
             $ticket->save();
             $this->apiSuccess("Ticket cancelled successfully");
             $this->data = (new TicketResource($ticket));
