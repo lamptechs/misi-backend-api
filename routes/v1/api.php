@@ -20,6 +20,7 @@ use App\Http\Controllers\V1\DegreeController;
 use App\Http\Controllers\V1\QuestionController;
 use App\Http\Controllers\V1\GroupController;
 use App\Http\Controllers\V1\Admin\TherapistScheduleController;
+use App\Http\Controllers\V1\Patient\TicketController as PatientTicketController;
 use App\Http\Controllers\V1\PibFormulaController;
 use App\Http\Controllers\V1\PitFormulaController;
 use App\Http\Controllers\V1\PibScaleController;
@@ -319,7 +320,7 @@ Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
         Route::post('/update', [TherapistTicketController::class, 'update']);
         Route::post('/assignedupdate', [TherapistTicketController::class, 'assignedupdate']);
         Route::post('/ticketstatus', [TherapistTicketController::class, 'canclledTicket']);
-        Route::post('/delete/{id}', [TherapistTicketController::class, 'destroy']);
+        Route::post('/delete/{id}', [TherapistTicketController::class, 'deleteTicket']);
     });
     
     Route::prefix('appointment')->group(function(){
@@ -348,18 +349,18 @@ Route::middleware(["auth:patient"])->prefix("patient")->group(function(){
     Route::get('/', [PatientController::class, 'index']);
     Route::get('/show', [PatientController::class, 'show']);
     Route::post('/store', [PatientController::class, 'store']);
-    Route::post('/update/{id}', [PatientController::class, 'update']);
-    Route::post('/delete/{id}', [PatientController::class, 'destroy']);
+    Route::post('/update', [PatientController::class, 'update']);
+    Route::post('/delete', [PatientController::class, 'destroy']);
     
     
     Route::prefix('ticket')->group(function(){
-        Route::get('/', [TicketController::class, 'index']);
-        Route::get('/show', [TicketController::class, 'show']);
-        Route::post('/store', [TicketController::class, 'store']);
-        Route::post('/update', [TicketController::class, 'update']);
-        Route::post('/assignedupdate', [TicketController::class, 'assignedupdate']);
-        Route::post('/ticketstatus', [TicketController::class, 'canclledTicket']);
-        Route::post('/delete/{id}', [TicketController::class, 'destroy']);
+        Route::get('/', [PatientTicketController::class, 'index']);
+        Route::get('/show', [PatientTicketController::class, 'show']);
+        Route::post('/store', [PatientTicketController::class, 'store']);
+        Route::post('/update', [PatientTicketController::class, 'update']);
+        Route::post('/delete', [PatientTicketController::class, 'deleteTicket']);
+        Route::post('/assignedupdate', [PatientTicketController::class, 'assignedupdate']);
+        Route::post('/ticketstatus', [PatientTicketController::class, 'canclledTicket']);
     });
     
     
