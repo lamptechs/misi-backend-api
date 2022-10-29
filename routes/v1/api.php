@@ -326,9 +326,9 @@ Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
         Route::get('/', [TherapistAppointmentController::class, 'index']);
         Route::get('/show', [TherapistAppointmentController::class, 'show']);
         Route::post('/store', [TherapistAppointmentController::class, 'store']);
-        Route::post('/update/{id}', [TherapistAppointmentController::class, 'update']);
+        Route::post('/update', [TherapistAppointmentController::class, 'update']);
         Route::post('ticketstatus', [TherapistAppointmentController::class, 'appointmentstatus']);
-        Route::post('/delete/{id}', [TherapistAppointmentController::class, 'destroy']);
+        Route::post('/delete', [TherapistAppointmentController::class, 'destroy']);
     });
     
 });
@@ -368,9 +368,9 @@ Route::middleware(["auth:patient"])->prefix("patient")->group(function(){
         Route::get('/', [AppointmentController::class, 'index']);
         Route::get('/show', [AppointmentController::class, 'show']);
         Route::post('/store', [AppointmentController::class, 'store']);
-        Route::post('/update/{id}', [AppointmentController::class, 'update']);
+        Route::post('/update', [AppointmentController::class, 'update']);
         Route::post('ticketstatus', [AppointmentController::class, 'appointmentstatus']);
-        Route::post('/delete/{id}', [AppointmentController::class, 'destroy']);
+        Route::post('/delete', [AppointmentController::class, 'destroy']);
     });
 });
 
