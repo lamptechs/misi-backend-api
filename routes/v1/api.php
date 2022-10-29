@@ -24,6 +24,7 @@ use App\Http\Controllers\V1\PibFormulaController;
 use App\Http\Controllers\V1\PitFormulaController;
 use App\Http\Controllers\V1\PibScaleController;
 use App\Http\Controllers\V1\PitScaleController;
+use App\Http\Controllers\V1\Therapist\AppointmentController as TherapistAppointmentController;
 use App\Http\Controllers\V1\Therapist\TicketController as TherapistTicketController;
 use App\Http\Controllers\V1\TicketHistoryActivityController;
 use Illuminate\Http\Request;
@@ -322,12 +323,12 @@ Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
     });
     
     Route::prefix('appointment')->group(function(){
-        Route::get('/', [AppointmentController::class, 'index']);
-        Route::get('/show', [AppointmentController::class, 'show']);
-        Route::post('/store', [AppointmentController::class, 'store']);
-        Route::post('/update/{id}', [AppointmentController::class, 'update']);
-        Route::post('ticketstatus', [AppointmentController::class, 'appointmentstatus']);
-        Route::post('/delete/{id}', [AppointmentController::class, 'destroy']);
+        Route::get('/', [TherapistAppointmentController::class, 'index']);
+        Route::get('/show', [TherapistAppointmentController::class, 'show']);
+        Route::post('/store', [TherapistAppointmentController::class, 'store']);
+        Route::post('/update/{id}', [TherapistAppointmentController::class, 'update']);
+        Route::post('ticketstatus', [TherapistAppointmentController::class, 'appointmentstatus']);
+        Route::post('/delete/{id}', [TherapistAppointmentController::class, 'destroy']);
     });
     
 });
