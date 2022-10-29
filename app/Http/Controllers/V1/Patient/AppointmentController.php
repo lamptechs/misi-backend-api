@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\V1;
+namespace App\Http\Controllers\V1\Patient;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AppointmentResource;
 use App\Models\AppointmentUpload;
 use App\Models\Appointmnet;
 use App\Models\TherapistSchedule;
-use App\Models\User;
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +14,7 @@ use Illuminate\Support\Facades\Validator;
 
 class AppointmentController extends Controller
 {
-     /**
+    /**
      * Get Current Table Model
      */
     private function getModel(){
@@ -29,29 +27,26 @@ class AppointmentController extends Controller
      */
     public function index(Request $request)
     {
-        try{
-            $validator = Validator::make($request->all(), [
-                "date"                  => ["nullable", "date", "date_format:Y-m-d"],
-                "therapist_id"          => ["required", "exists:therapists,id"],
-                "patient_id"            => ["required", "exists:users,id"],
-            ]);
-            if($validator->fails()){
-                return $this->apiOutput($this->getValidationError($validator), 400);
-            }
+        $validator = Validator::make( $request->all(),[
+            "date"          => ["nullable", "date", "date_format:Y-m-d"],
+            'therapist_id'    => ['nullable', "exists:therapists,id"],
+        ]);
+        
+        if ($validator->fails()) {
+            return $this->apiOutput($this->getValidationError($validator), 200);
+        }
 
-            $appoinement = Appointmnet::orderBy('date', "ASC")->orderBy("start_time", "ASC");
+        try{
+            $patient = $request->user();
+            $appoinement = Appointmnet::where("patient_id", $patient->id);
             if( !empty($request->date) ){
                 $appoinement->where("date", $request->date);
-            }else{
-                $appoinement->where("date", ">=", now()->format('Y-m-d'));
-            }
-            if( !empty($request->patient_id) ){
-                $appoinement->where("patient_id", $request->patient_id);
             }
             if( !empty($request->therapist_id) ){
                 $appoinement->where("therapist_id", $request->therapist_id);
             }
-            $appoinement = $appoinement->get();
+            $appoinement = $appoinement->orderBy("date", "ASC")->orderBy("start_time", "ASC")->get();
+            
             $this->data = AppointmentResource::collection($appoinement);
             $this->apiSuccess("Appointment Load has been Successfully done");
             return $this->apiOutput();
@@ -72,10 +67,9 @@ class AppointmentController extends Controller
     {
         try{
             $validator = Validator::make($request->all(), [
-                "therapist_id"  => ["required", "exists:therapists,id"],
-                "patient_id"    => ["required", "exists:users,id"],
+                'therapist_id'          => ['nullable', "exists:therapists,id"],
                 "therapist_schedule_id" => ["required", "exists:therapist_schedules,id"],
-                "status"        => ["required", "boolean"]
+                "status"                => ["required"]
             ]);
             if($validator->fails()){
                 return $this->apiOutput($this->getValidationError($validator), 400);
@@ -91,10 +85,10 @@ class AppointmentController extends Controller
             $schedule->patient_id = $request->patient_id;
             $schedule->save();
 
+            $patient = $request->user();
             $data = $this->getModel();
-            $data->created_by   = $request->user()->id;
-            $data->therapist_id = $request->therapist_id;
-            $data->patient_id   = $request->patient_id;
+            $data->therapist_id = $request->id;
+            $data->patient_id   = $patient->id;
             $data->therapist_schedule_id = $request->therapist_schedule_id;
             $data->number       = $request->number;
             $data->history      = $request->history ?? null;
@@ -149,7 +143,9 @@ class AppointmentController extends Controller
     public function show(Request $request)
     {
         try{
-            $appointment = Appointmnet::find($request->id);
+            $patient = $request->user();
+            $appointment = Appointmnet::where("id", $request->id)
+                ->where("patient_id", $patient->id)->first();
             if( empty($appointment) ){
                 return $this->apiOutput("Appointment Data Not Found", 400);
             }
@@ -175,19 +171,20 @@ class AppointmentController extends Controller
         try{
             $validator = Validator::make($request->all(), [
                 "id"                    => ["required", "exists:appointmnets,id"],
-                "therapist_id"  => ["required", "exists:therapists,id"],
-                "patient_id"    => ["required", "exists:users,id"],
+                'therapist_id'          => ['nullable', "exists:therapists,id"],
                 "therapist_schedule_id" => ["required", "exists:therapist_schedules,id"],
-                "status"        => ["required", "boolean"]
+                "status"                => ["required",]
             ]);
             if($validator->fails()){
                 return $this->apiOutput($this->getValidationError($validator), 400);
             }
 
             DB::beginTransaction();
-            $appoinement = Appointmnet::find($request->id);
-            if($appoinement->therapist_schedule_id != $request->therapist_schedule_id){
-                $schedule = TherapistSchedule::where("id", $appoinement->therapist_schedule_id)
+            $patient = $request->user();
+            $appointment = Appointmnet::where("id", $request->id)
+                ->where("patient_id", $patient->id)->first();
+            if($appointment->therapist_schedule_id != $request->therapist_schedule_id){
+                $schedule = TherapistSchedule::where("id", $appointment->therapist_schedule_id)
                     ->update(["status" => "open", "patient_id" => null]);
     
                 $schedule->status = "open";
@@ -199,34 +196,30 @@ class AppointmentController extends Controller
                     return $this->apiOutput("Sorry! This time slot has been booked. You can't book this schedule. please try again.", 400);
                 }
                 $schedule->status = "booked";
-                $schedule->patient_id = $request->patient_id;
+                $schedule->patient_id = $patient->id;
                 $schedule->save();
             }
            
-            $appoinement->updated_by   = $request->user()->id;
-            $appoinement->therapist_id = $request->therapist_id;
-            $appoinement->patient_id   = $request->patient_id;
-            $appoinement->therapist_schedule_id = $request->therapist_schedule_id;
-            $appoinement->number       = $request->number;
-            $appoinement->history      = $request->history ?? null;
-            //$appoinement->date         = $request->date;
-            //$appoinement->start_time   = $request->start_time;
-            //$appoinement->end_time     = $request->end_time;
-            $appoinement->fee          = $request->fee;
-            $appoinement->language     = $request->language;
-            $appoinement->type         = $request->type;
-            $appoinement->therapist_comment = $request->comment ?? null;
-            $appoinement->remarks      = $request->remarks ?? null;
-            $appoinement->status       = $request->status;
+            $appointment->patient_id   = $patient->id;
+            $appointment->therapist_id = $request->therapist_id;
+            $appointment->therapist_schedule_id = $request->therapist_schedule_id;
+            $appointment->number       = $request->number;
+            $appointment->history      = $request->history ?? null;
+            $appointment->fee          = $request->fee;
+            $appointment->language     = $request->language;
+            $appointment->type         = $request->type;
+            $appointment->therapist_comment = $request->comment ?? null;
+            $appointment->remarks      = $request->remarks ?? null;
+            $appointment->status       = $request->status;
             if($request->hasFile('picture')){
-                $appoinement->image_url = $this->uploadFile($request, 'picture', $this->appointment_uploads, null,null,$appoinement->image_url);
+                $appointment->image_url = $this->uploadFile($request, 'picture', $this->appointment_uploads, null,null,$appointment->image_url);
             }
-            $appoinement->save();
-            $this->saveFileInfo($request, $appoinement);
+            $appointment->save();
+            $this->saveFileInfo($request, $appointment);
         
             DB::commit();
             $this->apiSuccess("Appointment Updated Successfully");
-            $this->data = (new AppointmentResource($appoinement));
+            $this->data = (new AppointmentResource($appointment));
             return $this->apiOutput();
 
         }catch(Exception $e){
@@ -248,7 +241,9 @@ class AppointmentController extends Controller
            if ($validator->fails()) {    
                 $this->apiOutput($this->getValidationError($validator), 200);
            }
-            $ticket = Appointmnet::find($request->id);
+            $patient = $request->user();
+            $ticket = Appointmnet::where("id", $request->id)
+                ->where("patient_id", $patient->id)->first();
             $ticket->appointment_ticket_status ="Cancelled";
             $ticket->save();
             $this->apiSuccess("Assigned Ticket Cancelled successfully");
@@ -266,11 +261,13 @@ class AppointmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         try{
-            $data = $this->getModel()->find($id);
-            $data->delete();
+            $patient = $request->user();
+            $appointment = Appointmnet::where("id", $request->id)
+                ->where("patient_id", $patient->id)->first();
+            $appointment->delete();
             $this->apiSuccess();
             return $this->apiOutput("Appointment Deleted Successfully", 200);
         }catch(Exception $e){
