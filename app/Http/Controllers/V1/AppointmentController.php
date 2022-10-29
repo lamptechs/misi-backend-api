@@ -32,8 +32,8 @@ class AppointmentController extends Controller
         try{
             $validator = Validator::make($request->all(), [
                 "date"                  => ["nullable", "date", "date_format:Y-m-d"],
-                "therapist_id"          => ["required", "exists:therapists,id"],
-                "patient_id"            => ["required", "exists:users,id"],
+                "therapist_id"          => ["nullable", "exists:therapists,id"],
+                "patient_id"            => ["nullable", "exists:users,id"],
             ]);
             if($validator->fails()){
                 return $this->apiOutput($this->getValidationError($validator), 400);
