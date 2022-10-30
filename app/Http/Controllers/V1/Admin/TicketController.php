@@ -255,7 +255,7 @@ class TicketController extends Controller
                 $this->apiOutput($this->getValidationError($validator), 200);
            }
             $ticket = Ticket::find($request->id);
-            $ticket->status =$request->status;
+            $ticket->ticket_status =$request->ticket_status;
             $ticket->cancel_ticket_type=$request->cancel_ticket_type;
             $ticket->cancel_reason=$request->cancel_reason;
             $ticket->save();

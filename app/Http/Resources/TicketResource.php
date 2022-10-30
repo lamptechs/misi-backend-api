@@ -49,7 +49,7 @@ class TicketResource extends JsonResource
             "strike_history"        => $this->strike_history ?? "",
             "ticket_history"        => $this->ticket_history ?? "",
             "remarks"               => $this->remarks ?? "",
-            "status"                => $this->status ?? false,
+            "ticket_status"                => $this->ticket_status ?? "",
             "total_replies"         => count($this->replies),
             "mono_multi_zd"         => $this->mono_multi_zd,
             "mono_multi_screeing"   => $this->mono_multi_screeing,
