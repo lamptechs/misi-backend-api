@@ -393,6 +393,7 @@ class TicketController extends Controller
             $reply = TicketReply::where("id", $request->id)
                 ->where("ticket_id", $request->ticket_id)
                 ->first();
+            $reply->updated_by = $request->user()->id;
             $this->data = (new TicketReplyResource($reply));
             $this->apiSuccess("Ticket reply loaded successfully");
             return $this->apiOutput();
