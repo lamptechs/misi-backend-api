@@ -350,7 +350,7 @@ class PatientController extends Controller
             //$this->updateFileInfo($request, $data);
 
             $data->save();
-            $this->updateFileInfo($request, $data->id);
+            //$this->updateFileInfo($request, $data->id);
 
             DB::commit();
             //try{

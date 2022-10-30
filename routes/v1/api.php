@@ -20,7 +20,6 @@ use App\Http\Controllers\V1\DegreeController;
 use App\Http\Controllers\V1\QuestionController;
 use App\Http\Controllers\V1\GroupController;
 use App\Http\Controllers\V1\Admin\TherapistScheduleController;
-use App\Http\Controllers\V1\Patient\TicketController as PatientTicketController;
 use App\Http\Controllers\V1\PibFormulaController;
 use App\Http\Controllers\V1\PitFormulaController;
 use App\Http\Controllers\V1\PibScaleController;

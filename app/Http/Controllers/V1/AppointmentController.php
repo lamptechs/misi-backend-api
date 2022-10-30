@@ -251,6 +251,8 @@ class AppointmentController extends Controller
            }
             $ticket = Appointmnet::find($request->id);
             $ticket->appointment_ticket_status ="Cancelled";
+            $ticket->cancel_appointment_type=$request->cancel_appointment_type;
+            $ticket->cancel_reason=$request->cancel_reason;
             $ticket->save();
             $this->apiSuccess("Assigned Ticket Cancelled successfully");
             $this->data = (new AppointmentResource($ticket));
