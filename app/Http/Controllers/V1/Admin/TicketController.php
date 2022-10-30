@@ -10,6 +10,8 @@ use App\Http\Resources\TicketResource;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\TicketReplyResource;
 use App\Models\TicketReply;
+use App\Models\TicketUpload;
+use Illuminate\Support\Facades\DB;
 
 class TicketController extends Controller
 {
@@ -71,13 +73,13 @@ class TicketController extends Controller
                 "remarks"       => ["nullable", "string"],
                 "ticket_history"=> ["nullable", "string"],
                 "status"        => ["required", "boolean"],
-                "file"          => ["nullable", "file"],
+                
             ]);
 
             if ($validator->fails()) {
                 return $this->apiOutput($this->getValidationError($validator), 200);
             }
-
+            DB::beginTransaction();
             $ticket = new Ticket();            
             $ticket->patient_id = $request->patient_id ?? null;
             $ticket->therapist_id = $request->therapist_id ?? null;
@@ -109,15 +111,36 @@ class TicketController extends Controller
             $ticket->aanm_intake_1=$request->aanm_intake_1?? null;
             $ticket->assigned_to_user_name=$request->assigned_to_user_name?? null;
             $ticket->assigned_to_user_status=$request->assigned_to_user_status?? null;
-            $ticket->file = $this->uploadFile($request, "file", $this->others_dir, null, null, $ticket->file);
+
             $ticket->save();
+            $this->saveFileInfo($request, $ticket);
+            DB::commit();
             $this->apiSuccess("Ticket Create Successfully");
             $this->data = (new TicketResource($ticket))->hide(["ticket_department", "updated_by", "created_by"]);
+            
             return $this->apiOutput();
         }catch(Exception $e){
             return $this->apiOutput($this->getError( $e), 500);
         }
     }
+
+      // Save File Info
+      public function saveFileInfo($request, $ticket){
+        $file_path = $this->uploadFile($request, 'file', $this->ticket_uploads, 720);
+  
+        if( !is_array($file_path) ){
+            $file_path = (array) $file_path;
+        }
+        foreach($file_path as $path){
+            $data = new TicketUpload();
+            $data->ticket_id = $ticket->id;
+            $data->file_name    = $request->file_name ?? "Ticket Upload";
+            $data->file_url     = $path;
+            $data->save();
+        }
+       
+    }
+
 
     /**
      * Display the specified resource.
@@ -204,6 +227,7 @@ class TicketController extends Controller
             //$ticket->assigned_to_user_status=$request->assigned_to_user_status?? null;
             $ticket->file = $this->uploadFile($request, "file", $this->others_dir, null, null, $ticket->file);
             $ticket->save();
+            
 
             $this->apiSuccess("Ticket Info Updated successfully");
             $this->data = (new TicketResource($ticket))->hide(["replies", "created_by", "updated_by"]);
