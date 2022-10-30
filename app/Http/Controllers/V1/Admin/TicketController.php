@@ -307,7 +307,8 @@ class TicketController extends Controller
     
             $reply = TicketReply::where("ticket_id", $request->ticket_id)
                 ->orderBy("created_at", "desc")->get();
-            $this->data = TicketReplyResource::collection($reply)->hide(["created_by", "updated_by"]);
+            //$this->data = TicketReplyResource::collection($reply)->hide(["created_by", "updated_by"]);
+            $this->data = TicketReplyResource::collection($reply);
             $this->apiSuccess("Ticket reply loaded successfully");
             return $this->apiOutput();
         }catch(Exception $e){
@@ -338,6 +339,8 @@ class TicketController extends Controller
             $reply = new TicketReply();
             $reply->ticket_id = $request->ticket_id;
             $reply->comment = $request->comment;
+            $reply->created_by = $request->user()->id;
+            $reply->updated_by = $request->user()->id;
             if($request->hasFile('file')){
                 $reply->file = $this->uploadFile($request, "file", $this->others_dir);
             }
