@@ -15,9 +15,7 @@ class CreateTicketHistoryActivitiesTable extends Migration
     {
         Schema::create('ticket_history_activities', function (Blueprint $table) {
             $table->id();
-            $table->integer('ticket_id')->nullable();
-            $table->integer('patient_id')->nullable();
-            $table->integer('user_id')->nullable();
+            $table->foreignId("ticket_id")->references("id")->on("tickets");
             $table->text('activity_message')->nullable();
             $table->dateTime('date_time')->nullable();
         });
