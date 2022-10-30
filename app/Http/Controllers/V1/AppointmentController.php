@@ -27,10 +27,33 @@ class AppointmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         try{
-            $this->data = AppointmentResource::collection(Appointmnet::all());
+            $validator = Validator::make($request->all(), [
+                "date"                  => ["nullable", "date", "date_format:Y-m-d"],
+                "therapist_id"          => ["nullable", "exists:therapists,id"],
+                "patient_id"            => ["nullable", "exists:users,id"],
+            ]);
+            if($validator->fails()){
+                return $this->apiOutput($this->getValidationError($validator), 400);
+            }
+
+            $appoinement = Appointmnet::orderBy('date', "ASC")->orderBy("start_time", "ASC");
+            if( !empty($request->date) ){
+                $appoinement->where("date", $request->date);
+            }
+            // else{
+            //     $appoinement->where("date", ">=", now()->format('Y-m-d'));
+            // }
+            if( !empty($request->patient_id) ){
+                $appoinement->where("patient_id", $request->patient_id);
+            }
+            if( !empty($request->therapist_id) ){
+                $appoinement->where("therapist_id", $request->therapist_id);
+            }
+            $appoinement = $appoinement->get();
+            $this->data = AppointmentResource::collection($appoinement);
             $this->apiSuccess("Appointment Load has been Successfully done");
             return $this->apiOutput();
 

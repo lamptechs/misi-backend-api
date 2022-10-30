@@ -71,6 +71,7 @@ class TicketController extends Controller
                 "remarks"       => ["nullable", "string"],
                 "ticket_history"=> ["nullable", "string"],
                 "status"        => ["required", "boolean"],
+                "file"          => ["nullable", "file"],
             ]);
 
             if ($validator->fails()) {
@@ -108,6 +109,7 @@ class TicketController extends Controller
             $ticket->aanm_intake_1=$request->aanm_intake_1?? null;
             $ticket->assigned_to_user_name=$request->assigned_to_user_name?? null;
             $ticket->assigned_to_user_status=$request->assigned_to_user_status?? null;
+            $ticket->file = $this->uploadFile($request, "file", $this->others_dir, null, null, $ticket->file);
             $ticket->save();
             $this->apiSuccess("Ticket Create Successfully");
             $this->data = (new TicketResource($ticket))->hide(["ticket_department", "updated_by", "created_by"]);
@@ -154,6 +156,7 @@ class TicketController extends Controller
                 "ticket_history"=> ["nullable", "string"],
                 "status"        => ["required", "boolean"],
                 "ticket_department_id" => ["required"],
+                "file"          => ["nullable", "file"],
             ]);
 
             if ($validator->fails()) {
@@ -199,6 +202,7 @@ class TicketController extends Controller
             $ticket->aanm_intake_1=$request->aanm_intake_1?? null;
             //$ticket->assigned_to_user_name=$request->assigned_to_user_name?? null;
             //$ticket->assigned_to_user_status=$request->assigned_to_user_status?? null;
+            $ticket->file = $this->uploadFile($request, "file", $this->others_dir, null, null, $ticket->file);
             $ticket->save();
 
             $this->apiSuccess("Ticket Info Updated successfully");
@@ -276,7 +280,9 @@ class TicketController extends Controller
                 return $this->apiOutput($this->getValidationError($validator), 200);
             }
     
-            Ticket::where("id", $request->id)->delete();
+            $ticket = Ticket::where("id", $request->id)->first();
+            $this->RemoveFile($this->$ticket);
+            $ticket->delete();
             $this->apiSuccess("Ticket Deleted successfully");
             return $this->apiOutput();
         }catch(Exception $e){
