@@ -168,6 +168,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::get('/show', [TherapistController::class, 'show']);
         Route::post('/store', [TherapistController::class, 'store']);
         Route::post('/update', [TherapistController::class, 'update']);
+        Route::post('/therapistuploaddelete', [TherapistController::class, 'deleteFileTherapist']);
         Route::post('/delete/{id}', [TherapistController::class, 'destroy']);
     });
 
