@@ -69,6 +69,7 @@ Route::middleware(["auth:admin"])->group(function(){
             Route::post('/delete', [TicketController::class, 'deleteTicket']);
             Route::post('/cancelticket', [TicketController::class, 'cancelticket']);
             Route::post('/assignedticket', [TicketController::class, 'assignedticket']);
+            Route::post('/ticketuploaddelete', [TicketController::class, 'deleteFileTicket']);
 
             // Reply On Ticket
             Route::prefix("reply")->group(function(){
@@ -204,6 +205,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::post('/store', [AppointmentController::class, 'store']);
         Route::post('/update', [AppointmentController::class, 'update']);
         Route::post('/appointmentticketstatus', [AppointmentController::class, 'assignedappointmentticketstatus']);
+        Route::post('/appointmentuploaddelete', [AppointmentController::class, 'deleteFileAppointment']);
         Route::post('/delete/{id}', [AppointmentController::class, 'destroy']);
     });
 

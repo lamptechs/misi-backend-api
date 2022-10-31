@@ -273,6 +273,7 @@ class AppointmentController extends Controller
     {
         try{
             $data = $this->getModel()->find($id);
+            //AppointmentUpload::where('appointment_id',$data->id)->delete();
             $data->delete();
             $this->apiSuccess();
             return $this->apiOutput("Appointment Deleted Successfully", 200);
@@ -280,4 +281,24 @@ class AppointmentController extends Controller
             return $this->apiOutput($this->getError( $e), 500);
         }
     }
+
+    public function deleteFileAppointment(Request $request){
+        try{
+            $validator = Validator::make( $request->all(),[
+                "id"            => ["required", "exists:appointment_uploads,id"],
+            ]);
+
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 200);
+            }
+    
+            $appointmentupload=AppointmentUpload::where('id',$request->id);
+            $appointmentupload->delete();
+            $this->apiSuccess("Appointment File Deleted successfully");
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }
+    }
+
 }
