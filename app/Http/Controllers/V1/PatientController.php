@@ -387,4 +387,24 @@ class PatientController extends Controller
             return $this->apiOutput($this->getError( $e), 500);
         }
     }
+
+
+    public function deleteFilePatient(Request $request){
+        try{
+            $validator = Validator::make( $request->all(),[
+                "id"            => ["required", "exists:patient_uploads,id"],
+            ]);
+
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 200);
+            }
+    
+            $patientupload=PatientUpload::where('id',$request->id);
+            $patientupload->delete();
+            $this->apiSuccess("Patient File Deleted successfully");
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }
+    }
 }

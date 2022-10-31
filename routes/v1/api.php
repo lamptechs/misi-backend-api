@@ -123,6 +123,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::get('/show', [PatientController::class, 'show']);
         Route::post('/store', [PatientController::class, 'store']);
         Route::post('/update/{id}', [PatientController::class, 'update']);
+        Route::post('/patientuploaddelete', [PatientController::class, 'deleteFilePatient']);
         Route::post('/delete/{id}', [PatientController::class, 'destroy']);
     });
 
