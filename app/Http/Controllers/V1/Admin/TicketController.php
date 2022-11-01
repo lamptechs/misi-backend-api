@@ -113,7 +113,11 @@ class TicketController extends Controller
             $ticket->assigned_to_user_name=$request->assigned_to_user_name?? null;
             $ticket->assigned_to_user_status=$request->assigned_to_user_status?? null;
             $ticket->save();
+            $ticket->id;
             $this->saveFileInfo($request, $ticket);
+
+            ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket ID: ". $ticket->id." Created Successfully");
+
             DB::commit();
             $this->apiSuccess("Ticket Create Successfully");
             $this->data = (new TicketResource($ticket))->hide(["ticket_department", "updated_by", "created_by"]);
@@ -195,11 +199,19 @@ class TicketController extends Controller
             {
                 $ticket->assigned_to_user_name = null;
                 $ticket->assigned_to_user_status= null;
+
+                //ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket ID ".$ticket->id. " department updated Successfully");
             }
             
+           
             $ticket->ticket_department_id = $request->ticket_department_id;
-            
+           
+
             $ticket->location = $request->location ?? null;
+                //$ticket->location = $request->location;
+                //ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket ID ".$ticket->location. " department updated Successfully");
+            
+            
             $ticket->language = $request->language ?? null;
             $ticket->date = now()->format("Y-m-d");
             $ticket->strike = $request->strike ?? null;
