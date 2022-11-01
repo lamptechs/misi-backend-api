@@ -20,6 +20,7 @@ use App\Http\Controllers\V1\DegreeController;
 use App\Http\Controllers\V1\QuestionController;
 use App\Http\Controllers\V1\GroupController;
 use App\Http\Controllers\V1\Admin\TherapistScheduleController;
+use App\Http\Controllers\V1\Patient\TicketController as PatientTicketController;
 use App\Http\Controllers\V1\PibFormulaController;
 use App\Http\Controllers\V1\PitFormulaController;
 use App\Http\Controllers\V1\PibScaleController;
@@ -141,17 +142,6 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::post('/update', [TicketDepartmentController::class, 'update']);
         Route::post('/delete/{id}', [TicketDepartmentController::class, 'destroy']);
     });
-
-    //Ticket
-    // Route::prefix('ticket')->group(function(){
-    //     Route::get('/', [TicketController::class, 'index']);
-    //     Route::get('/show', [TicketController::class, 'show']);
-    //     Route::post('/store', [TicketController::class, 'store']);
-    //     Route::post('/update', [TicketController::class, 'update']);
-    //     Route::post('/assignedupdate', [TicketController::class, 'assignedticket']);
-    //     Route::post('/ticketstatus', [TicketController::class, 'cancelticket']);
-    //     Route::post('/delete/{id}', [TicketController::class, 'destroy']);
-    // });
 
     //Therapist Section
 
