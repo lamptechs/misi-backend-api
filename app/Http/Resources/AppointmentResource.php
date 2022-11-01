@@ -42,7 +42,7 @@ class AppointmentResource extends JsonResource
     {
         return $this->filterFields([
             "id"         => $this->id,
-            "number"     => $this->number,
+            "appointmentnumber"     => $this->appointmentnumber,
             "history"    => $this->history,
             "date"       => $this->date,
             "time"       => $this->time,

@@ -70,6 +70,7 @@ Route::middleware(["auth:admin"])->group(function(){
             Route::post('/delete', [TicketController::class, 'deleteTicket']);
             Route::post('/cancelticket', [TicketController::class, 'cancelticket']);
             Route::post('/assignedticket', [TicketController::class, 'assignedticket']);
+            Route::post('/ticketuploaddelete', [TicketController::class, 'deleteFileTicket']);
 
             // Reply On Ticket
             Route::prefix("reply")->group(function(){
@@ -123,6 +124,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::get('/show', [PatientController::class, 'show']);
         Route::post('/store', [PatientController::class, 'store']);
         Route::post('/update/{id}', [PatientController::class, 'update']);
+        Route::post('/patientuploaddelete', [PatientController::class, 'deleteFilePatient']);
         Route::post('/delete/{id}', [PatientController::class, 'destroy']);
     });
 
@@ -156,6 +158,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::get('/show', [TherapistController::class, 'show']);
         Route::post('/store', [TherapistController::class, 'store']);
         Route::post('/update', [TherapistController::class, 'update']);
+        Route::post('/therapistuploaddelete', [TherapistController::class, 'deleteFileTherapist']);
         Route::post('/delete/{id}', [TherapistController::class, 'destroy']);
     });
 
@@ -194,6 +197,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::post('/store', [AppointmentController::class, 'store']);
         Route::post('/update', [AppointmentController::class, 'update']);
         Route::post('/appointmentticketstatus', [AppointmentController::class, 'assignedappointmentticketstatus']);
+        Route::post('/appointmentuploaddelete', [AppointmentController::class, 'deleteFileAppointment']);
         Route::post('/delete/{id}', [AppointmentController::class, 'destroy']);
     });
 

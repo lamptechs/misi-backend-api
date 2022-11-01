@@ -13,6 +13,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class AppointmentController extends Controller
 {
@@ -71,6 +72,8 @@ class AppointmentController extends Controller
      */
     public function store(Request $request)
     {
+        // $string = Str::random(12);
+        // return $string;
         try{
             $validator = Validator::make($request->all(), [
                 "therapist_id"  => ["required", "exists:therapists,id"],
@@ -97,7 +100,10 @@ class AppointmentController extends Controller
             $data->therapist_id = $request->therapist_id;
             $data->patient_id   = $request->patient_id;
             $data->therapist_schedule_id = $request->therapist_schedule_id;
-            $data->number       = $request->number;
+            $number      = Appointmnet::max('appointmentnumber')+1;
+            $data->appointmentnumber = $number;
+            
+            //$data->number = Str::random(12);
             $data->history      = $request->history ?? null;
             $data->date         = $schedule->date;
             $data->start_time   = $schedule->start_time;
@@ -273,6 +279,7 @@ class AppointmentController extends Controller
     {
         try{
             $data = $this->getModel()->find($id);
+            //AppointmentUpload::where('appointment_id',$data->id)->delete();
             $data->delete();
             $this->apiSuccess();
             return $this->apiOutput("Appointment Deleted Successfully", 200);
@@ -280,4 +287,24 @@ class AppointmentController extends Controller
             return $this->apiOutput($this->getError( $e), 500);
         }
     }
+
+    public function deleteFileAppointment(Request $request){
+        try{
+            $validator = Validator::make( $request->all(),[
+                "id"            => ["required", "exists:appointment_uploads,id"],
+            ]);
+
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 200);
+            }
+    
+            $appointmentupload=AppointmentUpload::where('id',$request->id);
+            $appointmentupload->delete();
+            $this->apiSuccess("Appointment File Deleted successfully");
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }
+    }
+
 }
