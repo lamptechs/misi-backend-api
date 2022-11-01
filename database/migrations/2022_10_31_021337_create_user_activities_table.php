@@ -15,10 +15,8 @@ class CreateUserActivitiesTable extends Migration
     {
         Schema::create('user_activities', function (Blueprint $table) {
             $table->id();
-            $table->morphs("tableable_type");
-            $table->bigInteger("tableable_id");
-            $table->morphs("userable_type");
-            $table->bigInteger("userable_id");
+            $table->morphs("tableable");
+            $table->morphs("userable");
             $table->string("ip")->nullable();
             $table->text("activity")->nullable();
             $table->timestamps();

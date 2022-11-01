@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\V1\Therapist;
 
+use App\Http\Components\Classes\Facade\ActivityLog;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TicketReplyResource;
 use App\Http\Resources\TicketResource;
@@ -109,6 +110,7 @@ class TicketController extends Controller
             $ticket->assigned_to_user_status=$request->assigned_to_user_status?? null;
             $ticket->file = $this->uploadFile($request, "file", $this->others_dir, null, null, $ticket->file);
             $ticket->save();
+            ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Created Successfully");
             $this->apiSuccess("Ticket Create Successfully");
             $this->data = (new TicketResource($ticket))->hide(["ticket_department", "updated_by", "created_by"]);
             return $this->apiOutput();
@@ -209,6 +211,7 @@ class TicketController extends Controller
             $ticket->file = $this->uploadFile($request, "file", $this->others_dir, null, null, $ticket->file);
             $ticket->save();
 
+            ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Updated Successfully");
             $this->apiSuccess("Ticket Info Updated successfully");
             $this->data = (new TicketResource($ticket))->hide(["replies", "created_by", "updated_by"]);
             return $this->apiOutput();
