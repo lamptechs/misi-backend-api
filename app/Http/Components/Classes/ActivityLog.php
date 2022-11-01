@@ -16,7 +16,7 @@ Class ActivityLog{
      */
     public function user($user){
         $this->user = $user;
-        return $this;   
+        return $this;
     }
 
     /**
