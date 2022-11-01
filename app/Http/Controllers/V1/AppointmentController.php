@@ -42,9 +42,10 @@ class AppointmentController extends Controller
             $appoinement = Appointmnet::orderBy('date', "ASC")->orderBy("start_time", "ASC");
             if( !empty($request->date) ){
                 $appoinement->where("date", $request->date);
-            }else{
-                $appoinement->where("date", ">=", now()->format('Y-m-d'));
             }
+            // else{
+            //     $appoinement->where("date", ">=", now()->format('Y-m-d'));
+            // }
             if( !empty($request->patient_id) ){
                 $appoinement->where("patient_id", $request->patient_id);
             }
@@ -250,6 +251,8 @@ class AppointmentController extends Controller
            }
             $ticket = Appointmnet::find($request->id);
             $ticket->appointment_ticket_status ="Cancelled";
+            $ticket->cancel_appointment_type=$request->cancel_appointment_type;
+            $ticket->cancel_reason=$request->cancel_reason;
             $ticket->save();
             $this->apiSuccess("Assigned Ticket Cancelled successfully");
             $this->data = (new AppointmentResource($ticket));

@@ -235,20 +235,30 @@ class PatientController extends Controller
     }
 
     //Update File Info
-    public function updateFileInfo($request, $patient){
-    
-            $data = PatientUpload::find($request->id);
-            $data->updated_by   = $request->user()->id ?? null;
-            $data->patient_id   = $patient->id;
-            $data->file_name    = $request->file_name ?? "Patient Upload updated";
-            $data->file_url     = $this->uploadFile($request, 'file', $this->patient_uploads,null,null,$data->file_url);
-            $data->file_type    = $request->file_type;
-            $data->status       = $request->status;
-            $data->remarks      = $request->remarks ?? '';
-            $data->save();
-  
-        
-   }
+//     public function updateFileInfo($request, $patient){
+//             $data = PatientUpload::find($request->id);
+//             $data->updated_by   = $request->user()->id ?? null;
+//             $data->patient_id   = $patient->id;
+//             $data->file_name    = $request->file_name ?? "Patient Upload updated";
+//             $data->file_url     = $this->uploadFile($request, 'file', $this->patient_uploads,null,null,$data->file_url);
+//             $data->file_type    = $request->file_type;
+//             $data->status       = $request->status;
+//             $data->remarks      = $request->remarks ?? '';
+//             $data->save();
+//   }
+   
+   public function updateFileInfo($request, $id){
+        $upload_files = $this->uploadFile($request, 'file', $this->patient_uploads);
+        if( is_array($upload_files) ){
+            foreach($upload_files as $file){
+                $upload = new PatientUpload();
+                $upload->therappatient_idist_id = $id;
+                $upload->file_name    = $request->file_name ?? "Patient Upload Updated";
+                $upload->file_url     = $file;
+                $upload->save();    
+            }
+        }
+    }
 
     /**
      * Display the specified resource.
@@ -340,7 +350,7 @@ class PatientController extends Controller
             //$this->updateFileInfo($request, $data);
 
             $data->save();
-            $this->updateFileInfo($request, $data->id);
+            //$this->updateFileInfo($request, $data->id);
 
             DB::commit();
             //try{

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\V1\Patient;
 
-use App\Http\Components\Classes\Facade\ActivityLog;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TicketReplyResource;
 use App\Http\Resources\TicketResource;
@@ -11,6 +10,7 @@ use App\Models\TicketReply;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Components\Classes\Facade\ActivityLog;
 
 class TicketController extends Controller
 {

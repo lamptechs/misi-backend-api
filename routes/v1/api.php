@@ -143,17 +143,6 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::post('/delete/{id}', [TicketDepartmentController::class, 'destroy']);
     });
 
-    //Ticket
-    // Route::prefix('ticket')->group(function(){
-    //     Route::get('/', [TicketController::class, 'index']);
-    //     Route::get('/show', [TicketController::class, 'show']);
-    //     Route::post('/store', [TicketController::class, 'store']);
-    //     Route::post('/update', [TicketController::class, 'update']);
-    //     Route::post('/assignedupdate', [TicketController::class, 'assignedticket']);
-    //     Route::post('/ticketstatus', [TicketController::class, 'cancelticket']);
-    //     Route::post('/delete/{id}', [TicketController::class, 'destroy']);
-    // });
-
     //Therapist Section
 
     //Therapist Type

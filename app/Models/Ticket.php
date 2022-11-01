@@ -28,6 +28,10 @@ class Ticket extends Model
     public function replies(){
         return $this->hasMany(TicketReply::class, "ticket_id");
     }
+
+    public function fileInfo(){
+        return $this->hasMany(TicketUpload::class, 'ticket_id');
+    }
     
 
    
