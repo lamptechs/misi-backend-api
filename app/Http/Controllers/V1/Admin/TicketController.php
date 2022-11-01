@@ -113,7 +113,11 @@ class TicketController extends Controller
             $ticket->assigned_to_user_name=$request->assigned_to_user_name?? null;
             $ticket->assigned_to_user_status=$request->assigned_to_user_status?? null;
             $ticket->save();
+            $ticket->id;
             $this->saveFileInfo($request, $ticket);
+
+            ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket ID: ". $ticket->id." Created Successfully");
+
             DB::commit();
             $this->apiSuccess("Ticket Create Successfully");
             $this->data = (new TicketResource($ticket))->hide(["ticket_department", "updated_by", "created_by"]);
@@ -180,7 +184,7 @@ class TicketController extends Controller
                 "ticket_history"=> ["nullable", "string"],
                 "status"        => ["required", "boolean"],
                 "ticket_department_id" => ["required"],
-                "file"          => ["nullable", "file"],
+                //"file"          => ["nullable", "file"],
             ]);
 
             if ($validator->fails()) {
@@ -195,11 +199,19 @@ class TicketController extends Controller
             {
                 $ticket->assigned_to_user_name = null;
                 $ticket->assigned_to_user_status= null;
+
+                //ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket ID ".$ticket->id. " department updated Successfully");
             }
             
+           
             $ticket->ticket_department_id = $request->ticket_department_id;
-            
+           
+
             $ticket->location = $request->location ?? null;
+                //$ticket->location = $request->location;
+                //ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket ID ".$ticket->location. " department updated Successfully");
+            
+            
             $ticket->language = $request->language ?? null;
             $ticket->date = now()->format("Y-m-d");
             $ticket->strike = $request->strike ?? null;
@@ -226,7 +238,7 @@ class TicketController extends Controller
             $ticket->aanm_intake_1=$request->aanm_intake_1?? null;
             //$ticket->assigned_to_user_name=$request->assigned_to_user_name?? null;
             //$ticket->assigned_to_user_status=$request->assigned_to_user_status?? null;
-            $ticket->file = $this->uploadFile($request, "file", $this->others_dir, null, null, $ticket->file);
+            //$ticket->file = $this->uploadFile($request, "file", $this->others_dir, null, null, $ticket->file);
             $ticket->save();
             ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Updated Successfully");
 
@@ -306,9 +318,32 @@ class TicketController extends Controller
             }
     
             $ticket = Ticket::where("id", $request->id)->first();
-            $this->RemoveFile($this->$ticket);
+            //$this->RemoveFile($this->$ticket);
+            //TicketUpload::where('id',$request->id)->delete();
             $ticket->delete();
             $this->apiSuccess("Ticket Deleted successfully");
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }
+    }
+
+
+    public function deleteFileTicket(Request $request){
+        try{
+            $validator = Validator::make( $request->all(),[
+                "id"            => ["required", "exists:ticket_uploads,id"],
+            ]);
+
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 200);
+            }
+    
+            //$ticket = Ticket::where("id", $request->id)->first();
+            //$this->RemoveFile($this->$ticket);
+            $ticketupload=TicketUpload::where('id',$request->id);
+            $ticketupload->delete();
+            $this->apiSuccess("Ticket File Deleted successfully");
             return $this->apiOutput();
         }catch(Exception $e){
             return $this->apiOutput($this->getError( $e), 500);

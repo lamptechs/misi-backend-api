@@ -69,7 +69,7 @@ Class ActivityLog{
             $activity->tableable_id     = $this->getId($this->model);
             $activity->userable_type    = $this->getMorphClass($this->user);
             $activity->userable_id      = $this->getId($this->user);
-            $activity = $message;
+            $activity->activity         = $message;
             $activity->save();
             return $activity;
         }catch(Exception $e){

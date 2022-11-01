@@ -136,7 +136,7 @@ class TherapistController extends Controller
             $data->country_id = $request->country_id;
             $data->password = bcrypt($request->password);
             if($request->hasFile('picture')){
-                $data->image_url = $this->uploadFile($request, 'picture', $this->therapist_uploads, null,null,$data->image_url);
+                $data->profile_pic = $this->uploadFile($request, 'picture', $this->therapist_uploads, null,null,$data->profile_pic);
             }
             
             $data->save();
@@ -243,7 +243,10 @@ class TherapistController extends Controller
             $data->state_id = $request->state_id;
             $data->country_id = $request->country_id;
             //$data->password = bcrypt($request->password);
-            $data->profile_pic =  $this->uploadFile($request, "profile_pic", $this->therapist_uploads, "150", null, $data->profile_pic);
+            if($request->hasFile('picture')){
+                $data->profile_pic =  $this->uploadFile($request, "profile_pic", $this->therapist_uploads, "150", null, $data->profile_pic);
+            }
+           
             $data->save();
             $this->updateFileInfo($request, $data->id);
 
@@ -286,6 +289,25 @@ class TherapistController extends Controller
             $data->delete();
             $this->apiSuccess();
             return $this->apiOutput("Therapist Deleted Successfully", 200);
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }
+    }
+  
+    public function deleteFileTherapist(Request $request){
+        try{
+            $validator = Validator::make( $request->all(),[
+                "id"            => ["required", "exists:therapist_uploads,id"],
+            ]);
+
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 200);
+            }
+    
+            $therapistupload=TherapistUpload::where('id',$request->id);
+            $therapistupload->delete();
+            $this->apiSuccess("Therapist File Deleted successfully");
+            return $this->apiOutput();
         }catch(Exception $e){
             return $this->apiOutput($this->getError( $e), 500);
         }
