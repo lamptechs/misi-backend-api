@@ -264,7 +264,7 @@ class TicketController extends Controller
             //$ticket->assigned_to_user_status=$request->assigned_to_user_status?? null;
             //$ticket->file = $this->uploadFile($request, "file", $this->others_dir, null, null, $ticket->file);
             $ticket->save();
-            //ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Updated Successfully");
+            ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Updated Successfully");
 
             $this->apiSuccess("Ticket Info Updated successfully");
             $this->data = (new TicketResource($ticket))->hide(["replies", "created_by", "updated_by"]);
