@@ -200,24 +200,48 @@ class TicketController extends Controller
                 $ticket->assigned_to_user_name = null;
                 $ticket->assigned_to_user_status= null;
 
-                //ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket ID ".$ticket->id. " department updated Successfully");
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket ID ".$ticket->id. " department updated Successfully");
             }
             
            
             $ticket->ticket_department_id = $request->ticket_department_id;
            
-
-            $ticket->location = $request->location ?? null;
+            if($ticket->location != $request->location){
+                $ticket->location = $request->location;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Location ".$ticket->location. " updated Successfully");
+            }
+           
+           //ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket ID ".$ticket->location. " department updated Successfully");
+            
+           
                 //$ticket->location = $request->location;
-                //ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket ID ".$ticket->location. " department updated Successfully");
-            
-            
-            $ticket->language = $request->language ?? null;
+            if($ticket->language != $request->language ) {
+                $ticket->language = $request->language;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Language ".$ticket->language. " updated Successfully");
+            }  
+          
             $ticket->date = now()->format("Y-m-d");
-            $ticket->strike = $request->strike ?? null;
-            $ticket->strike_history = $request->strike_history ?? null;
-            $ticket->ticket_history = $request->ticket_history ?? null;
-            $ticket->remarks = $request->remarks ?? null;
+            if($ticket->strike !=$request->strike){
+                $ticket->strike = $request->strike;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Strike ".$ticket->strike. " updated Successfully");
+            }
+
+            if($ticket->strike_history != $request->strike_history){
+                $ticket->strike_history=$request->strike_history;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Strike History ".$ticket->strike_history. " updated Successfully");
+            }
+            
+            if($ticket->ticket_history != $request->ticket_history){
+                $ticket->ticket_history=$request->ticket_history;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket History ".$ticket->ticket_history. " updated Successfully");
+
+            }
+            
+            if($ticket->remarks != $request->remarks){
+                $ticket->remarks=$request->remarks;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Remarks ".$ticket->remarks. " updated Successfully");
+            }
+             
             $ticket->status     = $request->status;
             $ticket->updated_by = $request->user()->id ?? null;
             $ticket->mono_multi_zd = $request->mono_multi_zd ?? null ;
@@ -240,7 +264,7 @@ class TicketController extends Controller
             //$ticket->assigned_to_user_status=$request->assigned_to_user_status?? null;
             //$ticket->file = $this->uploadFile($request, "file", $this->others_dir, null, null, $ticket->file);
             $ticket->save();
-            ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Updated Successfully");
+            //ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Updated Successfully");
 
             $this->apiSuccess("Ticket Info Updated successfully");
             $this->data = (new TicketResource($ticket))->hide(["replies", "created_by", "updated_by"]);
