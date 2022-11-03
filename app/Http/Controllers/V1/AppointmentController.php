@@ -100,7 +100,7 @@ class AppointmentController extends Controller
             $data->therapist_id = $request->therapist_id;
             $data->patient_id   = $request->patient_id;
             $data->therapist_schedule_id = $request->therapist_schedule_id;
-            $number      = Appointmnet::max('appointmentnumber')+1;
+            $number      = Appointmnet::max('appointmentnumber')+1000;
             $data->appointmentnumber = $number;
             
             //$data->number = Str::random(12);
@@ -214,7 +214,7 @@ class AppointmentController extends Controller
             $appoinement->therapist_id = $request->therapist_id;
             $appoinement->patient_id   = $request->patient_id;
             $appoinement->therapist_schedule_id = $request->therapist_schedule_id;
-            $appoinement->number       = $request->number;
+            //$appoinement->number       = $request->number;
             $appoinement->history      = $request->history ?? null;
             //$appoinement->date         = $request->date;
             //$appoinement->start_time   = $request->start_time;

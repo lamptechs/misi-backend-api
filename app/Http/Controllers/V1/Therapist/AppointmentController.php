@@ -90,7 +90,7 @@ class AppointmentController extends Controller
             $data->therapist_id = $therapist->id;
             $data->patient_id   = $request->patient_id;
             $data->therapist_schedule_id = $request->therapist_schedule_id;
-            $data->number       = $request->number;
+            //$data->number       = $request->number;
             $data->history      = $request->history ?? null;
             $data->date         = $schedule->date;
             $data->start_time   = $schedule->start_time;
