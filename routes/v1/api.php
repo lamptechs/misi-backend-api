@@ -66,6 +66,7 @@ Route::middleware(["auth:admin"])->group(function(){
             Route::get('/', [TicketController::class, 'index']);
             Route::post('/create', [TicketController::class, 'store']);
             Route::get('/show', [TicketController::class, 'show']);
+            Route::get('/tickethistory', [TicketController::class, 'ticketHistoryActivity']);
             Route::post('/update', [TicketController::class, 'update']);
             Route::post('/delete', [TicketController::class, 'deleteTicket']);
             Route::post('/cancelticket', [TicketController::class, 'cancelticket']);
@@ -307,17 +308,17 @@ Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
      * Therapist Tickets
      */
     Route::prefix('ticket')->group(function(){
-        Route::get('/', [TherapistTicketController::class, 'index']);
-        Route::get('/show', [TherapistTicketController::class, 'show']);
-        Route::post('/store', [TherapistTicketController::class, 'store']);
-        Route::post('/update', [TherapistTicketController::class, 'update']);
+        Route::get('/', [TicketController::class, 'index']);
+        Route::get('/show', [TicketController::class, 'show']);
+        Route::post('/store', [TicketController::class, 'store']);
+        Route::post('/update', [TicketController::class, 'update']);
         Route::post('/therapistuploaddelete', [TherapistController::class, 'deleteFileTherapist']);
         Route::post('/delete/{id}', [TherapistTicketController::class, 'deleteTicket']);
     });
     
     // Reply On Ticket
             Route::prefix("reply")->group(function(){
-                Route::get('/', [TherapistTicketController::class, 'replyList']);
+                Route::get('/', [TicketController::class, 'replyList']);
                 Route::post('/create', [TicketController::class, 'addReply']);
                 Route::get('/edit', [TicketController::class, 'editReply']);
                 Route::post('/update', [TicketController::class, 'updateReply']);

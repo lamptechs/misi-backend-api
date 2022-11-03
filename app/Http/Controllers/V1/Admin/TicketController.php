@@ -13,6 +13,8 @@ use App\Models\TicketReply;
 use App\Models\TicketUpload;
 use Illuminate\Support\Facades\DB;
 use App\Http\Components\Classes\Facade\ActivityLog;
+use App\Http\Resources\UserActivityResource;
+use App\Models\UserActivity;
 
 class TicketController extends Controller
 {
@@ -516,6 +518,22 @@ class TicketController extends Controller
             return $this->apiOutput();
         }catch(Exception $e){
             return $this->apiOutput($this->getError( $e), 500);
+        }
+    }
+
+
+    public function ticketHistoryActivity()
+    {
+      
+        try{
+            $ticketactivity = UserActivity::orderBy('id', "DESC");
+            $ticketactivity = $ticketactivity->get();
+            $this->data = UserActivityResource::collection($ticketactivity);
+            $this->apiSuccess("Ticket History Loaded Successfully");
+            return $this->apiOutput();
+
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
         }
     }
 }
