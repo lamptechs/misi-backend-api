@@ -44,14 +44,30 @@ class TemplateMessage{
             if( isset($this->model->last_name) ){
                 $this->message = str_replace("{last_name}", $this->model->last_name, $this->message);
             }
+            if( isset($this->model->therapist->first_name) ){
+                $this->message = str_replace("{first_name}", $this->model->therapist->first_name, $this->message);
+            }
+            if( isset($this->model->therapist->last_name) ){
+                $this->message = str_replace("{last_name}", $this->model->therapist->last_name, $this->message);
+            }
+            if( isset($this->model->patient->first_name) ){
+                $this->message = str_replace("{first_name}", $this->model->patient->first_name, $this->message);
+            }
+            if( isset($this->model->patient->last_name) ){
+                $this->message = str_replace("{last_name}", $this->model->patient->last_name, $this->message);
+            }
+            
             if( isset($this->model->name) ){
                 $this->message = str_replace("{name}", $this->model->name, $this->message);
             }
             if( isset($this->model->id) ){
                 $this->message = str_replace("{ticket_no}", $this->model->id, $this->message);
             }
-            if( isset($this->model->id) ){
-                $this->message = str_replace("{appointment_no}", $this->model->id, $this->message);
+            if( isset($this->model->number) ){
+                $this->message = str_replace("{appointment_no}", $this->model->number, $this->message);
+            }
+            if( isset($this->model->start_time) ){
+                $this->message = str_replace("{appointment_time}", ($this->model->start_time .' - '. $this->model->end_time), $this->message);
             }
             if( isset($this->model->date) ){
                 $this->message = str_replace("{appointment_date}", $this->model->date, $this->message);
