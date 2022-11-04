@@ -203,7 +203,7 @@ class AppointmentController extends Controller
             $appointment->patient_id   = $patient->id;
             $appointment->therapist_id = $request->therapist_id;
             $appointment->therapist_schedule_id = $request->therapist_schedule_id;
-            $appointment->number       = $request->number;
+            //$appointment->number       = $request->number;
             $appointment->history      = $request->history ?? null;
             $appointment->fee          = $request->fee;
             $appointment->language     = $request->language;

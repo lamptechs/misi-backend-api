@@ -126,25 +126,41 @@ class TherapistScheduleController extends Controller
      */
     public function show(Request $request)
     {
-        $validator = Validator::make($request->all(),[
-            "id"  => ["required", "exists:therapist_schedules,id"],
-        ],[
-            "id.required" => "Therapist Schedule ID Required",
-        ]); 
-        if ($validator->fails()) {
-            return $this->apiOutput($this->getValidationError($validator), 400);
-        }
-        try{
-            $schedule = TherapistSchedule::find($request->id);
-            if( empty($schedule) ){
-                return $this->apiOutput("Therapist Data Not Found", 400);
-            }
-            $this->data = (new TherapistScheduleResource ($schedule));
-            $this->apiSuccess("Schedule Detail loaded Successfully");
-            return $this->apiOutput();
-        }catch(Exception $e){
-            return $this->apiOutput($this->getError($e), 500);
-        }
+
+                $validator = Validator::make($request->all(),[
+                    "id"  => ["required", "exists:therapist_schedules,id"],
+                ],[
+                    "id.required" => "Therapist Schedule ID Required",
+                ]); 
+                if ($validator->fails()) {
+                    return $this->apiOutput($this->getValidationError($validator), 400);
+                }
+                try{
+                    $schedule = TherapistSchedule::find($request->id);
+                    if( empty($schedule) ){
+                        return $this->apiOutput("Therapist Data Not Found", 400);
+                    }
+                    $this->data = (new TherapistScheduleResource ($schedule));
+                    $this->apiSuccess("Schedule Detail loaded Successfully");
+                    return $this->apiOutput();
+                }catch(Exception $e){
+                    return $this->apiOutput($this->getError($e), 500);
+                }
+
+
+                // try{
+                //     $therapist = $request->user();
+                //     $appointment = TherapistSchedule::where("id", $request->id)
+                //         ->where("therapist_id", $therapist->id)->first();
+                //     if( empty($appointment) ){
+                //         return $this->apiOutput("Appointment Data Not Found", 400);
+                //     }
+                //     $this->data = (new TherapistScheduleResource ($appointment));
+                //     $this->apiSuccess("Therapist Detail Show Successfully");
+                //     return $this->apiOutput();
+                // }catch(Exception $e){
+                //     return $this->apiOutput($this->getError($e), 500);
+                // }
     }
 
 

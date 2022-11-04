@@ -13,6 +13,8 @@ use App\Models\TicketReply;
 use App\Models\TicketUpload;
 use Illuminate\Support\Facades\DB;
 use App\Http\Components\Classes\Facade\ActivityLog;
+use App\Http\Resources\UserActivityResource;
+use App\Models\UserActivity;
 
 class TicketController extends Controller
 {
@@ -200,47 +202,142 @@ class TicketController extends Controller
                 $ticket->assigned_to_user_name = null;
                 $ticket->assigned_to_user_status= null;
 
-                //ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket ID ".$ticket->id. " department updated Successfully");
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket ID ".$ticket->id. " department updated Successfully");
             }
             
            
             $ticket->ticket_department_id = $request->ticket_department_id;
            
-
-            $ticket->location = $request->location ?? null;
-                //$ticket->location = $request->location;
-                //ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket ID ".$ticket->location. " department updated Successfully");
+            if($ticket->location != $request->location){
+                $ticket->location = $request->location;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Location ".$ticket->location. " updated Successfully");
+            }
+           
+           //ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket ID ".$ticket->location. " department updated Successfully");
             
-            
-            $ticket->language = $request->language ?? null;
+           
+            //$ticket->location = $request->location;
+            if($ticket->language != $request->language ) {
+                $ticket->language = $request->language;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Language ".$ticket->language. " updated Successfully");
+            }  
+          
             $ticket->date = now()->format("Y-m-d");
-            $ticket->strike = $request->strike ?? null;
-            $ticket->strike_history = $request->strike_history ?? null;
-            $ticket->ticket_history = $request->ticket_history ?? null;
-            $ticket->remarks = $request->remarks ?? null;
-            $ticket->status     = $request->status;
+            if($ticket->strike !=$request->strike){
+                $ticket->strike = $request->strike;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Strike ".$ticket->strike. " updated Successfully");
+            }
+
+            if($ticket->strike_history != $request->strike_history){
+                $ticket->strike_history=$request->strike_history;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Strike History ".$ticket->strike_history. " updated Successfully");
+            }
+            
+            if($ticket->ticket_history != $request->ticket_history){
+                $ticket->ticket_history=$request->ticket_history;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket History ".$ticket->ticket_history. " updated Successfully");
+
+            }
+            
+            if($ticket->remarks != $request->remarks){
+                $ticket->remarks=$request->remarks;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Remarks ".$ticket->remarks. " updated Successfully");
+            }
+            
+            if($ticket->status != $request->status){
+                
+                $ticket->status=$request->status;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Status ".$ticket->status. " updated Successfully");
+            }
+            
             $ticket->updated_by = $request->user()->id ?? null;
-            $ticket->mono_multi_zd = $request->mono_multi_zd ?? null ;
-            $ticket->mono_multi_screeing = $request->mono_multi_screeing ?? null;
-            $ticket->intakes_therapist = $request->intakes_therapist ?? null;
-            $ticket->tresonit_number = $request->tresonit_number ?? null;
-            $ticket->datum_intake = $request->datum_intake ?? null;
-            $ticket->datum_intake_2 = $request->datum_intake_2 ?? null;
-            $ticket->nd_account = $request->nd_account?? null;
-            $ticket->avc_alfmvm_sbg = $request->avc_alfmvm_sbg?? null;
-            $ticket->honos= $request->honos?? null;
-            $ticket->berha_intake=$request->berha_intake?? null;
-            $ticket->rom_start=$request->rom_start?? null;
-            $ticket->rom_end=$request->rom_end?? null;
-            $ticket->berha_eind=$request->berha_eind?? null;
-            $ticket->vtcb_date=$request->vtcb_date?? null;
-            $ticket->closure=$request->closure?? null;
-            $ticket->aanm_intake_1=$request->aanm_intake_1?? null;
+            if($ticket->mono_multi_zd != $request->mono_multi_zd ){
+                $ticket->mono_multi_zd = $request->mono_multi_zd;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket mono_multi_zd ".$ticket->mono_multi_zd. " updated Successfully");
+            }
+            
+            if($ticket->mono_multi_screeing != $request->mono_multi_screeing ){
+                $ticket->mono_multi_screeing = $request->mono_multi_screeing;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket mono_multi_screeing ".$ticket->mono_multi_screeing. " updated Successfully");
+            }
+            
+            if($ticket->intakes_therapist != $request->intakes_therapist){
+                $ticket->intakes_therapist != $request->intakes_therapist;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket intakes_therapist ".$ticket->intakes_therapist. " updated Successfully");
+            }
+            
+            if( $ticket->tresonit_number != $request->tresonit_number){
+                $ticket->tresonit_number =$request->tresonit_number;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket tresonit_number ".$ticket->tresonit_number. " updated Successfully");
+            }
+           
+            if( $ticket->datum_intake != $request->datum_intake ){
+                $ticket->datum_intake = $request->datum_intake;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket datum_intake ".$ticket->datum_intake. " updated Successfully");
+
+            }
+            if( $ticket->datum_intake_2 != $request->datum_intake_2 ){
+                $ticket->datum_intake_2 = $request->datum_intake_2;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket datum_intake_2 ".$ticket->datum_intake_2. " updated Successfully");
+            }
+            
+            if($ticket->nd_account != $request->nd_account){
+                $ticket->nd_account=$request->nd_account;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket nd_account ".$ticket->nd_account. " updated Successfully");
+            }
+            
+            if($ticket->avc_alfmvm_sbg != $request->avc_alfmvm_sbg){
+                $ticket->avc_alfmvm_sbg = $request->avc_alfmvm_sbg;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket avc_alfmvm_sbg ".$ticket->avc_alfmvm_sbg. " updated Successfully");
+            }
+            
+            if($ticket->honos != $request->honos){
+                $ticket->honos = $request->honos;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket honos ".$ticket->honos. " updated Successfully");
+            }
+            
+            if($ticket->berha_intake !=$request->berha_intake){
+                $ticket->berha_intake = $request->berha_intake;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket berha_intake ".$ticket->berha_intake. " updated Successfully");
+            }
+            
+            if($ticket->rom_start !=$request->rom_start){
+                $ticket->rom_start =$request->rom_start;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket rom_start ".$ticket->rom_start. " updated Successfully");
+
+            }
+            
+            if($ticket->rom_end !=$request->rom_end){
+                $ticket->rom_end =$request->rom_end;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket rom_end ".$ticket->rom_end . " updated Successfully");
+            }
+           
+            if($ticket->berha_eind !=$request->berha_eind){
+                $ticket->berha_eind =$request->berha_eind;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket berha_eind ".$ticket->berha_eind . " updated Successfully");
+            }
+            
+            if($ticket->vtcb_date !=$request->vtcb_date){
+                $ticket->vtcb_date =$request->vtcb_date;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket vtcb_date ".$ticket->vtcb_date . " updated Successfully");
+
+            }
+            
+            if( $ticket->closure !=$request->closure){
+                $ticket->closure =$request->closure;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket closure ".$ticket->closure . " updated Successfully");
+
+            }
+           
+            if( $ticket->aanm_intake_1 !=$request->aanm_intake_1){
+                $ticket->aanm_intake_1 =$request->aanm_intake_1;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket aanm_intake_1 ".$ticket->aanm_intake_1 . " updated Successfully");
+            }
             //$ticket->assigned_to_user_name=$request->assigned_to_user_name?? null;
             //$ticket->assigned_to_user_status=$request->assigned_to_user_status?? null;
             //$ticket->file = $this->uploadFile($request, "file", $this->others_dir, null, null, $ticket->file);
             $ticket->save();
-            ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Updated Successfully");
+            //ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Updated Successfully");
 
             $this->apiSuccess("Ticket Info Updated successfully");
             $this->data = (new TicketResource($ticket))->hide(["replies", "created_by", "updated_by"]);
@@ -492,6 +589,22 @@ class TicketController extends Controller
             return $this->apiOutput();
         }catch(Exception $e){
             return $this->apiOutput($this->getError( $e), 500);
+        }
+    }
+
+
+    public function ticketHistoryActivity()
+    {
+      
+        try{
+            $ticketactivity = UserActivity::orderBy('id', "DESC");
+            $ticketactivity = $ticketactivity->get();
+            $this->data = UserActivityResource::collection($ticketactivity);
+            $this->apiSuccess("Ticket History Loaded Successfully");
+            return $this->apiOutput();
+
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
         }
     }
 }
