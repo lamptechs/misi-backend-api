@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\V1\Admin;
 
+use App\Events\AccountRegistration;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Therapist;
@@ -141,8 +142,12 @@ class TherapistController extends Controller
             
             $data->save();
             $this->saveFileInfo($request, $data);
-            
             DB::commit();
+            try{
+                event(new AccountRegistration($data, "therapist"));
+            }catch(Exception $e){
+
+            }
             $this->apiSuccess("Therapist Info Added Successfully");
             $this->data = (new TherapistResource($data));
             return $this->apiOutput();        
