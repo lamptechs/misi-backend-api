@@ -252,7 +252,7 @@ class PatientController extends Controller
         if( is_array($upload_files) ){
             foreach($upload_files as $file){
                 $upload = new PatientUpload();
-                $upload->therappatient_idist_id = $id;
+                $upload->patient_id = $id;
                 $upload->file_name    = $request->file_name ?? "Patient Upload Updated";
                 $upload->file_url     = $file;
                 $upload->save();    
@@ -290,7 +290,7 @@ class PatientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,$id)
+    public function update(Request $request)
     {
         // $temp=User::find($id);
         // return $temp;
@@ -303,8 +303,8 @@ class PatientController extends Controller
                 "id"            => ["required", "exists:users,id"],
                 //'first_name'    => 'required',
                 //'last_name'     => 'required',
-                //"email"         => ["required", "email",/* "unique:users",*/Rule::unique('users', 'email')->ignore($request->id)],
-                //"phone"         => ["required", "numeric",/* "unique:users"*/Rule::unique('users', 'phone')->ignore($request->id)]
+                "email"         => ["required", "email",/* "unique:users",*/Rule::unique('users', 'email')->ignore($request->id)],
+                "phone"         => ["required", "numeric",/* "unique:users"*/Rule::unique('users', 'phone')->ignore($request->id)]
             ]);
                 
             if ($validator->fails()) {
@@ -350,7 +350,7 @@ class PatientController extends Controller
             //$this->updateFileInfo($request, $data);
 
             $data->save();
-            //$this->updateFileInfo($request, $data->id);
+            $this->updateFileInfo($request, $data->id);
 
             DB::commit();
             //try{
