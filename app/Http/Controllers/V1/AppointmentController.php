@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\V1;
 
+use App\Events\Appointment;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AppointmentResource;
 use App\Models\AppointmentUpload;
@@ -121,6 +122,11 @@ class AppointmentController extends Controller
             $this->saveFileInfo($request, $data);
             
             DB::commit();
+            try{
+                event(new Appointment($data));
+            }catch(Exception $e){
+
+            }
             $this->apiSuccess("Appointment Created Successfully");
             $this->data = (new AppointmentResource($data));
             return $this->apiOutput();
@@ -180,6 +186,7 @@ class AppointmentController extends Controller
     public function update(Request $request)
     {
         try{
+            $reschedule = false;
             $validator = Validator::make($request->all(), [
                 "id"                    => ["required", "exists:appointmnets,id"],
                 "therapist_id"  => ["required", "exists:therapists,id"],
@@ -194,6 +201,7 @@ class AppointmentController extends Controller
             DB::beginTransaction();
             $appoinement = Appointmnet::find($request->id);
             if($appoinement->therapist_schedule_id != $request->therapist_schedule_id){
+                $reschedule = true;
                 $schedule = TherapistSchedule::where("id", $appoinement->therapist_schedule_id)
                     ->update(["status" => "open", "patient_id" => null]);
     
@@ -232,6 +240,13 @@ class AppointmentController extends Controller
             $this->saveFileInfo($request, $appoinement);
         
             DB::commit();
+            if($reschedule){
+                try{
+                    event(new Appointment($appoinement, "reschedule"));
+                }catch(Exception $e){
+    
+                }
+            }
             $this->apiSuccess("Appointment Updated Successfully");
             $this->data = (new AppointmentResource($appoinement));
             return $this->apiOutput();

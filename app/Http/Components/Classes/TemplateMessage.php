@@ -56,6 +56,19 @@ class TemplateMessage{
             if( isset($this->model->patient->last_name) ){
                 $this->message = str_replace("{last_name}", $this->model->patient->last_name, $this->message);
             }
+
+            if( isset($this->model->therapist->first_name) ){
+                $this->message = str_replace("{therapist_first_name}", $this->model->therapist->first_name, $this->message);
+            }
+            if( isset($this->model->therapist->last_name) ){
+                $this->message = str_replace("{therapist_last_name}", $this->model->therapist->last_name, $this->message);
+            }
+            if( isset($this->model->patient->first_name) ){
+                $this->message = str_replace("{patient_first_name}", $this->model->patient->first_name, $this->message);
+            }
+            if( isset($this->model->patient->last_name) ){
+                $this->message = str_replace("{patient_last_name}", $this->model->patient->last_name, $this->message);
+            }
             
             if( isset($this->model->name) ){
                 $this->message = str_replace("{name}", $this->model->name, $this->message);
