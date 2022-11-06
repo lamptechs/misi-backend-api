@@ -122,6 +122,7 @@ Route::middleware(["auth:admin"])->group(function(){
     //Patient Create
     Route::prefix('patientinfo')->group(function(){
         Route::get('', [PatientController::class, 'index']);
+        Route::get('/missingInfoPatient', [PatientController::class, 'missingInfoPatient']);
         Route::get('/show', [PatientController::class, 'show']);
         Route::post('/store', [PatientController::class, 'store']);
         Route::post('/update/{id}', [PatientController::class, 'update']);

@@ -108,6 +108,24 @@ class PatientController extends Controller
         }
     }
 
+    public function missingInfoPatient()
+    {
+        try{
+        $users=User::whereNull('city')
+               ->orWhereNull('occupation')
+               ->orWhereNull('age')
+               ->orWhereNull('emergency_contact')
+               ->get();
+            $this->data = UserResource::collection($users);
+            $this->apiSuccess("Patient MissingInfo Loaded Successfully");
+            return $this->apiOutput();
+
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
+        }
+    }
+
+
 
     /**
      * Store a newly created resource in storage.
@@ -166,7 +184,7 @@ class PatientController extends Controller
                 $data->bsn_number = $request->bsn_number;
                 $data->dob_number = $request->dob_number;
                 $data->insurance_number = $request->insurance_number;
-                $data->emergency_contact = $request->emergency_contact ?? 0;
+                $data->emergency_contact = $request->emergency_contact;
                 $data->age = $request->age;
                 $data->gender = $request->gender;
                 $data->marital_status = $request->marital_status;
@@ -187,7 +205,7 @@ class PatientController extends Controller
                 try{
                     event(new AccountRegistration($data, "patient"));
                 }catch(Exception $e){
-    
+                    
                 }
             }
             catch(Exception $e){
@@ -407,4 +425,25 @@ class PatientController extends Controller
             return $this->apiOutput($this->getError( $e), 500);
         }
     }
+
+    // public function additionalFileAdd(Request $request){
+    //     try{
+    //         $validator = Validator::make($request->all(), [
+    //             "id"            => ["required", "exists:users,id"],
+              
+    //         ]);
+                
+    //         if ($validator->fails()) {
+    //             return $this->apiOutput($this->getValidationError($validator), 400);
+    //         }
+    //         //DB::beginTransaction();
+    //         $data = new PatientUpload();
+    //         $data->patient_id   = $request->patient_id;
+
+            
+    //     }
+    //     catch(Exception $e){
+            
+    //     }
+    // }
 }

@@ -15,4 +15,5 @@ class UserActivity extends Model
     public function logable(){
         return $this->morphTo(__FUNCTION__, "tableable_type", "tableable_id");
     }
+
 }
