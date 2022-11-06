@@ -89,6 +89,13 @@ class TemplateMessage{
             if( isset($this->model->fee) ){
                 $this->message = str_replace("{appointment_fee}", $this->model->fee, $this->message);
             }
+            if( isset($this->model->cancel_appointment_type) ){
+                $this->message = str_replace("{appointment_cancel_type}", $this->model->cancel_appointment_type, $this->message);
+            }
+            if( isset($this->model->cancel_reason) ){
+                $this->message = str_replace("{appointment_cancel_reason}", $this->model->cancel_reason, $this->message);
+            }
+
             if( isset($this->model->address) ){
                 $this->message = str_replace("{patient_address}", $this->model->address, $this->message);
             }
