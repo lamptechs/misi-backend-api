@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\V1;
 
+use App\Events\AccountRegistration;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -181,13 +182,12 @@ class PatientController extends Controller
 
                 $data->save();
                 $this->saveFileInfo($request, $data);
-                   
                 
                 DB::commit();
                 try{
-                    // event(new Registered($data));
+                    event(new AccountRegistration($data, "patient"));
                 }catch(Exception $e){
-                    //
+    
                 }
             }
             catch(Exception $e){

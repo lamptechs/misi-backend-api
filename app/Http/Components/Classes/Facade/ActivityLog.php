@@ -10,8 +10,6 @@ class ActivityLog extends Facade{
      * Get the registered name of the component.
      *
      * @return string
-     *
-     * @throws \RuntimeException
      * @method  save($request, $message)
      * @method  model($model)
      * @method  user($user)
