@@ -18,8 +18,8 @@ class Appointment
      * @var $appointment
      * @var $appointment_type
      */
-    protected $appointment;
-    protected $appointment_type;
+    public $appointment;
+    public $appointment_type;
 
     /**
      * Create a new event instance.

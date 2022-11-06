@@ -14,6 +14,7 @@ class TemplateMessage{
 
     public function model($model){
         $this->model = $model;
+        return $this;
     }
 
     /**

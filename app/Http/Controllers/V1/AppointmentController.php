@@ -104,7 +104,6 @@ class AppointmentController extends Controller
             $number      = Appointmnet::max('appointmentnumber')+1000;
             $data->appointmentnumber = $number;
             
-            //$data->number = Str::random(12);
             $data->history      = $request->history ?? null;
             $data->date         = $schedule->date;
             $data->start_time   = $schedule->start_time;
@@ -121,18 +120,18 @@ class AppointmentController extends Controller
             $data->save();
             $this->saveFileInfo($request, $data);
             
-            DB::commit();
+            event(new Appointment($data));
             try{
-                event(new Appointment($data));
             }catch(Exception $e){
-
+                
             }
             $this->apiSuccess("Appointment Created Successfully");
             $this->data = (new AppointmentResource($data));
+            DB::commit();
             return $this->apiOutput();
         }catch(Exception $e){
-            return $this->apiOutput($this->getError($e), 500);
             DB::rollBack();
+            return $this->apiOutput($this->getError($e), 500);
         }
     }
 
@@ -222,14 +221,14 @@ class AppointmentController extends Controller
             $appoinement->therapist_id = $request->therapist_id;
             $appoinement->patient_id   = $request->patient_id;
             $appoinement->therapist_schedule_id = $request->therapist_schedule_id;
-            //$appoinement->number       = $request->number;
             $appoinement->history      = $request->history ?? null;
-            //$appoinement->date         = $request->date;
-            //$appoinement->start_time   = $request->start_time;
-            //$appoinement->end_time     = $request->end_time;
+            $appoinement->date         = $schedule->date;
+            $appoinement->start_time   = $schedule->start_time;
+            $appoinement->end_time     = $schedule->end_time;
             $appoinement->fee          = $request->fee;
             $appoinement->language     = $request->language;
             $appoinement->type         = $request->type;
+
             $appoinement->therapist_comment = $request->comment ?? null;
             $appoinement->remarks      = $request->remarks ?? null;
             $appoinement->status       = $request->status;

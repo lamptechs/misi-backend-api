@@ -18,6 +18,8 @@ class AccountRegistration
      * @var User $user
      * @var User Type $user_type
      */
+    public $user;
+    public $user_type;
 
     /**
      * Create a new event instance.
