@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\V1\Therapist;
 
+use App\Events\Appointment;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AppointmentResource;
 use App\Models\AppointmentUpload;
@@ -108,6 +109,11 @@ class AppointmentController extends Controller
             $this->saveFileInfo($request, $data);
             
             DB::commit();
+            try{
+                event(new Appointment($data));
+            }catch(Exception $e){
+
+            }
             $this->apiSuccess("Appointment Created Successfully");
             $this->data = (new AppointmentResource($data));
             return $this->apiOutput();
@@ -169,6 +175,7 @@ class AppointmentController extends Controller
     public function update(Request $request)
     {
         try{
+            $reschedule = false;
             $validator = Validator::make($request->all(), [
                 "id"                    => ["required", "exists:appointmnets,id"],
                 "patient_id"            => ["required", "exists:users,id"],
@@ -184,6 +191,7 @@ class AppointmentController extends Controller
             $appointment = Appointmnet::where("id", $request->id)
                 ->where("therapist_id", $therapist->id)->first();
             if($appointment->therapist_schedule_id != $request->therapist_schedule_id){
+                $reschedule = true;
                 $schedule = TherapistSchedule::where("id", $appointment->therapist_schedule_id)
                     ->update(["status" => "open", "patient_id" => null]);
     
@@ -217,6 +225,11 @@ class AppointmentController extends Controller
             $this->saveFileInfo($request, $appointment);
         
             DB::commit();
+            try{
+                event(new Appointment($appointment, "reschedule"));
+            }catch(Exception $e){
+
+            }
             $this->apiSuccess("Appointment Updated Successfully");
             $this->data = (new AppointmentResource($appointment));
             return $this->apiOutput();
@@ -266,6 +279,11 @@ class AppointmentController extends Controller
             $therapist = $request->user();
             $appointment = Appointmnet::where("id", $request->id)
                 ->where("therapist_id", $therapist->id)->first();
+            try{
+                // event(new Appointment($appointment, "cancel"));
+            }catch(Exception $e){
+
+            }
             $appointment->delete();
             $this->apiSuccess();
             return $this->apiOutput("Appointment Deleted Successfully", 200);

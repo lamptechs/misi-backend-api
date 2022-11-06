@@ -3,7 +3,7 @@
 
 namespace App\Http\Controllers\V1;
 
-
+use App\Events\AccountRegistration;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use Exception;
@@ -123,8 +123,13 @@ class AdminController extends Controller
             $admin->bio = $request->bio;
             $admin->email = $request->email;
             $admin->group_id = $request->group_id;
-            $admin->password = !empty($request->password) ? bcrypt($request->password) : $data->password ;
+            $admin->password = !empty($request->password) ? bcrypt($request->password) : $admin->password ;
             $admin->save();
+            try{
+                event(new AccountRegistration($admin));
+            }catch(Exception $e){
+
+            }
             $this->apiSuccess("Admin Added Successfully");
             $this->data = (new AdminResource($admin));
             return $this->apiOutput();
@@ -143,7 +148,6 @@ class AdminController extends Controller
             [
                 // 'name' => 'required|min:4',
                 // 'remarks' => 'nullable|min:4'
-    
             ]
            );
             
