@@ -628,4 +628,17 @@ class TicketController extends Controller
             return $this->apiOutput($this->getError($e), 500);
         }
     }
+    
+     public function ticketHistoryActivityshow(Request $request)
+      {
+        try{
+            $ticket = UserActivity::where("tableable_id",$request->ticket_id)->get();
+            $this->data = UserActivityResource::collection($ticket);
+            $this->apiSuccess("Ticket History Show Successfully");
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
+        }
+     }
+    
 }

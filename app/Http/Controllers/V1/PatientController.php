@@ -107,6 +107,23 @@ class PatientController extends Controller
             return $this->apiOutput($this->getError($e), 500);
         }
     }
+    
+     public function missingInfoPatient()
+    {
+        try{
+        $users=User::whereNull('city')
+               ->orWhereNull('occupation')
+               ->orWhereNull('age')
+               ->orWhereNull('emergency_contact')
+               ->get();
+            $this->data = UserResource::collection($users);
+            $this->apiSuccess("Patient MissingInfo Loaded Successfully");
+            return $this->apiOutput();
+
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
+        }
+    }
 
 
     /**
