@@ -34,7 +34,8 @@ class UserActivityResource extends JsonResource
         return $this->filter([
             "id"            => $this->id,
             "activity"      => $this->activity,
-            "created_by"    => isset($this->userable) ? (new AdminResource($this->userable))->hide(["groupId","department", "created_by","updated_by"]) : null,
+            "created_at"    => $this->created_at,
+            "created_by"    => $this->userable,
         ]);
     }
 }
