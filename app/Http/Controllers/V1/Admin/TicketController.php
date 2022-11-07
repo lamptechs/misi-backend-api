@@ -593,9 +593,17 @@ class TicketController extends Controller
     }
 
 
-    public function ticketHistoryActivity()
+    public function ticketHistoryActivity(Request $request)
     {
         try{
+            $validator = Validator::make( $request->all(),[
+                'tableable_id'    => ['nullable', "exists:user_activities,tableable_id"],
+            ]);
+
+            if ($validator->fails()) {
+                $this->apiOutput($this->getValidationError($validator), 200);
+            }
+            
             $ticketactivity = UserActivity::where("tableable_type", (new Ticket())->getMorphClass())->orderBy('id', "DESC");
             $ticketactivity = $ticketactivity->get();
             $this->data = UserActivityResource::collection($ticketactivity);
