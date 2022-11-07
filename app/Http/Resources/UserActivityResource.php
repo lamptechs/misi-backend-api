@@ -32,17 +32,13 @@ class UserActivityResource extends JsonResource
     public function toArray($request)
     {
         return $this->filter([
+            
             "id"            => $this->id,
-            "activity"    => $this->activity,
-            "ticket_id"   =>$this->tableable_id,
-            "created_at"  =>$this->created_at,
-            "updated_at"  =>$this->updated_at,
-            // "created_by"            => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","created_by","updated_by"]) : null,
-            // "updated_by"            => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","created_by","updated_by"]) : null,
-            // "name"          => $this->name ?? "",
-            // "status"        => $this->status ?? "",
-            // "created_by"    => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
-            // "updated_by"    => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null
+            "ticket_id"   =>   $this->tableable_id,
+            "activity"      => $this->activity,
+            "created_at"    => $this->created_at,
+            "created_by"    => $this->userable,
+           
         ]);
     }
 }

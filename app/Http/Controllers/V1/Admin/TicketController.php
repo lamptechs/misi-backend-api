@@ -611,11 +611,8 @@ class TicketController extends Controller
     public function ticketHistoryActivityshow(Request $request)
     {
         try{
-            $ticket = UserActivity::find($request->id);
-            if( empty($ticket) ){
-                return $this->apiOutput("Ticket Data Not Found", 400);
-            }
-            $this->data = (new UserActivityResource($ticket));
+            $ticket = UserActivity::where("tableable_id",$request->ticket_id)->get();
+            $this->data = UserActivityResource::collection($ticket);
             $this->apiSuccess("Ticket Detail Show Successfully");
             return $this->apiOutput();
         }catch(Exception $e){
