@@ -592,10 +592,15 @@ class TicketController extends Controller
         }
     }
     
-    public function ticketHistoryActivity()
+    public function ticketHistoryActivity(Request $request)
     {
         try{
-            $ticketactivity = UserActivity::where("tableable_type", (new Ticket())->getMorphClass())->orderBy('id', "DESC")->get();
+            $ticketactivity = UserActivity::where("tableable_type", (new Ticket())->getMorphClass())->orderBy('id', "DESC");
+            if( !empty($request->ticket_id) ){
+                $ticketactivity->where("tableable_id", $request->ticket_id);
+            }
+            $ticketactivity = $ticketactivity->get();
+
             $this->data = UserActivityResource::collection($ticketactivity);
             $this->apiSuccess("Ticket History Loaded Successfully");
             return $this->apiOutput();
@@ -609,7 +614,8 @@ class TicketController extends Controller
       {
         try{
             $ticket = UserActivity::where("tableable_type", (new Ticket())->getMorphClass())
-                ->where("tableable_id",$request->ticket_id)->get();
+                ->where("tableable_id", $request->ticket_id)->get();
+                
             $this->data = UserActivityResource::collection($ticket);
             $this->apiSuccess("Ticket History Show Successfully");
             return $this->apiOutput();
