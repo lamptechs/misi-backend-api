@@ -595,9 +595,8 @@ class TicketController extends Controller
 
     public function ticketHistoryActivity()
     {
-      
         try{
-            $ticketactivity = UserActivity::orderBy('id', "DESC");
+            $ticketactivity = UserActivity::where("tableable_type", (new Ticket())->getMorphClass())->orderBy('id', "DESC");
             $ticketactivity = $ticketactivity->get();
             $this->data = UserActivityResource::collection($ticketactivity);
             $this->apiSuccess("Ticket History Loaded Successfully");

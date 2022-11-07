@@ -33,11 +33,8 @@ class UserActivityResource extends JsonResource
     {
         return $this->filter([
             "id"            => $this->id,
-            "activity"    => $this->activity,
-            // "name"          => $this->name ?? "",
-            // "status"        => $this->status ?? "",
-            // "created_by"    => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
-            // "updated_by"    => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null
+            "activity"      => $this->activity,
+            "created_by"    => isset($this->userable) ? (new AdminResource($this->userable))->hide(["groupId","department", "created_by","updated_by"]) : null,
         ]);
     }
 }

@@ -27,6 +27,8 @@ class EmailController extends Controller
         "admin_email_verification"              => "Admin Email Verification",
         "patient_verification"                  => "Patient Email Verification",
         "therapist_email_verification"          => "Therapist Email Verification",
+        "ticket_create"                         => "Create Or Issue New Ticket",
+        "ticket_update"                         => "Update New Ticket",
     ];
     /**
      * Email Template List
