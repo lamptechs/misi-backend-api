@@ -613,7 +613,7 @@ class TicketController extends Controller
         try{
             $ticket = UserActivity::where("tableable_id",$request->ticket_id)->get();
             $this->data = UserActivityResource::collection($ticket);
-            $this->apiSuccess("Ticket Detail Show Successfully");
+            $this->apiSuccess("Ticket History Show Successfully");
             return $this->apiOutput();
         }catch(Exception $e){
             return $this->apiOutput($this->getError($e), 500);

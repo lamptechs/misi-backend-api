@@ -38,6 +38,8 @@ class UserActivityResource extends JsonResource
             "activity"      => $this->activity,
             "created_at"    => $this->created_at,
             "created_by"    => $this->userable,
+            // "name"          => $this->user,
+            //"department"    => isset($this->group_id) ? (new GroupResource($this->groupId))->hide(["created_by", "updated_by"]) : null,
            
         ]);
     }
