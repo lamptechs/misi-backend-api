@@ -54,6 +54,18 @@ class Permission{
                     "patient_delete"      => "Delete Patient Info",
                 ],
             ],
+            [
+                "menu"      => "ticket", 
+                "key"       => "ticket", 
+                "access"    => [
+                    "ticket_list"        => "Show Ticket List", 
+                    "ticket_create"      => "Add New Ticket", 
+                    "ticket_update"      => "Update Ticket Info", 
+                    "ticket_delete"      => "Delete Ticket Info",
+                    "ticket_replies"     => "Ticket Replies Info",
+                    "ticket_replies_update"     => "Update Ticket Replies Info",
+                ],
+            ],
             
     ];
 
