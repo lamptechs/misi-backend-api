@@ -32,8 +32,9 @@ class UserActivityResource extends JsonResource
     public function toArray($request)
     {
         return $this->filter([
+            
             "id"            => $this->id,
-            "ticket_id"   =>$this->tableable_id,
+            "ticket_id"   =>  $this->tableable_id,
             "activity"      => $this->activity,
             "created_at"    => $this->created_at,
             "created_by"    => $this->userable,

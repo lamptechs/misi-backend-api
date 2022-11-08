@@ -15,4 +15,8 @@ class UserActivity extends Model
     public function logable(){
         return $this->morphTo(__FUNCTION__, "tableable_type", "tableable_id");
     }
+    // public function groupId(){
+    //     return $this->belongsTo(Group::class, "group_id");
+    // }
+
 }

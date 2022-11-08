@@ -125,7 +125,6 @@ class PatientController extends Controller
         }
     }
 
-
     /**
      * Store a newly created resource in storage.
      *
@@ -183,7 +182,7 @@ class PatientController extends Controller
                 $data->bsn_number = $request->bsn_number;
                 $data->dob_number = $request->dob_number;
                 $data->insurance_number = $request->insurance_number;
-                $data->emergency_contact = $request->emergency_contact ?? 0;
+                $data->emergency_contact = $request->emergency_contact;
                 $data->age = $request->age;
                 $data->gender = $request->gender;
                 $data->marital_status = $request->marital_status;
@@ -196,7 +195,7 @@ class PatientController extends Controller
                 if($request->hasFile('picture')){
                     $data->image_url = $this->uploadFile($request, 'picture', $this->patient_uploads, null,null,$data->image_url);
                 }
-
+                $data->patientstatus=$request->patientstatus;
                 $data->save();
                 $this->saveFileInfo($request, $data);
                 
@@ -204,7 +203,7 @@ class PatientController extends Controller
                 try{
                     event(new AccountRegistration($data, "patient"));
                 }catch(Exception $e){
-    
+                    
                 }
             }
             catch(Exception $e){
@@ -269,7 +268,7 @@ class PatientController extends Controller
         if( is_array($upload_files) ){
             foreach($upload_files as $file){
                 $upload = new PatientUpload();
-                $upload->therappatient_idist_id = $id;
+                $upload->patient_id = $id;
                 $upload->file_name    = $request->file_name ?? "Patient Upload Updated";
                 $upload->file_url     = $file;
                 $upload->save();    
@@ -307,7 +306,7 @@ class PatientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,$id)
+    public function update(Request $request)
     {
         // $temp=User::find($id);
         // return $temp;
@@ -320,8 +319,8 @@ class PatientController extends Controller
                 "id"            => ["required", "exists:users,id"],
                 //'first_name'    => 'required',
                 //'last_name'     => 'required',
-                //"email"         => ["required", "email",/* "unique:users",*/Rule::unique('users', 'email')->ignore($request->id)],
-                //"phone"         => ["required", "numeric",/* "unique:users"*/Rule::unique('users', 'phone')->ignore($request->id)]
+                "email"         => ["required", "email",/* "unique:users",*/Rule::unique('users', 'email')->ignore($request->id)],
+                "phone"         => ["required", "numeric",/* "unique:users"*/Rule::unique('users', 'phone')->ignore($request->id)]
             ]);
                 
             if ($validator->fails()) {
@@ -364,10 +363,11 @@ class PatientController extends Controller
             if($request->hasFile('picture')){
                 $data->image_url = $this->uploadFile($request, 'picture', $this->patient_uploads, null,null,$data->image_url);
             }
+            $data->patientstatus=$request->patientstatus;
             //$this->updateFileInfo($request, $data);
 
             $data->save();
-            //$this->updateFileInfo($request, $data->id);
+            $this->updateFileInfo($request, $data->id);
 
             DB::commit();
             //try{
@@ -424,4 +424,25 @@ class PatientController extends Controller
             return $this->apiOutput($this->getError( $e), 500);
         }
     }
+
+    // public function additionalFileAdd(Request $request){
+    //     try{
+    //         $validator = Validator::make($request->all(), [
+    //             "id"            => ["required", "exists:users,id"],
+              
+    //         ]);
+                
+    //         if ($validator->fails()) {
+    //             return $this->apiOutput($this->getValidationError($validator), 400);
+    //         }
+    //         //DB::beginTransaction();
+    //         $data = new PatientUpload();
+    //         $data->patient_id   = $request->patient_id;
+
+            
+    //     }
+    //     catch(Exception $e){
+            
+    //     }
+    // }
 }

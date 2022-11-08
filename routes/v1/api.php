@@ -67,6 +67,7 @@ Route::middleware(["auth:admin"])->group(function(){
             Route::post('/create', [TicketController::class, 'store']);
             Route::get('/show', [TicketController::class, 'show']);
             Route::get('/tickethistory', [TicketController::class, 'ticketHistoryActivity']);
+            Route::get('/tickethistoryshow', [TicketController::class, 'ticketHistoryActivityshow']);
             Route::post('/update', [TicketController::class, 'update']);
             Route::post('/delete', [TicketController::class, 'deleteTicket']);
             Route::post('/cancelticket', [TicketController::class, 'cancelticket']);
@@ -123,6 +124,7 @@ Route::middleware(["auth:admin"])->group(function(){
     //Patient Create
     Route::prefix('patientinfo')->group(function(){
         Route::get('', [PatientController::class, 'index']);
+        Route::get('/missingInfoPatient', [PatientController::class, 'missingInfoPatient']);
         Route::get('/show', [PatientController::class, 'show']);
          Route::get('/missingInfoPatient', [PatientController::class, 'missingInfoPatient']);
         Route::post('/store', [PatientController::class, 'store']);
