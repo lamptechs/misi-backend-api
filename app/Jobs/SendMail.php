@@ -17,6 +17,8 @@ class SendMail implements ShouldQueue
     protected $model;
     protected $subject;
     protected $message;
+    protected $page;
+    protected $cc;
     /**
      * Create a new job instance.
      *

@@ -107,8 +107,8 @@ class PatientController extends Controller
             return $this->apiOutput($this->getError($e), 500);
         }
     }
-
-    public function missingInfoPatient()
+    
+     public function missingInfoPatient()
     {
         try{
         $users=User::whereNull('city')
@@ -124,8 +124,6 @@ class PatientController extends Controller
             return $this->apiOutput($this->getError($e), 500);
         }
     }
-
-
 
     /**
      * Store a newly created resource in storage.
@@ -197,7 +195,7 @@ class PatientController extends Controller
                 if($request->hasFile('picture')){
                     $data->image_url = $this->uploadFile($request, 'picture', $this->patient_uploads, null,null,$data->image_url);
                 }
-
+                $data->patientstatus=$request->patientstatus;
                 $data->save();
                 $this->saveFileInfo($request, $data);
                 
@@ -365,6 +363,7 @@ class PatientController extends Controller
             if($request->hasFile('picture')){
                 $data->image_url = $this->uploadFile($request, 'picture', $this->patient_uploads, null,null,$data->image_url);
             }
+            $data->patientstatus=$request->patientstatus;
             //$this->updateFileInfo($request, $data);
 
             $data->save();

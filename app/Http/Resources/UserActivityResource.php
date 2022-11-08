@@ -34,13 +34,10 @@ class UserActivityResource extends JsonResource
         return $this->filter([
             
             "id"            => $this->id,
-            "ticket_id"   =>   $this->tableable_id,
+            "ticket_id"   =>  $this->tableable_id,
             "activity"      => $this->activity,
             "created_at"    => $this->created_at,
             "created_by"    => $this->userable,
-            // "name"          => $this->user,
-            //"department"    => isset($this->group_id) ? (new GroupResource($this->groupId))->hide(["created_by", "updated_by"]) : null,
-           
         ]);
     }
 }
