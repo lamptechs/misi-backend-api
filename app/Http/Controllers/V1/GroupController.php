@@ -49,25 +49,19 @@ class GroupController extends Controller
     {
      
         try{
-        $validator = Validator::make(
-            $request->all(),
-            [
-                // 'name' => 'required|min:4',
-                // 'description' => 'required|min:4',
-    
-            ]
-           );
-            
-           if ($validator->fails()) {
-    
-            $this->apiOutput($this->getValidationError($validator), 400);
-           }
+            $validator = Validator::make( $request->all(),[
+                'name' => 'required|min:4',
+                'description' => 'nullable|min:4',
+            ]);
+                
+            if ($validator->fails()) {    
+                $this->apiOutput($this->getValidationError($validator), 400);
+            }
    
             $group = new Group();
             $group->name = $request->name ;
             $group->description = $request->description;
-            // $group->is_admin = $request->is_admin;
-            $group->created_by = $request->user()->id ;
+            $group->created_by = $request->user()->id;
             $group->created_at = Carbon::Now();
             $group->save();
             $this->apiSuccess();
@@ -122,24 +116,18 @@ class GroupController extends Controller
     public function update(Request $request, $id)
     {
          try{
-        $validator = Validator::make(
-            $request->all(),
-            [
-                // 'name' => 'required|min:4',
-                // 'description' => 'required|min:4',
-    
-            ]
-           );
+            $validator = Validator::make( $request->all(),[
+                'name' => 'required|min:4',
+                'description' => 'nullable|min:4',
+            ]);
             
-           if ($validator->fails()) {
-    
-            $this->apiOutput($this->getValidationError($validator), 400);
-           }
+            if ($validator->fails()) {    
+                $this->apiOutput($this->getValidationError($validator), 400);
+            }
    
             $group = Group::find($id);
             $group->name = $request->name ;
             $group->description = $request->description;
-            // $group->is_admin = $request->is_admin;
             $group->created_by = $request->user()->id ;
             $group->created_at = Carbon::Now();
             $group->save();
