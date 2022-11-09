@@ -92,6 +92,8 @@ class AppointmentController extends Controller
             $data->patient_id   = $request->patient_id;
             $data->therapist_schedule_id = $request->therapist_schedule_id;
             //$data->number       = $request->number;
+            $number      = Appointmnet::max('appointmentnumber')+1000;
+            $data->appointmentnumber = $number;
             $data->history      = $request->history ?? null;
             $data->date         = $schedule->date;
             $data->start_time   = $schedule->start_time;

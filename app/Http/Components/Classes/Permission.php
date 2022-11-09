@@ -58,12 +58,44 @@ class Permission{
                 "menu"      => "ticket", 
                 "key"       => "ticket", 
                 "access"    => [
-                    "ticket_list"        => "Show Ticket List", 
-                    "ticket_create"      => "Add New Ticket", 
-                    "ticket_update"      => "Update Ticket Info", 
-                    "ticket_delete"      => "Delete Ticket Info",
-                    "ticket_replies"     => "Ticket Replies Info",
-                    "ticket_replies_update"     => "Update Ticket Replies Info",
+                    "ticket_list"                         => "Show Ticket List", 
+                    "ticket_create"                       => "Add New Ticket", 
+                    "ticket_update"                       => "Update Ticket Info", 
+                    "ticket_delete"                       => "Delete Ticket Info",
+                    "ticket_replyList"                    => "Ticket Replies Info",
+                    "ticket_addReply"                     => "Ticket Replies Info Added",
+                    "ticket_editReply"                    => "Ticket Show Replies Info",
+                    "ticket_updateReply"                  => "Ticket Reply Updated Info",
+                    "ticket_deleteReply"                  => "Ticket Reply Deleted Info",
+                    "ticket_ticketHistoryActivity"        => "Tickethistory activities List",
+                    "ticket_ticketHistoryActivityshow"    => "Tickethistory activities Show List",
+                    "assignedticket"                      => "Ticket Assigned Successfully",
+                    "cancelticket"                        => "Ticket Cancelled Successfully",
+                    "deleteFileTicket"                    => "Ticket File Deleted Successfully",
+                ],
+            ],
+
+
+            [
+                "menu"      => "TicketDepartment", 
+                "key"       => "TicketDepartment", 
+                "access"    => [
+                    "ticket_department_list"              => "Show Ticket Department List", 
+                    "ticket_department_create"            => "Add New Ticket Department", 
+                    "ticket_department_show"              => "Ticket Department Info Show", 
+                    "ticket_department_update"            => "Ticket Department Updated Info",
+                    "ticket_department_delete"            => "Ticket Department Info Delete",
+                ],
+            ],
+
+            [
+                "menu"      => "appointment", 
+                "key"       => "appointment", 
+                "access"    => [
+                    "appointment_list"                    => "Show Appointment List", 
+                    "appointment_create"                  => "Add New Appointment Create", 
+                    "appointment_show"                    => "Appointment Info Show", 
+                    
                 ],
             ],
             
