@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\V1;
 
+use App\Http\Components\Classes\Facade\Permission;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\V1\Admin\PermissionController;
 use Illuminate\Http\Request;
 use App\Models\Group;
 use App\Http\Resources\GroupResource;
@@ -20,6 +22,9 @@ class GroupController extends Controller
     public function index()
     {
        try{
+            if(!PermissionController::hasAccess("group_list")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $this->data = GroupResource::collection(Group::all());
             $this->apiSuccess("Grouop Loaded Successfully");
             return $this->apiOutput();

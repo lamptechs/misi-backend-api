@@ -15,7 +15,7 @@ class Group extends Model
     public function updatedBy(){
         return $this->belongsTo(Admin::class, "updated_by")->withTrashed();
     }
-    public function permission(){
+    public function groupAccess(){
         return $this->hasOne(GroupAccess::class, "group_id")->orderBy("id", "DESC");
     }
     

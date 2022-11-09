@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\V1\Admin\EmailController;
+use App\Http\Controllers\V1\Admin\PermissionController;
 use App\Http\Controllers\V1\Admin\TherapistController;
 use App\Http\Controllers\V1\AdminController;
 use App\Http\Controllers\V1\AppointmentController;
@@ -67,6 +68,7 @@ Route::middleware(["auth:admin"])->group(function(){
             Route::post('/create', [TicketController::class, 'store']);
             Route::get('/show', [TicketController::class, 'show']);
             Route::get('/tickethistory', [TicketController::class, 'ticketHistoryActivity']);
+            Route::get('/tickethistoryshow', [TicketController::class, 'ticketHistoryActivityshow']);
             Route::post('/update', [TicketController::class, 'update']);
             Route::post('/delete', [TicketController::class, 'deleteTicket']);
             Route::post('/cancelticket', [TicketController::class, 'cancelticket']);
@@ -123,6 +125,7 @@ Route::middleware(["auth:admin"])->group(function(){
     //Patient Create
     Route::prefix('patientinfo')->group(function(){
         Route::get('', [PatientController::class, 'index']);
+        Route::get('/missingInfoPatient', [PatientController::class, 'missingInfoPatient']);
         Route::get('/show', [PatientController::class, 'show']);
          Route::get('/missingInfoPatient', [PatientController::class, 'missingInfoPatient']);
         Route::post('/store', [PatientController::class, 'store']);
@@ -138,6 +141,15 @@ Route::middleware(["auth:admin"])->group(function(){
     Route::post('/groups/store',[GroupController::class,'store']);
     Route::post('/groups/update/{id}',[GroupController::class,'update']);
     Route::post('/groups/delete/{id}',[GroupController::class,'destroy']);
+
+    /**
+     * Group Permission
+     */
+    Route::prefix('group/permission')->group(function(){
+        Route::get('/list', [PermissionController::class, "permissionList"]);
+        Route::post('/store', [PermissionController::class, "store"]);
+        Route::get('/view', [PermissionController::class, "viewGroupPermission"]);
+    });
 
     //Ticket Department
     Route::prefix('ticket_department')->group(function(){
