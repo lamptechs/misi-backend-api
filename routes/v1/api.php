@@ -317,6 +317,7 @@ Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
     Route::get('', [TherapistController::class, 'index']);
     Route::get('/profile', [TherapistController::class, 'getProfile']);
     Route::post('profile/update', [TherapistController::class, 'updateProfile']);
+    //Route::post('/logout',[TherapistController::class,'logout']);
    
     /**
      * Therapist Tickets

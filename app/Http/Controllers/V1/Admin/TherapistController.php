@@ -65,11 +65,12 @@ class TherapistController extends Controller
         }
     }
     public function logout(Request $request){
-        $user = $request->user();
+        //$user = $request->user();
+        $user = auth('sanctum')->user();
         foreach ($user->tokens as $token) {
             $token->delete();
        }
-       $this->apiSuccess("Logout Successfull");
+       $this->apiSuccess("Logout Successfully");
        return $this->apiOutput();
    
     }
