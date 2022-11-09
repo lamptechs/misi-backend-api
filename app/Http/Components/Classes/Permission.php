@@ -87,6 +87,17 @@ class Permission{
                     "ticket_department_delete"            => "Ticket Department Info Delete",
                 ],
             ],
+
+            [
+                "menu"      => "appointment", 
+                "key"       => "appointment", 
+                "access"    => [
+                    "appointment_list"                    => "Show Appointment List", 
+                    "appointment_create"                  => "Add New Appointment Create", 
+                    "appointment_show"                    => "Appointment Info Show", 
+                    
+                ],
+            ],
             
     ];
 
