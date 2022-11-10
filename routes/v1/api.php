@@ -149,6 +149,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::get('/list', [PermissionController::class, "permissionList"]);
         Route::post('/store', [PermissionController::class, "store"]);
         Route::get('/view', [PermissionController::class, "viewGroupPermission"]);
+        Route::get('/user-access', [PermissionController::class, "userAccess"]);
     });
 
     //Ticket Department
