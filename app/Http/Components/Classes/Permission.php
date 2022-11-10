@@ -55,6 +55,7 @@ class Permission{
             "access"    => [
                 "ticket_list"                         => "Show Ticket List", 
                 "ticket_create"                       => "Add New Ticket", 
+                "ticket_show"                         => "Ticket Show", 
                 "ticket_update"                       => "Update Ticket Info", 
                 "ticket_delete"                       => "Delete Ticket Info",
                 "ticket_replyList"                    => "Ticket Replies Info",
