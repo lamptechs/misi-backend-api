@@ -83,9 +83,14 @@ class Permission{
         "appointment" => [
             "menu"      => "Appointment", 
             "access"    => [
-                "appointment_list"      => "Show Appointment List", 
-                "appointment_create"    => "Add New Appointment Create", 
-                "appointment_show"      => "Appointment Info Show", 
+                "appointment_list"                            => "Show Appointment List", 
+                "appointment_create"                          => "Add New Appointment Create", 
+                "appointment_show"                            => "Appointment Info Show", 
+                "appointment_update"                          => "Appointment Update",
+                "appointment_assignedappointmentticketstatus" => "Assigned Appointment Ticket Status",
+                "appointment_delete"                          => "Appointment Delete",
+                "delete_file_appointmentr"                    => "Delete File Appointment",
+
             ],
         ]    
     ];
