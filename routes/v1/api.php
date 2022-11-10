@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\V1\Admin\EmailController;
+use App\Http\Controllers\V1\Admin\PermissionController;
 use App\Http\Controllers\V1\Admin\TherapistController;
 use App\Http\Controllers\V1\AdminController;
 use App\Http\Controllers\V1\AppointmentController;
@@ -140,6 +141,16 @@ Route::middleware(["auth:admin"])->group(function(){
     Route::post('/groups/store',[GroupController::class,'store']);
     Route::post('/groups/update/{id}',[GroupController::class,'update']);
     Route::post('/groups/delete/{id}',[GroupController::class,'destroy']);
+
+    /**
+     * Group Permission
+     */
+    Route::prefix('group/permission')->group(function(){
+        Route::get('/list', [PermissionController::class, "permissionList"]);
+        Route::post('/store', [PermissionController::class, "store"]);
+        Route::get('/view', [PermissionController::class, "viewGroupPermission"]);
+        Route::get('/user-access', [PermissionController::class, "userAccess"]);
+    });
 
     //Ticket Department
     Route::prefix('ticket_department')->group(function(){
