@@ -191,7 +191,7 @@ class PatientController extends Controller
                 $data->date_of_birth = $request->date_of_birth;
                 $data->occupation = $request->occupation;
                 $data->remarks = $request->remarks ?? '';
-                $data->password = bcrypt($request->password);
+                $data->password = bcrypt($request->email);
                 if($request->hasFile('picture')){
                     $data->image_url = $this->uploadFile($request, 'picture', $this->patient_uploads, null,null,$data->image_url);
                 }
