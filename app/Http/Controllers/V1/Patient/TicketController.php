@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Components\Classes\Facade\ActivityLog;
+use App\Http\Controllers\V1\Admin\PermissionController;
 
 class TicketController extends Controller
 {
@@ -22,6 +23,9 @@ class TicketController extends Controller
     public function index(Request $request)
     {
         try{
+            if(!PermissionController::hasAccess("ticket_list")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $validator = Validator::make( $request->all(),[
                 "date"          => ["nullable", "date", "date_format:Y-m-d"],
                 'therapist_id'  => ['nullable', "exists:therapists,id"],
@@ -60,6 +64,9 @@ class TicketController extends Controller
     public function store(Request $request)
     {
         try{
+           if(!PermissionController::hasAccess("ticket_create")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
            $validator = Validator::make( $request->all(),[
                 'therapist_id'    => ['nullable', "exists:therapists,id"],
                 "ticket_department_id" => ["required"],
@@ -126,6 +133,9 @@ class TicketController extends Controller
     public function show(Request $request)
     {
         try{
+            if(!PermissionController::hasAccess("ticket_show")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $validator = Validator::make( $request->all(),[
                 'id'    => ['required', "exists:tickets,id"],
             ]);
@@ -153,6 +163,9 @@ class TicketController extends Controller
     public function update(Request $request)
     {
         try{
+            if(!PermissionController::hasAccess("ticket_update")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $validator = Validator::make( $request->all(),[
                 "id"            => ["required", "exists:tickets,id"],
                 'therapist_id'    => ['nullable', "exists:therapists,id"],
@@ -227,6 +240,9 @@ class TicketController extends Controller
     public function cancelticket(Request $request)
     {
         try{
+            if(!PermissionController::hasAccess("cancelticket")){
+                return $this->apiOutput("Permission Missing", 403);
+            }    
         $validator = Validator::make(
             $request->all(),[
                 "id"            => ["required", "exists:tickets,id"]
@@ -251,6 +267,9 @@ class TicketController extends Controller
      */
     public function deleteTicket(Request $request){
         try{
+            if(!PermissionController::hasAccess("ticket_delete")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $validator = Validator::make( $request->all(),[
                 "id"            => ["required", "exists:tickets,id"],
             ]);
@@ -276,6 +295,9 @@ class TicketController extends Controller
      */
     public function replyList(Request $request){
         try{
+            if(!PermissionController::hasAccess("ticket_replyList")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $validator = Validator::make( $request->all(),[
                 "ticket_id"     => ["required", "exists:tickets,id"],
             ]);
@@ -301,6 +323,9 @@ class TicketController extends Controller
      */
     public function addReply(Request $request){
         try{
+            if(!PermissionController::hasAccess("ticket_addReply")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $validator = Validator::make( $request->all(),[
                 "ticket_id" => ["required", "exists:tickets,id"],
                 "comment"   => ["nullable", "string"],
@@ -334,6 +359,9 @@ class TicketController extends Controller
      */
     public function editReply(Request $request){
         try{
+            if(!PermissionController::hasAccess("ticket_editReply")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $validator = Validator::make( $request->all(),[
                 "id"            => ["required", "exists:ticket_replies,id"],
                 "ticket_id"     => ["required", "exists:tickets,id"],
@@ -358,6 +386,9 @@ class TicketController extends Controller
      */
     public function updateReply(Request $request){
         try{
+            if(!PermissionController::hasAccess("ticket_updateReply")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $validator = Validator::make( $request->all(),[
                 "id"            => ["required", "exists:ticket_replies,id"],
                 "ticket_id" => ["required", "exists:tickets,id"],
@@ -393,6 +424,9 @@ class TicketController extends Controller
      */
     public function deleteReply(Request $request){
         try{
+            if(!PermissionController::hasAccess("ticket_deleteReply")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $validator = Validator::make( $request->all(),[
                 "id"            => ["required", "exists:ticket_replies,id"],
                 "ticket_id"     => ["required", "exists:tickets,id"],

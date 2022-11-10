@@ -55,6 +55,7 @@ class Permission{
             "access"    => [
                 "ticket_list"                         => "Show Ticket List", 
                 "ticket_create"                       => "Add New Ticket", 
+                "ticket_show"                         => "Ticket Show", 
                 "ticket_update"                       => "Update Ticket Info", 
                 "ticket_delete"                       => "Delete Ticket Info",
                 "ticket_replyList"                    => "Ticket Replies Info",
@@ -82,9 +83,14 @@ class Permission{
         "appointment" => [
             "menu"      => "Appointment", 
             "access"    => [
-                "appointment_list"      => "Show Appointment List", 
-                "appointment_create"    => "Add New Appointment Create", 
-                "appointment_show"      => "Appointment Info Show", 
+                "appointment_list"                            => "Show Appointment List", 
+                "appointment_create"                          => "Add New Appointment Create", 
+                "appointment_show"                            => "Appointment Info Show", 
+                "appointment_update"                          => "Appointment Update",
+                "appointment_assignedappointmentticketstatus" => "Assigned Appointment Ticket Status",
+                "appointment_delete"                          => "Appointment Delete",
+                "delete_file_appointmentr"                    => "Delete File Appointment",
+
             ],
         ]    
     ];

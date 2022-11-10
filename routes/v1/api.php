@@ -73,7 +73,7 @@ Route::middleware(["auth:admin"])->group(function(){
             Route::post('/delete', [TicketController::class, 'deleteTicket']);
             Route::post('/cancelticket', [TicketController::class, 'cancelticket']);
             Route::post('/assignedticket', [TicketController::class, 'assignedticket']);
-            Route::get('/tickethistoryshow', [TicketController::class, 'ticketHistoryActivityshow']);
+            //Route::get('/tickethistoryshow', [TicketController::class, 'ticketHistoryActivityshow']);
             Route::post('/ticketuploaddelete', [TicketController::class, 'deleteFileTicket']);
 
             // Reply On Ticket
@@ -328,6 +328,8 @@ Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
         Route::get('/show', [TicketController::class, 'show']);
         Route::post('/store', [TicketController::class, 'store']);
         Route::post('/update', [TicketController::class, 'update']);
+        Route::get('/tickethistory', [TicketController::class, 'ticketHistoryActivity']);
+        Route::get('/tickethistoryshow', [TicketController::class, 'ticketHistoryActivityshow']);
         Route::post('/therapistuploaddelete', [TherapistController::class, 'deleteFileTherapist']);
         Route::post('/delete/{id}', [TherapistTicketController::class, 'deleteTicket']);
     });
