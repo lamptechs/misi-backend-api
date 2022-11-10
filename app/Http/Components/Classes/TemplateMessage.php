@@ -39,6 +39,12 @@ class TemplateMessage{
     protected function prepareMessage()
     {
         try{
+            if( isset($this->model->email) ){
+                $this->message = str_replace("{user_name}", $this->model->email, $this->message);
+            }
+            if( isset($this->model->email) ){
+                $this->message = str_replace("{default_password}", $this->model->email, $this->message);
+            }
             if( isset($this->model->first_name) ){
                 $this->message = str_replace("{first_name}", $this->model->first_name, $this->message);
             }
