@@ -83,6 +83,18 @@ class PermissionController extends Controller
         }
     }
 
+    public function userAccess(Request $request){
+        try{
+            $admin_user = $request->user();
+            $permissions = Permission::getOrginalAccessWithMenu($admin_user->group->groupAccess->group_access ?? []);
+            $this->data = $permissions;
+            $this->apiSuccess("User Access Loaded Successfully");
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
+        }
+    }
+
     /**
      * Check Has Permission Or Not 
      * @return bool
