@@ -71,7 +71,7 @@ class TicketResource extends JsonResource
             "assigned_to_user_status"=>$this->assigned_to_user_status,
             "cancel_ticket_type"    =>$this->cancel_ticket_type,
             "cancel_reason"         =>$this->cancel_reason,
-            "upload_files"      => TicketUploadResource::collection($this->fileInfo),
+            "upload_files"          => TicketUploadResource::collection($this->fileInfo),
             "created_by"            => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
             "updated_by"            => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
             "therapist_info"        => isset($this->therapist) ? (new TherapistResource($this->therapist))->hide(["created_by", "updated_by", "upload_files", "image", "therapist_type", "blood_group", "country", "state"]) :null,
