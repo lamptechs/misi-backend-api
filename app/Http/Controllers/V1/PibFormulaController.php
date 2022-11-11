@@ -172,7 +172,6 @@ class PibFormulaController extends Controller
     {
         try{
             $data = $this->getModel()->find($request->id);
-            PibFormula::where('id',$data->id)->delete();
             $data->delete();
             $this->apiSuccess();
             return $this->apiOutput("PIB Deleted Successfully", 200);

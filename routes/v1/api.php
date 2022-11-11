@@ -108,8 +108,8 @@ Route::middleware(["auth:admin"])->group(function(){
     //PiB Formula Section
     Route::prefix('pib')->group(function(){
         Route::get('/', [PibFormulaController::class, 'index']);
-        Route::get('/show', [PibFormulaController::class, 'show']);
         Route::post('/store', [PibFormulaController::class, 'store']);
+        Route::get('/show', [PibFormulaController::class, 'show']);
         Route::post('/update', [PibFormulaController::class, 'update']);
         Route::post('/delete', [PibFormulaController::class, 'destroy']);
     });
@@ -117,10 +117,10 @@ Route::middleware(["auth:admin"])->group(function(){
     //PiB Scale Section
     Route::prefix('pibscale')->group(function(){
         Route::get('/', [PibScaleController::class, 'index']);
-        Route::get('/show', [PibScaleController::class, 'show']);
         Route::post('/store', [PibScaleController::class, 'store']);
-        Route::post('/update/{id}', [PibScaleController::class, 'update']);
-        Route::post('/delete/{id}', [PibScaleController::class, 'destroy']);
+        Route::get('/show', [PibScaleController::class, 'show']);
+        Route::post('/update', [PibScaleController::class, 'update']);
+        Route::any('/delete', [PibScaleController::class, 'destroy']);
     });
 
     //Patient Create

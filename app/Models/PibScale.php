@@ -17,12 +17,12 @@ class PibScale extends Model
         return $this->belongsTo(Admin::class, "updated_by")->withTrashed();
     }
     public function patient(){
-        return $this->belongsTo(User::class, 'patient_id');
+        return $this->belongsTo(User::class, 'patient_id')->withTrashed();
     }
     public function pibformula(){
-        return $this->belongsTo(PibFormula::class, 'pib_formula_id');
+        return $this->belongsTo(PibFormula::class, 'pib_formula_id')->withTrashed();
     }
     public function question(){
-        return $this->belongsTo(Question::class, 'question_id');
+        return $this->belongsTo(Question::class, 'question_id')->withTrashed();
     }
 }
