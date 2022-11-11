@@ -60,51 +60,33 @@ Route::post('/admin/delete/{id}', [AdminController::class, 'destroy']);
  * Protect the Route Throw API Token
  */
 Route::middleware(["auth:admin"])->group(function(){
-        /**
-         * Ticket
-         */
-        Route::prefix('admin/ticket')->group(function(){
-            Route::get('/', [TicketController::class, 'index']);
-            Route::post('/create', [TicketController::class, 'store']);
-            Route::get('/show', [TicketController::class, 'show']);
-            Route::get('/tickethistory', [TicketController::class, 'ticketHistoryActivity']);
-            Route::get('/tickethistoryshow', [TicketController::class, 'ticketHistoryActivityshow']);
-            Route::post('/update', [TicketController::class, 'update']);
-            Route::post('/delete', [TicketController::class, 'deleteTicket']);
-            Route::post('/cancelticket', [TicketController::class, 'cancelticket']);
-            Route::post('/assignedticket', [TicketController::class, 'assignedticket']);
-            //Route::get('/tickethistoryshow', [TicketController::class, 'ticketHistoryActivityshow']);
-            Route::post('/ticketuploaddelete', [TicketController::class, 'deleteFileTicket']);
+    /**
+     * Ticket
+     */
+    Route::prefix('admin/ticket')->group(function(){
+        Route::get('/', [TicketController::class, 'index']);
+        Route::post('/create', [TicketController::class, 'store']);
+        Route::get('/show', [TicketController::class, 'show']);
+        Route::get('/tickethistory', [TicketController::class, 'ticketHistoryActivity']);
+        Route::get('/tickethistoryshow', [TicketController::class, 'ticketHistoryActivityshow']);
+        Route::post('/update', [TicketController::class, 'update']);
+        Route::post('/delete', [TicketController::class, 'deleteTicket']);
+        Route::post('/cancelticket', [TicketController::class, 'cancelticket']);
+        Route::post('/assignedticket', [TicketController::class, 'assignedticket']);
+        //Route::get('/tickethistoryshow', [TicketController::class, 'ticketHistoryActivityshow']);
+        Route::post('/ticketuploaddelete', [TicketController::class, 'deleteFileTicket']);
 
-            // Reply On Ticket
-            Route::prefix("reply")->group(function(){
-                Route::get('/', [TicketController::class, 'replyList']);
-                Route::post('/create', [TicketController::class, 'addReply']);
-                Route::get('/edit', [TicketController::class, 'editReply']);
-                Route::post('/update', [TicketController::class, 'updateReply']);
-                Route::get('/delete', [TicketController::class, 'deleteReply']);
-            });
+        // Reply On Ticket
+        Route::prefix("reply")->group(function(){
+            Route::get('/', [TicketController::class, 'replyList']);
+            Route::post('/create', [TicketController::class, 'addReply']);
+            Route::get('/edit', [TicketController::class, 'editReply']);
+            Route::post('/update', [TicketController::class, 'updateReply']);
+            Route::get('/delete', [TicketController::class, 'deleteReply']);
         });
+    });
 
-        //Pit Scale Section
-        Route::prefix('pitscale')->group(function(){
-            Route::get('/', [PitScaleController::class, 'index']);
-            Route::get('/show', [PitScaleController::class, 'show']);
-            Route::post('/store', [PitScaleController::class, 'store']);
-            Route::post('/update/{id}', [PitScaleController::class, 'update']);
-            Route::post('/delete/{id}', [PitScaleController::class, 'destroy']);
-        });
-
-        //Pib Scale Section
-        Route::prefix('pibscale')->group(function(){
-            Route::get('/', [PibScaleController::class, 'index']);
-            Route::get('/show', [PibScaleController::class, 'show']);
-            Route::post('/store', [PibScaleController::class, 'store']);
-            Route::post('/update/{id}', [PibScaleController::class, 'update']);
-            Route::post('/delete/{id}', [PibScaleController::class, 'destroy']);
-        });
-
-
+        
     //Pit Formula Section
     Route::prefix('pit')->group(function(){
         Route::get('/', [PitFormulaController::class, 'index']);
@@ -114,14 +96,33 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::post('/delete/{id}', [PitFormulaController::class, 'destroy']);
     });
 
-    //Pib Formula Section
+    //Pit Scale Section
+    Route::prefix('pitscale')->group(function(){
+        Route::get('/', [PitScaleController::class, 'index']);
+        Route::get('/show', [PitScaleController::class, 'show']);
+        Route::post('/store', [PitScaleController::class, 'store']);
+        Route::post('/update/{id}', [PitScaleController::class, 'update']);
+        Route::post('/delete/{id}', [PitScaleController::class, 'destroy']);
+    });
+
+    //PiB Formula Section
     Route::prefix('pib')->group(function(){
         Route::get('/', [PibFormulaController::class, 'index']);
         Route::get('/show', [PibFormulaController::class, 'show']);
         Route::post('/store', [PibFormulaController::class, 'store']);
-        Route::post('/update/{id}', [PibFormulaController::class, 'update']);
-        Route::post('/delete/{id}', [PibFormulaController::class, 'destroy']);
+        Route::post('/update', [PibFormulaController::class, 'update']);
+        Route::post('/delete', [PibFormulaController::class, 'destroy']);
     });
+
+    //PiB Scale Section
+    Route::prefix('pibscale')->group(function(){
+        Route::get('/', [PibScaleController::class, 'index']);
+        Route::get('/show', [PibScaleController::class, 'show']);
+        Route::post('/store', [PibScaleController::class, 'store']);
+        Route::post('/update/{id}', [PibScaleController::class, 'update']);
+        Route::post('/delete/{id}', [PibScaleController::class, 'destroy']);
+    });
+
     //Patient Create
     Route::prefix('patientinfo')->group(function(){
         Route::get('', [PatientController::class, 'index']);

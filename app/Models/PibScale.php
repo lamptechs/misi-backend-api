@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PibScale extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
     public function createdBy(){
         return $this->belongsTo(Admin::class, "created_by")->withTrashed();
     }
@@ -17,9 +19,8 @@ class PibScale extends Model
     public function patient(){
         return $this->belongsTo(User::class, 'patient_id');
     }
-
     public function pibformula(){
-        return $this->hasMany(PibFormula::class, 'pib_formula_id');
+        return $this->belongsTo(PibFormula::class, 'pib_formula_id');
     }
     public function question(){
         return $this->belongsTo(Question::class, 'question_id');
