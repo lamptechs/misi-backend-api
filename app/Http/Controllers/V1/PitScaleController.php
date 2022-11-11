@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+
 
 class PitScaleController extends Controller
 {
@@ -23,7 +25,7 @@ class PitScaleController extends Controller
     }
 
 
-    /**
+   /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -31,7 +33,8 @@ class PitScaleController extends Controller
     public function index()
     {
         try{
-            $this->data = PitScaleResource::collection(PitScale::all());
+            $pit_scale = PitScale::all();
+            $this->data = PitScaleResource::collection($pit_scale);
             $this->apiSuccess("PIT Scale Loaded Successfully");
             return $this->apiOutput();
 
@@ -48,40 +51,35 @@ class PitScaleController extends Controller
      */
     public function store(Request $request)
     {
-
-
-
         try{
+            $validator = Validator::make($request->all(),[
+                'patient_id'            => ['required', "exists:users,id"],
+                'pit_formula_id'        => ['required', "exists:pit_formulas,id"],
+                'question_id'           => ['nullable', "exists:questions,id"],
+                "scale_value"           => ["required", "numeric", "min:0", "max:100"],
+                "status"                => ["nullable", Rule::in(["active", "inactive", "pending", "cancel"])],
+                "remarks"               => ["required", "string"]
+            ]);
+    
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 400);
+            }
 
             DB::beginTransaction();
-
             $data = $this->getModel();
-
-            $data->patient_id = $request->patient_id;
-            $data->pit_formula_id = $request->pit_formula_id;
-            $data->question_id = $request->question_id;
-            $data->scale_value = $request->scale_value;
-            $data->deleted_by = $request->deleted_by ?? null;
-            $data->deleted_date = $request->deleted_date ?? null ;
-            $data->status = $request->status;
-            $data->remarks = $request->remarks;
-            $data->modified_by = $request->modified_by;
-            $data->modified_date = $request->modified_date ?? null;
-            $data->created_by = $request->created_by;
-            $data->created_date = $request->created_date ?? null;
-
+            $data->patient_id       = $request->patient_id;
+            $data->pit_formula_id   = $request->pit_formula_id;
+            $data->question_id      = $request->question_id;
+            $data->scale_value      = $request->scale_value;
+            $data->status           = $request->status ?? "active";
+            $data->remarks          = $request->remarks;
+            $data->created_by       = $request->user()->id;
             $data->save();
-            // $this->saveFileInfo($request, $data);
 
             DB::commit();
-            $this->apiSuccess("PIT Scale Info Added Successfully");
+            $this->apiSuccess("PIT Scale Added Successfully");
             $this->data = (new PitScaleResource($data));
             return $this->apiOutput();
-            try{
-                // event(new Registered($data));
-            }catch(Exception $e){
-                //
-            }
         }
         catch(Exception $e){
             DB::rollBack();
@@ -89,9 +87,8 @@ class PitScaleController extends Controller
         }
     }
 
-
-
-            /**
+   
+    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -102,7 +99,7 @@ class PitScaleController extends Controller
         try{
             $data = PitScale::find($request->id);
             if( empty($data) ){
-                return $this->apiOutput("PIT Scale Data Not Found", 400);
+                return $this->apiOutput("Pit Scale Not Found", 400);
             }
             $this->data = (new PitScaleResource($data));
             $this->apiSuccess("PIT Scale Detail Show Successfully");
@@ -112,50 +109,43 @@ class PitScaleController extends Controller
         }
     }
 
-        /**
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,$id)
+    public function update(Request $request)
     {
-
         try{
-        $validator = Validator::make($request->all(),[
-            //"id"  => ['required', "exists:therapists,id"],
+            $validator = Validator::make($request->all(),[
+                'patient_id'            => ['required', "exists:users,id"],
+                'pit_formula_id'        => ['required', "exists:pit_formulas,id"],
+                'question_id'           => ['nullable', "exists:questions,id"],
+                "scale_value"           => ["required", "numeric", "min:0", "max:100"],
+                "status"                => ["nullable", Rule::in(["active", "inactive", "pending", "cancel"])],
+                "remarks"               => ["required", "string"]
+            ]);
+    
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 400);
+            }
 
-
-        ]);
-
-        if ($validator->fails()) {
-            return $this->apiOutput($this->getValidationError($validator), 400);
-        }
             DB::beginTransaction();
-            //$data = $this->getModel()->find($request->id);
             $data = PitScale::find($request->id);
 
-
-            $data->patient_id = $request->patient_id;
-            $data->pit_formula_id = $request->pit_formula_id;
-            $data->question_id = $request->question_id;
-            $data->scale_value = $request->scale_value;
-            $data->deleted_by = $request->deleted_by ?? null;
-            $data->deleted_date = $request->deleted_date ?? null ;
-            $data->status = $request->status;
-            $data->remarks = $request->remarks;
-            $data->modified_by = $request->modified_by;
-            $data->modified_date = $request->modified_date ?? null;
-            $data->created_by = $request->created_by;
-            $data->created_date = $request->created_date ?? null;
+            $data->patient_id       = $request->patient_id;
+            $data->pit_formula_id   = $request->pit_formula_id;
+            $data->question_id      = $request->question_id;
+            $data->scale_value      = $request->scale_value;
+            $data->status           = $request->status ?? "active";
+            $data->remarks          = $request->remarks;
+            $data->updated_by       = $request->user()->id;
             $data->save();
-            //$this->updateFileInfo($request, $data);
             DB::commit();
 
-
-
-            $this->apiSuccess("PIT Info Updated Successfully");
+            $this->apiSuccess("PIT Scale Updated Successfully");
             $this->data = (new PitScaleResource($data));
             return $this->apiOutput();
         }
@@ -165,17 +155,16 @@ class PitScaleController extends Controller
         }
     }
 
-            /**
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         try{
-            $data = $this->getModel()->find($id);
-            PitScale::where('id',$data->id)->delete();
+            $data = $this->getModel()->find($request->id);
             $data->delete();
             $this->apiSuccess();
             return $this->apiOutput("PIT Scale Deleted Successfully", 200);
