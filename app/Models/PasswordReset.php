@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class PasswordReset extends Model
 {
     use HasFactory;
+
+    public function tableable(){
+        return $this->morphTo(__FUNCTION__, "tableable", "tableable_id");
+    }
 }
