@@ -8,6 +8,7 @@ use App\Jobs\SendMail;
 use App\Models\EmailTemplate;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Storage;
 
 class AppointmentEmailSend
 {
@@ -53,15 +54,20 @@ class AppointmentEmailSend
             
             $patient = $appointment->patient;
             $therapist = $appointment->therapist;
+            $invoice_pdf = null;
+            if( !empty($appointment->invoice_url) && Storage::disk("public")->exists($appointment->invoice_url) ){
+                $invoice_pdf = public_path('storage/'.$appointment->invoice_url);
+            }
+           
 
             // Send Mail to Paitent
             if( !empty($patient) ){
-                SendMail::dispatch($patient, $email_template->subject, $message, $email_template->cc)->delay(1);
+                SendMail::dispatch($patient, $email_template->subject, $message, $email_template->cc, $invoice_pdf)->delay(1);
             }
 
             // Send Mail to Therapist
             if( !empty($therapist) ){
-                SendMail::dispatch($therapist, $email_template->subject, $message, $email_template->cc)->delay(1);
+                SendMail::dispatch($therapist, $email_template->subject, $message, $email_template->cc, $invoice_pdf)->delay(1);
             }
         }
 

@@ -13,8 +13,10 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Mpdf\Mpdf;
 
 class AppointmentController extends Controller
 {
@@ -73,9 +75,9 @@ class AppointmentController extends Controller
      */
     public function store(Request $request)
     {
-        // $string = Str::random(12);
-        // return $string;
         try{
+            DB::beginTransaction();;
+
             $validator = Validator::make($request->all(), [
                 "therapist_id"  => ["required", "exists:therapists,id"],
                 "patient_id"    => ["required", "exists:users,id"],
@@ -86,7 +88,6 @@ class AppointmentController extends Controller
                 return $this->apiOutput($this->getValidationError($validator), 400);
             }
 
-            DB::beginTransaction();
 
             $schedule = TherapistSchedule::where("id", $request->therapist_schedule_id)->first();
             if($schedule->status != "open"){
@@ -117,6 +118,7 @@ class AppointmentController extends Controller
             if($request->hasFile('picture')){
                 $data->image_url = $this->uploadFile($request, 'picture', $this->appointment_uploads, null,null,$data->image_url);
             }
+            $data->invoice_url = $this->generatingInvoice($data);
             $data->save();
             $this->saveFileInfo($request, $data);
             
@@ -125,10 +127,9 @@ class AppointmentController extends Controller
             }catch(Exception $e){
                 
             }
-            
+            DB::commit();
             $this->apiSuccess("Appointment Created Successfully");
             $this->data = (new AppointmentResource($data));
-            DB::commit();
             return $this->apiOutput();
         }catch(Exception $e){
             DB::rollBack();
@@ -152,6 +153,28 @@ class AppointmentController extends Controller
         }
        
     }
+
+    /**
+     * Generating Invoice
+     */
+    protected function generatingInvoice($appointment){
+        if(!empty($appointment->invoice_url) && Storage::disk("public")->exists($appointment->invoice_url)){
+            Storage::disk("public")->delete($appointment->invoice_url);
+        }
+
+        $params = [
+            "data"      => $appointment,
+            "patient"   => $appointment->patient ?? null,
+            "therapist" => $appointment->therapist ?? null,
+        ];
+        $invoice_html = view('invoice.appointment-invoice', $params)->render();
+        $file_name = $appointment->appointmentnumber .'.pdf';
+        
+        $mpdf = new Mpdf();
+        $mpdf->WriteHTML($invoice_html);
+        $mpdf->Output('storage/'.$file_name, 'F'); 
+        return $file_name; 
+    }   
 
     /**
      * Display the specified resource.
@@ -236,6 +259,7 @@ class AppointmentController extends Controller
             if($request->hasFile('picture')){
                 $appoinement->image_url = $this->uploadFile($request, 'picture', $this->appointment_uploads, null,null,$appoinement->image_url);
             }
+            $appoinement->invoice_url = $this->generatingInvoice($appoinement);
             $appoinement->save();
             $this->saveFileInfo($request, $appoinement);
         
