@@ -122,8 +122,8 @@ class AppointmentController extends Controller
             $data->save();
             $this->saveFileInfo($request, $data);
             
-            event(new Appointment($data));
             try{
+                event(new Appointment($data));
             }catch(Exception $e){
                 
             }
