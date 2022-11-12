@@ -111,7 +111,7 @@
                             <tr>
                                 <td>1</td>
                                 <td>Appointment Confirmation</td>
-                                <td>Appointment Time : {{ Carbon\Carbon::parse($data->start_time)->format('d M, Y H:i') }} {{ Carbon\Carbon::parse($data->end_time)->format('d M, Y H:i') }}</td>
+                                <td>Appointment Time : {{ Carbon\Carbon::parse($data->start_time)->format('d M, Y H:i') }}  TO {{ Carbon\Carbon::parse($data->end_time)->format('H:i') }}</td>
                                 <td>{{ number_format($data->fee, 2) }}</td>
                             </tr>
                         </tbody>
