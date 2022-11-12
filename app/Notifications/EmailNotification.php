@@ -12,19 +12,20 @@ class EmailNotification extends Notification
 {
     use Queueable;
 
-    public $subject, $message, $cc, $page;
+    public $subject, $message, $cc, $page, $atachment;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($subject, $message, $page = null, $cc = null)
+    public function __construct($subject, $message, $page = null, $cc = null, $atachment_file = null)
     {
         $this->subject      = $subject;
         $this->message      = $message;
         $this->cc           = $cc;
         $this->page         = $page;
+        $this->atachment_file    = $atachment_file;
     }
 
     /**
@@ -59,6 +60,10 @@ class EmailNotification extends Notification
             $mail_message->view($this->page, $this->message);
         }else{
             $mail_message->line(new HtmlString($this->message));
+        }
+
+        if( !empty($this->atachment_file) ){
+            $mail_message->attach($this->atachment_file);
         }
         return $mail_message;
     }

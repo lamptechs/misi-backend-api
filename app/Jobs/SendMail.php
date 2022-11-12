@@ -19,18 +19,20 @@ class SendMail implements ShouldQueue
     protected $message;
     protected $page;
     protected $cc;
+    protected $invoice_pdf;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($model, $subject, $message, $cc = "", $page = "email.default")
+    public function __construct($model, $subject, $message, $cc = "", $invoice_pdf = null, $page = "email.default")
     {
         $this->model    = $model;
         $this->subject  = $subject;
         $this->message  = $message;
         $this->cc       = $cc;
-        $this->page    = $page;
+        $this->page     = $page;
+        $this->invoice_pdf = $invoice_pdf;
     }
 
     /**
@@ -40,6 +42,6 @@ class SendMail implements ShouldQueue
      */
     public function handle()
     {
-        $this->model->notify(New EmailNotification($this->subject, $this->message, $this->page, $this->cc));
+        $this->model->notify(New EmailNotification($this->subject, $this->message, $this->page, $this->cc, $this->invoice_pdf));
     }
 }
