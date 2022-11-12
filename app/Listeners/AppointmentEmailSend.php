@@ -56,7 +56,7 @@ class AppointmentEmailSend
             $therapist = $appointment->therapist;
             $invoice_pdf = null;
             if( !empty($appointment->invoice_url) && Storage::disk("public")->exists($appointment->invoice_url) ){
-                $invoice_pdf = asset(Storage::disk("public")->url($appointment->invoice_url));
+                $invoice_pdf = public_path('storage/'.$appointment->invoice_url);
             }
            
 
