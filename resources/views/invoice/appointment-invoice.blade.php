@@ -53,9 +53,9 @@
                         <div class="left-line">
                             <h3 class="heading-text">Therapist Information</h3>
                             <p>{{ $therapist->first_name ?? "" }} {{ $therapist->last_name ?? ""}} </p>
-                            <p>{{ $patient->email ?? "" }}</p>
-                            <p>{{ $patient->phone ?? "" }}</p>
-                            <p>{{ $patient->address ?? "" }}</p>
+                            <p>{{ $therapist->email ?? "" }}</p>
+                            <p>{{ $therapist->phone ?? "" }}</p>
+                            <p>{{ $therapist->address ?? "" }}</p>
                         </div>
                     </div>
                 </div>
