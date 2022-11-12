@@ -26,9 +26,9 @@ class TicketController extends Controller
     public function index(Request $request)
     {
         try{
-            if(!PermissionController::hasAccess("ticket_list")){
-                return $this->apiOutput("Permission Missing", 403);
-            }
+            // if(!PermissionController::hasAccess("ticket_list")){
+            //     return $this->apiOutput("Permission Missing", 403);
+            // }
 
             $validator = Validator::make( $request->all(),[
                 'patient_id'    => ['nullable', "exists:users,id"],
