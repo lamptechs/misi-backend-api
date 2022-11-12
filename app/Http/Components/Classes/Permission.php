@@ -89,7 +89,7 @@ class Permission{
                 "appointment_update"                          => "Appointment Update",
                 "appointment_assignedappointmentticketstatus" => "Assigned Appointment Ticket Status",
                 "appointment_delete"                          => "Appointment Delete",
-                "delete_file_appointmentr"                    => "Delete File Appointment",
+                "delete_file_appointment"                     => "Delete File Appointment",
 
             ],
         ]    
