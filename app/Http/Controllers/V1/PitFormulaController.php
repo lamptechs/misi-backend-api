@@ -9,8 +9,8 @@ use App\Models\PitFormula;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 
 
@@ -25,56 +25,6 @@ class PitFormulaController extends Controller
     }
 
     /**
-     * Show Login
-     */
-    public function showLogin(Request $request){
-        $this->data = [
-            "email"     => "required",
-            "password"  => "required",
-        ];
-        $this->apiSuccess("This credentials are required for Login ");
-        return $this->apiOutput();
-    }
-
-    /**
-     * Login
-     */
-    public function login(Request $request){
-        try{
-            $validator = Validator::make($request->all(), [
-                "email"     => ["required"],
-                "password"  => ["required"]
-            ]);
-            if($validator->fails()){
-                return $this->apiOutput($this->getValidationError($validator), 400);
-            }
-            $pitformula = $this->getModel()->where("email", $request->email)->first();
-            if( !Hash::check($request->password, $pitformula->password) ){
-                return $this->apiOutput("Sorry! Password Dosen't Match", 401);
-            }
-            if( !$pitformula->status ){
-                return $this->apiOutput("Sorry! your account is temporaly blocked", 401);
-            }
-            // Issueing Access Token
-            // $this->access_token = $pibformula->createToken($request->ip() ?? "therapist_access_token")->plainTextToken;
-            $this->apiSuccess("Login Successfully");
-            return $this->apiOutput();
-
-        }catch(Exception $e){
-            return $this->apiOutput($this->getError($e), 500);
-        }
-    }
-    public function logout(Request $request){
-        $user = $request->user();
-        foreach ($user->tokens as $token) {
-            $token->delete();
-       }
-       $this->apiSuccess("Logout Successfull");
-       return $this->apiOutput();
-
-    }
-
-    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -82,10 +32,10 @@ class PitFormulaController extends Controller
     public function index()
     {
         try{
-            $this->data = PitFormulaResource::collection(PitFormula::all());
+            $pib = PitFormula::all();
+            $this->data = PitFormulaResource::collection($pib);
             $this->apiSuccess("PIT Loaded Successfully");
             return $this->apiOutput();
-
         }catch(Exception $e){
             return $this->apiOutput($this->getError($e), 500);
         }
@@ -98,44 +48,41 @@ class PitFormulaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-
-
+    { 
         try{
+            $validator = Validator::make($request->all(),[
+                'patient_id'            => ['nullable', "exists:users,id"],
+                'ticket_id'             => ['nullable', "exists:tickets,id"],
+                'name'                  => ['required', "string", "min:2"],
+                "type_of_legitimation"  => ["nullable", "string"],
+                "document_number"       => ["nullable", "string"],
+                "identify_expire_date"  => ["nullable", "date"],
+                "status"                => ["required", Rule::in(["active", "inactive", "pending", "cancel"])],
+                "remarks"               => ["required", "string"]
+            ]);
+    
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 400);
+            }
 
             DB::beginTransaction();
-
             $data = $this->getModel();
 
-            $data->patient_id = $request->patient_id;
-            $data->pit_name = $request->pit_name;
+            $data->patient_id           = $request->patient_id;
+            $data->ticket_id            = $request->ticket_id;
+            $data->name                 = $request->name;
             $data->type_of_legitimation = $request->type_of_legitimation;
-            $data->document_number = $request->document_number;
-            $data->identify_expire_date = $request->identify_expire_date ?? null;
-            $data->patient_code = $request->patient_code;
-            $data->create_by = $request->create_by;
-            $data->ticket_id = $request->ticket_id;
-            $data->deleted_by = $request->deleted_by ?? null;
-            $data->deleted_date = $request->deleted_date ?? null ;
-            $data->status = $request->status;
-            $data->remarks = $request->remarks;
-            $data->modified_by = $request->modified_by;
-            $data->modified_date = $request->modified_date ?? null;
-            $data->created_by = $request->created_by;
-            $data->created_date = $request->created_date ?? null;
-
+            $data->document_number      = $request->document_number;
+            $data->identify_expire_date = $request->identify_expire_date;
+            $data->created_by            = $request->user()->id;
+            $data->status                = $request->status;
+            $data->remarks               = $request->remarks;
             $data->save();
-            // $this->saveFileInfo($request, $data);
 
             DB::commit();
-            $this->apiSuccess("PIT Info Added Successfully");
+            $this->apiSuccess("PIT Formula Added Successfully");
             $this->data = (new PitFormulaResource($data));
             return $this->apiOutput();
-            try{
-                // event(new Registered($data));
-            }catch(Exception $e){
-                //
-            }
         }
         catch(Exception $e){
             DB::rollBack();
@@ -143,7 +90,7 @@ class PitFormulaController extends Controller
         }
     }
 
-
+    
     /**
      * Display the specified resource.
      *
@@ -155,7 +102,7 @@ class PitFormulaController extends Controller
         try{
             $data = PitFormula::find($request->id);
             if( empty($data) ){
-                return $this->apiOutput("Pit Data Not Found", 400);
+                return $this->apiOutput("Pit Formula Not Found", 400);
             }
             $this->data = (new PitFormulaResource ($data));
             $this->apiSuccess("PIT Detail Show Successfully");
@@ -165,58 +112,49 @@ class PitFormulaController extends Controller
         }
     }
 
-        /**
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,$id)
+    public function update(Request $request)
     {
-
         try{
-        $validator = Validator::make($request->all(),[
-            //"id"  => ['required', "exists:therapists,id"],
-
-
-        ]);
-
-        if ($validator->fails()) {
-            return $this->apiOutput($this->getValidationError($validator), 400);
-        }
+            $validator = Validator::make($request->all(),[
+                "id"                    => ["required", "exists:pit_formulas,id"],
+                'patient_id'            => ['nullable', "exists:users,id"],
+                'ticket_id'             => ['nullable', "exists:tickets,id"],
+                'name'                  => ['required', "string", "min:2"],
+                "type_of_legitimation"  => ["nullable", "string"],
+                "document_number"       => ["nullable", "string"],
+                "identify_expire_date"  => ["nullable", "date"],
+                "status"                => ["required", Rule::in(["active", "inactive", "pending", "cancel"])],
+                "remarks"               => ["required", "string"]
+            ]);
+    
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 400);
+            }
+        
             DB::beginTransaction();
-            //$data = $this->getModel()->find($request->id);
             $data = PitFormula::find($request->id);
 
-
-            $data->patient_id = $request->patient_id;
-            $data->pit_name = $request->pit_name;
+            $data->patient_id           = $request->patient_id;
+            $data->ticket_id            = $request->ticket_id;
+            $data->name                 = $request->name;
             $data->type_of_legitimation = $request->type_of_legitimation;
-            $data->document_number = $request->document_number;
-            $data->identify_expire_date = $request->identify_expire_date ?? null;
-            $data->patient_code = $request->patient_code;
-            $data->create_by = $request->create_by;
-            $data->ticket_id = $request->ticket_id;
-            $data->deleted_by = $request->deleted_by ?? null;
-            $data->deleted_date = $request->deleted_date ?? null ;
-            $data->status = $request->status;
-            $data->remarks = $request->remarks;
-            $data->modified_by = $request->modified_by;
-            $data->modified_date = $request->modified_date ?? null;
-            $data->created_by = $request->created_by;
-            $data->created_date = $request->created_date ?? null;
+            $data->document_number      = $request->document_number;
+            $data->identify_expire_date = $request->identify_expire_date;
+            $data->updated_by           = $request->user()->id;
+            $data->status               = $request->status;
+            $data->remarks              = $request->remarks;
             $data->save();
-            //$this->updateFileInfo($request, $data);
+            
             DB::commit();
-
-            //try{
-                // event(new Registered($data));
-            //}catch(Exception $e){
-                //
-            //}
-
-            $this->apiSuccess("PIT Info Updated Successfully");
+            $this->apiSuccess("PIT Formula Updated Successfully");
             $this->data = (new PitFormulaResource($data));
             return $this->apiOutput();
         }
@@ -226,20 +164,19 @@ class PitFormulaController extends Controller
         }
     }
 
-            /**
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         try{
-            $data = $this->getModel()->find($id);
-            PitFormula::where('id',$data->id)->delete();
+            $data = $this->getModel()->find($request->id);
             $data->delete();
             $this->apiSuccess();
-            return $this->apiOutput("PIT Deleted Successfully", 200);
+            return $this->apiOutput("PIB Deleted Successfully", 200);
         }catch(Exception $e){
             return $this->apiOutput($this->getError( $e), 500);
         }

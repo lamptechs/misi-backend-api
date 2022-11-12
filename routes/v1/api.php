@@ -291,6 +291,9 @@ Route::middleware(["auth:admin"])->group(function(){
     //PIB
     Route::get('/index', [PibFormulaController::class, 'index']);
 
+    //PIT
+    Route::get('/index', [PitFormulaController::class, 'index']);
+
     /**
      * Email Template
      */
