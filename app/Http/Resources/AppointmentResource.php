@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class AppointmentResource extends JsonResource
 {
@@ -50,13 +51,14 @@ class AppointmentResource extends JsonResource
             "language"   => $this->language,
             "type"       => $this->type,
             "therapist_comment" => $this->therapist_comment,
-            "remarks"     => $this->remarks,
-            "status"   => $this->status,
+            "remarks"           => $this->remarks,
+            "status"            => $this->status,
             "image"             => $this->image,
             "image_url"         => asset($this->image_url),
+            "invoice_url"       => !empty($this->invoice_url) && Storage::disk("public")->exists($this->invoice_url) ? asset(Storage::disk("public")->url($this->invoice_url)) : "",
             "upload_files"      => AppointmentUploadResource::collection($this->fileInfo),
             "cancel_appointment_type" => $this->cancel_appointment_type,
-            "cancel_reason" =>$this->cancel_reason,
+            "cancel_reason"     =>$this->cancel_reason,
             "appointment ticket status" => $this->appointment_ticket_status,
             "patient_info"          => isset($this->patient) ? (new UserResource($this->patient))->hide(["created_by", "updated_by"]) : null,
             "therapist_info"        => isset($this->therapist)? (new TherapistResource($this->therapist))->hide(["created_by", "updated_by"]) : null,
