@@ -174,7 +174,7 @@ class PatientController extends Controller
                 // $data->patient_picture_location = $imageUrl;            
                 $data->email = $request->email;
                 $data->phone = $request->phone;
-                $data->alternet_phone = $request->alternet_phone ?? 0;
+                $data->alternet_phone = $request->alternet_phone;
                 // $data->password = !empty($request->password) ? bcrypt($request->password) : $data->password;
                 $data->address = $request->address;
                 $data->area = $request->area;
@@ -342,7 +342,7 @@ class PatientController extends Controller
             // $data->patient_picture_location = $imageUrl;            
             $data->email = $request->email;
             $data->phone = $request->phone;
-            $data->alternet_phone = $request->alternet_phone ?? 0;
+            $data->alternet_phone = $request->alternet_phone;
             // $data->password = !empty($request->password) ? bcrypt($request->password) : $data->password;
             $data->address = $request->address;
             $data->area = $request->area;
@@ -350,7 +350,7 @@ class PatientController extends Controller
             $data->bsn_number = $request->bsn_number;
             $data->dob_number = $request->dob_number;
             $data->insurance_number = $request->insurance_number;
-            $data->emergency_contact = $request->emergency_contact ?? 0;
+            $data->emergency_contact = $request->emergency_contact;
             $data->age = $request->age;
             $data->gender = $request->gender;
             $data->marital_status = $request->marital_status;
