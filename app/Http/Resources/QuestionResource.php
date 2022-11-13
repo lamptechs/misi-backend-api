@@ -32,11 +32,11 @@ class QuestionResource extends JsonResource
     public function toArray($request)
     {
         return $this->filter([
-
-            "type" => $this->type,
-            "question"=>$this->question,
-            "created_by"                => $this->created_by ? (new AdminResource($this->createdBy)) : null,
-            "updated_by"                => $this->updated_by ? (new AdminResource($this->updatedBy)) : null,
+            "id"            => $this->id,
+            "type"          => $this->type,
+            "question"      =>$this->question,
+            "created_by"    => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
+            "updated_by"    => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null
 
         ]);
     }

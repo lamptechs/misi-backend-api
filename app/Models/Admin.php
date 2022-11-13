@@ -23,8 +23,10 @@ class Admin extends Authenticatable
     public function updatedBy(){
         return $this->belongsTo(Admin::class, "updated_by")->withTrashed();
     }
-
-     public function groupid(){
+    public function group(){
+        return $this->belongsTo(Group::class, "group_id");
+    }
+    public function groupId(){
         return $this->belongsTo(Group::class, "group_id");
     }
 }

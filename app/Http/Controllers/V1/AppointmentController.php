@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\V1;
 
+use App\Events\Appointment;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AppointmentResource;
+use App\Models\AppointmentUpload;
 use App\Models\Appointmnet;
 use App\Models\TherapistSchedule;
 use App\Models\User;
@@ -11,7 +13,10 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Mpdf\Mpdf;
 
 class AppointmentController extends Controller
 {
@@ -26,10 +31,33 @@ class AppointmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         try{
-            $this->data = AppointmentResource::collection(Appointmnet::all());
+            $validator = Validator::make($request->all(), [
+                "date"                  => ["nullable", "date", "date_format:Y-m-d"],
+                "therapist_id"          => ["nullable", "exists:therapists,id"],
+                "patient_id"            => ["nullable", "exists:users,id"],
+            ]);
+            if($validator->fails()){
+                return $this->apiOutput($this->getValidationError($validator), 400);
+            }
+
+            $appoinement = Appointmnet::orderBy('date', "ASC")->orderBy("start_time", "ASC");
+            if( !empty($request->date) ){
+                $appoinement->where("date", $request->date);
+            }
+            // else{
+            //     $appoinement->where("date", ">=", now()->format('Y-m-d'));
+            // }
+            if( !empty($request->patient_id) ){
+                $appoinement->where("patient_id", $request->patient_id);
+            }
+            if( !empty($request->therapist_id) ){
+                $appoinement->where("therapist_id", $request->therapist_id);
+            }
+            $appoinement = $appoinement->get();
+            $this->data = AppointmentResource::collection($appoinement);
             $this->apiSuccess("Appointment Load has been Successfully done");
             return $this->apiOutput();
 
@@ -48,20 +76,23 @@ class AppointmentController extends Controller
     public function store(Request $request)
     {
         try{
+            DB::beginTransaction();
+
             $validator = Validator::make($request->all(), [
                 "therapist_id"  => ["required", "exists:therapists,id"],
                 "patient_id"    => ["required", "exists:users,id"],
+                "ticket_id"  => ["required", "exists:tickets,id"],
                 "therapist_schedule_id" => ["required", "exists:therapist_schedules,id"],
+                "status"        => ["required", "boolean"]
             ]);
             if($validator->fails()){
                 return $this->apiOutput($this->getValidationError($validator), 400);
             }
 
-            DB::beginTransaction();
 
             $schedule = TherapistSchedule::where("id", $request->therapist_schedule_id)->first();
             if($schedule->status != "open"){
-                return $this->apiOutput("Sorry! You can't book this schedule. please try again.", 400);
+                return $this->apiOutput("Sorry! This time slot has been booked. You can't book this schedule. please try again.", 400);
             }
             $schedule->status = "booked";
             $schedule->patient_id = $request->patient_id;
@@ -71,8 +102,12 @@ class AppointmentController extends Controller
             $data->created_by   = $request->user()->id;
             $data->therapist_id = $request->therapist_id;
             $data->patient_id   = $request->patient_id;
+            $data->ticket_id    = $request->ticket_id;
+            $data->trx_type     = $request->trx_type;
             $data->therapist_schedule_id = $request->therapist_schedule_id;
-            $data->number       = $request->number;
+            $number      = Appointmnet::max('appointmentnumber')+1000;
+            $data->appointmentnumber = $number;
+            
             $data->history      = $request->history ?? null;
             $data->date         = $schedule->date;
             $data->start_time   = $schedule->start_time;
@@ -83,17 +118,66 @@ class AppointmentController extends Controller
             $data->therapist_comment = $request->comment ?? null;
             $data->remarks      = $request->remarks ?? null;
             $data->status       = $request->status;
+            if($request->hasFile('picture')){
+                $data->image_url = $this->uploadFile($request, 'picture', $this->appointment_uploads, null,null,$data->image_url);
+            }
+            $data->invoice_url = $this->generatingInvoice($data);
             $data->save();
+            $this->saveFileInfo($request, $data);
             
+            try{
+                event(new Appointment($data));
+            }catch(Exception $e){
+                
+            }
             DB::commit();
             $this->apiSuccess("Appointment Created Successfully");
             $this->data = (new AppointmentResource($data));
             return $this->apiOutput();
         }catch(Exception $e){
-            return $this->apiOutput($this->getError($e), 500);
             DB::rollBack();
+            return $this->apiOutput($this->getError($e), 500);
         }
     }
+
+     // Save File Info
+     public function saveFileInfo($request, $appointment){
+        $file_path = $this->uploadFile($request, 'file', $this->appointment_uploads, 720);
+  
+        if( !is_array($file_path) ){
+            $file_path = (array) $file_path;
+        }
+        foreach($file_path as $path){
+            $data = new AppointmentUpload();
+            $data->appointment_id = $appointment->id;
+            $data->file_name    = $request->file_name ?? "Appointment Upload";
+            $data->file_url     = $path;
+            $data->save();
+        }
+       
+    }
+
+    /**
+     * Generating Invoice
+     */
+    protected function generatingInvoice($appointment){
+        if(!empty($appointment->invoice_url) && Storage::disk("public")->exists($appointment->invoice_url)){
+            Storage::disk("public")->delete($appointment->invoice_url);
+        }
+
+        $params = [
+            "data"      => $appointment,
+            "patient"   => $appointment->patient ?? null,
+            "therapist" => $appointment->therapist ?? null,
+        ];
+        $invoice_html = view('invoice.appointment-invoice', $params)->render();
+        $file_name = $appointment->appointmentnumber .'.pdf';
+        
+        $mpdf = new Mpdf();
+        $mpdf->WriteHTML($invoice_html);
+        $mpdf->Output('storage/'.$file_name, 'F'); 
+        return $file_name; 
+    }   
 
     /**
      * Display the specified resource.
@@ -125,56 +209,75 @@ class AppointmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        // $temp= Appointmnet::all();
-        // return $temp;
-
-        $temp= Appointmnet::find($id);
-        return $temp;
-        // return 10;
-
         try{
-        $validator = Validator::make($request->all(),[
-            "id"            => ["required", "exists:appointmnets,id"],
-            'therapist_id'  => ['required', "exists:therapists,id"],
-            "patient_id"    => ['required', "exists:users,id"],
-        ]);
-
-        if ($validator->fails()) {
-            return $this->apiOutput($this->getValidationError($validator), 400);
-        }
+            $reschedule = false;
+            $validator = Validator::make($request->all(), [
+                "id"                    => ["required", "exists:appointmnets,id"],
+                "therapist_id"  => ["required", "exists:therapists,id"],
+                "ticket_id"  => ["required", "exists:tickets,id"],
+                "patient_id"    => ["required", "exists:users,id"],
+                "therapist_schedule_id" => ["required", "exists:therapist_schedules,id"],
+                "status"        => ["required", "boolean"]
+            ]);
+            if($validator->fails()){
+                return $this->apiOutput($this->getValidationError($validator), 400);
+            }
 
             DB::beginTransaction();
+            $appoinement = Appointmnet::find($request->id);
+            if($appoinement->therapist_schedule_id != $request->therapist_schedule_id){
+                $reschedule = true;
+                $schedule = TherapistSchedule::where("id", $appoinement->therapist_schedule_id)
+                    ->update(["status" => "open", "patient_id" => null]);
+    
+                $schedule->status = "open";
+                $schedule->patient_id = null;
+                $schedule->save();
 
-            $data = Appointmnet::find($request->id);
-            //$data = $this->getModel()->find($id);
-            $data->updated_by = $request->user()->id;
-
-            $data->therapist_id = $request->therapist_id;
-            $data->patient_id   = $request->patient_id;
-            $data->therapist_schedule_id = $request->therapist_schedule_id;
-            $data->number = $request->number;
-            $data->history = $request->history ?? null;
-            // $data->date = Carbon::createFromFormat($dformat, $date);
-            // $data->time = Carbon::createFromFormat($tformat, $time);
-            //$data->date = Carbon::now();
-            // $data->time = Carbon::now();
-            $data->date = $request->date;
-            $data->time = $request->time;
-            $data->fee = $request->fee;
-            $data->language = $request->language;
-            $data->type = $request->type;
-            $data->therapist_comment = $request->comment ?? null;
-            $data->remarks = $request->remarks ?? null;
-            $data->status = $request->status;
-            $data->created_by = $request->created_by;
-            $data->deleted_at = $request->deleted_at;
-            $data->save();
-
+                $schedule = TherapistSchedule::where("id", $request->therapist_schedule_id)->first();
+                if($schedule->status != "open"){
+                    return $this->apiOutput("Sorry! This time slot has been booked. You can't book this schedule. please try again.", 400);
+                }
+                $schedule->status = "booked";
+                $schedule->patient_id = $request->patient_id;
+                $schedule->save();
+            }
+           
+            $appoinement->updated_by   = $request->user()->id;
+            $appoinement->therapist_id = $request->therapist_id;
+            $appoinement->patient_id   = $request->patient_id;
+            $appoinement->therapist_schedule_id = $request->therapist_schedule_id;
+            $appoinement->history      = $request->history ?? null;
+            //$appoinement->date         = $schedule->date;
+            //$appoinement->start_time   = $schedule->start_time;
+            //$appoinement->end_time     = $schedule->end_time;
+            $appoinement->fee          = $request->fee;
+            $appoinement->language     = $request->language;
+            $appoinement->type         = $request->type;
+            $appoinement->ticket_id    = $request->ticket_id;
+            $appoinement->trx_type     = $request->trx_type;
+            $appoinement->therapist_comment = $request->comment ?? null;
+            $appoinement->remarks      = $request->remarks ?? null;
+            $appoinement->status       = $request->status;
+            if($request->hasFile('picture')){
+                $appoinement->image_url = $this->uploadFile($request, 'picture', $this->appointment_uploads, null,null,$appoinement->image_url);
+            }
+            $appoinement->invoice_url = $this->generatingInvoice($appoinement);
+            $appoinement->save();
+            $this->saveFileInfo($request, $appoinement);
+        
             DB::commit();
+            if($reschedule){
+                try{
+                    event(new Appointment($appoinement, "reschedule"));
+                }catch(Exception $e){
+    
+                }
+            }
             $this->apiSuccess("Appointment Updated Successfully");
-            $this->data = (new AppointmentResource($data));
+            $this->data = (new AppointmentResource($appoinement));
             return $this->apiOutput();
 
         }catch(Exception $e){
@@ -198,6 +301,8 @@ class AppointmentController extends Controller
            }
             $ticket = Appointmnet::find($request->id);
             $ticket->appointment_ticket_status ="Cancelled";
+            $ticket->cancel_appointment_type=$request->cancel_appointment_type;
+            $ticket->cancel_reason=$request->cancel_reason;
             $ticket->save();
             $this->apiSuccess("Assigned Ticket Cancelled successfully");
             $this->data = (new AppointmentResource($ticket));
@@ -218,6 +323,7 @@ class AppointmentController extends Controller
     {
         try{
             $data = $this->getModel()->find($id);
+            //AppointmentUpload::where('appointment_id',$data->id)->delete();
             $data->delete();
             $this->apiSuccess();
             return $this->apiOutput("Appointment Deleted Successfully", 200);
@@ -225,4 +331,24 @@ class AppointmentController extends Controller
             return $this->apiOutput($this->getError( $e), 500);
         }
     }
+
+    public function deleteFileAppointment(Request $request){
+        try{
+            $validator = Validator::make( $request->all(),[
+                "id"            => ["required", "exists:appointment_uploads,id"],
+            ]);
+
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 200);
+            }
+    
+            $appointmentupload=AppointmentUpload::where('id',$request->id);
+            $appointmentupload->delete();
+            $this->apiSuccess("Appointment File Deleted successfully");
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }
+    }
+
 }

@@ -40,33 +40,21 @@ class PibFormulaResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->filter([
-            "id"         => $this->id,
-            "patient_id" => $this->patient_id,
-            "pib_name" => $this->pib_name,
-            "type_of_legitimation"=> $this->type_of_legitimation,
-            "document_number"=> $this->document_number,
-            "identify_expire_date"=> $this->identify_expire_date,
-            "patient_code"=> $this->patient_code,
-            "create_by"=> $this->create_by,
-            "ticket_id"=> $this->ticket_id,
-            "deleted_by"=> $this->deleted_by,
-            "deleted_date"=> $this->deleted_date,
-            "status"=> $this->status,
-            "remarks"=> $this->remarks,
-            "modified_by"   => $this->modified_by,
-            "modified_date"   => $this->modified_date,
-            "created_by"   => $this->created_by,
-            "created_date"   => $this->created_date,
-
-            // "therapist_type"          => (new TherapistTypeResource($this->therapistType))->hide(["created_by", "updated_by"]),
-            // "blood_group"          => (new BloodGroupResource($this->blood))->hide(["created_by", "updated_by"]),
-            // "country"          => (new CountryResource($this->country))->hide(["created_by", "updated_by"]),
-            // "state"          => (new StateResource($this->state))->hide(["created_by", "updated_by"]),
-            // "upload_files"      => TherapistUploadResource::collection($this->fileInfo),
-            // "file_details"          => (new TherapistUploadResource($this->fileInfo))->hide(["created_by", "updated_by"]),
-            // "created_by"  => $this->created_by ? (new AdminResource($this->createdBy)) : null,
-            // "updated_by"  => $this->updated_by ? (new AdminResource($this->updatedBy)) : null
+        return $this->filterFields([
+            "id"                    => $this->id,            
+            "name"                  => $this->name,
+            "type_of_legitimation"  => $this->type_of_legitimation,
+            "document_number"       => $this->document_number,
+            "identify_expire_date"  => $this->identify_expire_date,
+            "status"                => $this->status,
+            "remarks"               => $this->remarks,
+            "created_at"            => $this->created_at,
+            "updated_at"            => $this->updated_at,
+            
+            "patient"               => isset($this->patient) ? (new UserResource($this->patient))->hide(["country", "updated_by","created_by","state","upload_files"]) : null,
+            "ticket"                => isset($this->Ticket) ? (new TicketResource($this->Ticket))->hide(["upload_files", "created_by", "updated_by", "therapist_info", "patient_info", "ticket_department_info", "replies"]) : null,
+            "created_by"            => isset($this->createdBy) ? (new AdminResource($this->createdBy))->hide(["department", "created_by", "updated_by"]) : null,
+            "updated_by"            => isset($this->updatedBy) ? (new AdminResource($this->updatedBy))->hide(["department", "created_by", "updated_by"]) : null,
         ]);
     }
 }

@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\V1\Therapist;
+namespace App\Http\Controllers\V1\Admin;
 
+use App\Events\AccountRegistration;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Therapist;
 use App\Models\TherapistUpload;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Auth\Events\Registered;
 use Exception;
 use App\Http\Resources\TherapistResource;
 use Illuminate\Support\Facades\Hash;
@@ -40,7 +39,6 @@ class TherapistController extends Controller
      * Login
      */
     public function login(Request $request){
-        $therapist=Therapist::all();
         try{
             $validator = Validator::make($request->all(), [
                 "email"     => ["required", "email", "exists:therapists,email"],
@@ -67,11 +65,12 @@ class TherapistController extends Controller
         }
     }
     public function logout(Request $request){
-        $user = $request->user();
+        //$user = $request->user();
+        $user = auth('sanctum')->user();
         foreach ($user->tokens as $token) {
             $token->delete();
        }
-       $this->apiSuccess("Logout Successfull");
+       $this->apiSuccess("Logout Successfully");
        return $this->apiOutput();
    
     }
@@ -84,7 +83,8 @@ class TherapistController extends Controller
     public function index()
     {
         try{
-            $this->data = TherapistResource::collection(Therapist::all());
+            $therapists = Therapist::all();
+            $this->data = TherapistResource::collection($therapists);
             $this->apiSuccess("Therapist Loaded Successfully");
             return $this->apiOutput();
 
@@ -137,11 +137,18 @@ class TherapistController extends Controller
             $data->state_id = $request->state_id;
             $data->country_id = $request->country_id;
             $data->password = bcrypt($request->password);
+            if($request->hasFile('picture')){
+                $data->profile_pic = $this->uploadFile($request, 'picture', $this->therapist_uploads, null,null,$data->profile_pic);
+            }
             
             $data->save();
             $this->saveFileInfo($request, $data);
-            
             DB::commit();
+            try{
+                event(new AccountRegistration($data, "therapist"));
+            }catch(Exception $e){
+
+            }
             $this->apiSuccess("Therapist Info Added Successfully");
             $this->data = (new TherapistResource($data));
             return $this->apiOutput();        
@@ -242,7 +249,10 @@ class TherapistController extends Controller
             $data->state_id = $request->state_id;
             $data->country_id = $request->country_id;
             //$data->password = bcrypt($request->password);
-            $data->profile_pic =  $this->uploadFile($request, "profile_pic", $this->therapist_uploads, "150", null, $data->profile_pic);
+            if($request->hasFile('picture')){
+                $data->profile_pic =  $this->uploadFile($request, "picture", $this->therapist_uploads, "150", null, $data->profile_pic);
+            }
+           
             $data->save();
             $this->updateFileInfo($request, $data->id);
 
@@ -285,6 +295,25 @@ class TherapistController extends Controller
             $data->delete();
             $this->apiSuccess();
             return $this->apiOutput("Therapist Deleted Successfully", 200);
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }
+    }
+  
+    public function deleteFileTherapist(Request $request){
+        try{
+            $validator = Validator::make( $request->all(),[
+                "id"            => ["required", "exists:therapist_uploads,id"],
+            ]);
+
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 200);
+            }
+    
+            $therapistupload=TherapistUpload::where('id',$request->id);
+            $therapistupload->delete();
+            $this->apiSuccess("Therapist File Deleted successfully");
+            return $this->apiOutput();
         }catch(Exception $e){
             return $this->apiOutput($this->getError( $e), 500);
         }

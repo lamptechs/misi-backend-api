@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\V1;
 
+use App\Http\Components\Classes\Facade\Permission;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\V1\Admin\PermissionController;
 use Illuminate\Http\Request;
 use App\Models\Group;
 use App\Http\Resources\GroupResource;
@@ -20,6 +22,9 @@ class GroupController extends Controller
     public function index()
     {
        try{
+            if(!PermissionController::hasAccess("group_list")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $this->data = GroupResource::collection(Group::all());
             $this->apiSuccess("Grouop Loaded Successfully");
             return $this->apiOutput();
@@ -49,25 +54,24 @@ class GroupController extends Controller
     {
      
         try{
-        $validator = Validator::make(
-            $request->all(),
-            [
-                // 'name' => 'required|min:4',
-                // 'description' => 'required|min:4',
-    
-            ]
-           );
-            
-           if ($validator->fails()) {
-    
-            $this->apiOutput($this->getValidationError($validator), 400);
-           }
+
+            if(!PermissionController::hasAccess("group_create")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
+
+            $validator = Validator::make( $request->all(),[
+                'name' => 'required|min:4',
+                'description' => 'nullable|min:4',
+            ]);
+                
+            if ($validator->fails()) {    
+                $this->apiOutput($this->getValidationError($validator), 400);
+            }
    
             $group = new Group();
             $group->name = $request->name ;
             $group->description = $request->description;
-            // $group->is_admin = $request->is_admin;
-            $group->created_by = $request->user()->id ;
+            $group->created_by = $request->user()->id;
             $group->created_at = Carbon::Now();
             $group->save();
             $this->apiSuccess();
@@ -88,6 +92,9 @@ class GroupController extends Controller
     public function show(Request $request)
     {
         try{
+            if(!PermissionController::hasAccess("group_show")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $group = Group::find($request->id);
             if( empty($group) ){
                 return $this->apiOutput("Patient Data Not Found", 400);
@@ -122,24 +129,18 @@ class GroupController extends Controller
     public function update(Request $request, $id)
     {
          try{
-        $validator = Validator::make(
-            $request->all(),
-            [
-                // 'name' => 'required|min:4',
-                // 'description' => 'required|min:4',
-    
-            ]
-           );
+            $validator = Validator::make( $request->all(),[
+                'name' => 'required|min:4',
+                'description' => 'nullable|min:4',
+            ]);
             
-           if ($validator->fails()) {
-    
-            $this->apiOutput($this->getValidationError($validator), 400);
-           }
+            if ($validator->fails()) {    
+                $this->apiOutput($this->getValidationError($validator), 400);
+            }
    
             $group = Group::find($id);
             $group->name = $request->name ;
             $group->description = $request->description;
-            // $group->is_admin = $request->is_admin;
             $group->created_by = $request->user()->id ;
             $group->created_at = Carbon::Now();
             $group->save();

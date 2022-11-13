@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class AppointmentResource extends JsonResource
 {
@@ -40,26 +41,30 @@ class AppointmentResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->filter([
+        return $this->filterFields([
             "id"         => $this->id,
-            "patient_info"          => (new UserResource($this->patient))->hide(["created_by", "updated_by"]),
-            "therapist_info"        => (new TherapistResource($this->therapist))->hide(["created_by", "updated_by"]),
-            "therapist_schedule"    => (new TherapistScheduleResource($this->schedule))->hide(["created_by", "updated_by"]),
-            "number"     => $this->number,
+            "appointmentnumber"     => $this->appointmentnumber,
             "history"    => $this->history,
-            //"appointment_date"     => $this->appointment_date,
-            //"appointment_time" => $this->appointment_time, 
+            "trx_type"   => $this->trx_type,
             "date"       => $this->date,
             "time"       => $this->time,
             "fee"        => $this->fee,
             "language"   => $this->language,
             "type"       => $this->type,
             "therapist_comment" => $this->therapist_comment,
-            "remarks"     => $this->remarks,
-            "status"   => $this->status,
+            "remarks"           => $this->remarks,
+            "status"            => $this->status,
+            "image"             => $this->image,
+            "image_url"         => asset($this->image_url),
+            "invoice_url"       => !empty($this->invoice_url) && Storage::disk("public")->exists($this->invoice_url) ? asset(Storage::disk("public")->url($this->invoice_url)) : "",
+            "upload_files"      => AppointmentUploadResource::collection($this->fileInfo),
+            "cancel_appointment_type" => $this->cancel_appointment_type,
+            "cancel_reason"     =>$this->cancel_reason,
             "appointment ticket status" => $this->appointment_ticket_status,
-            //"created_by"  => $this->created_by ? (new AdminResource($this->createdBy)) : null,
-            //"updated_by"  => $this->updated_by ? (new AdminResource($this->updatedBy)) : null
+            "patient_info"          => isset($this->patient) ? (new UserResource($this->patient))->hide(["created_by", "updated_by"]) : null,
+            "ticket"                => isset($this->ticket) ? (new TicketResource($this->ticket))->hide(["upload_files", "created_by", "updated_by", "therapist_info", "patient_info", "ticket_department_info", "replies"]) : null,
+            "therapist_info"        => isset($this->therapist)? (new TherapistResource($this->therapist))->hide(["created_by", "updated_by"]) : null,
+            "therapist_schedule"    => isset($this->schedule)? (new TherapistScheduleResource($this->schedule))->hide(["created_by", "updated_by"]) : null,
         ]);
     }
 }

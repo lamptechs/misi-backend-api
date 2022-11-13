@@ -2,6 +2,12 @@
 
 namespace App\Providers;
 
+use App\Events\AccountRegistration;
+use App\Events\Appointment;
+use App\Events\TicketRaise;
+use App\Listeners\AccountSignupEmail;
+use App\Listeners\AppointmentEmailSend;
+use App\Listeners\TicketEmailSend;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -18,6 +24,21 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+
+        // Account Signup Email
+        AccountRegistration::class => [
+            AccountSignupEmail::class
+        ],
+
+        // Appoinement Email Send
+        Appointment::class => [
+            AppointmentEmailSend::class,
+        ],
+
+        // Ticket Email
+        TicketRaise::class => [
+            TicketEmailSend::class,
+        ]
     ];
 
     /**

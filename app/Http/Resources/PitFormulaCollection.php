@@ -9,7 +9,7 @@ class PitFormulaCollection extends ResourceCollection
     protected $withoutFields = [];
 
     /**
-     * Set Hidden Item
+     * Set Hidden Item 
      */
     public function hide(array $hide = []){
         $this->withoutFields = $hide;

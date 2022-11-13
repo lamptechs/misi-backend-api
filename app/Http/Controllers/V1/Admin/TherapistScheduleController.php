@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\V1\Therapist;
+namespace App\Http\Controllers\V1\Admin;
 
 use App\Http\Components\Traits\Schedule;
 use App\Http\Controllers\Controller;
@@ -39,7 +39,7 @@ class TherapistScheduleController extends Controller
                 $schedule->where("therapist_id", $request->therapist_id);
             }
             $schedules = $schedule->get();
-            $this->data = TherapistScheduleResource::collection( $schedules);
+            $this->data = TherapistScheduleResource::collection($schedules)->hide(["patient","created_by", "updated_by"]);
             $this->apiSuccess("Therapist Schedules Loaded Successfully");
             return $this->apiOutput();
 
@@ -90,7 +90,7 @@ class TherapistScheduleController extends Controller
             "end_time"      => ["required", "date_format:H:i"],
             'start_date'    => ['required', 'date'],
             'end_date'      => ['required', 'date', 'after_or_equal:start_date'],
-            "holiday"       => ["required", "array", Rule::in($days)]
+            "holiday"       => ["required", "array", Rule::in($days)],
         ],[
             "holiday.in"    => "Day Name is not Match. use small letter in days name",   
         ]);
@@ -126,25 +126,41 @@ class TherapistScheduleController extends Controller
      */
     public function show(Request $request)
     {
-        $validator = Validator::make($request->all(),[
-            "id"  => ["required", "exists:therapist_schedules,id"],
-        ],[
-            "id.required" => "Therapist Schedule ID Required",
-        ]); 
-        if ($validator->fails()) {
-            return $this->apiOutput($this->getValidationError($validator), 400);
-        }
-        try{
-            $schedule = TherapistSchedule::find($request->id);
-            if( empty($schedule) ){
-                return $this->apiOutput("Therapist Data Not Found", 400);
-            }
-            $this->data = (new TherapistScheduleResource ($schedule));
-            $this->apiSuccess("Schedule Detail loaded Successfully");
-            return $this->apiOutput();
-        }catch(Exception $e){
-            return $this->apiOutput($this->getError($e), 500);
-        }
+
+                $validator = Validator::make($request->all(),[
+                    "id"  => ["required", "exists:therapist_schedules,id"],
+                ],[
+                    "id.required" => "Therapist Schedule ID Required",
+                ]); 
+                if ($validator->fails()) {
+                    return $this->apiOutput($this->getValidationError($validator), 400);
+                }
+                try{
+                    $schedule = TherapistSchedule::find($request->id);
+                    if( empty($schedule) ){
+                        return $this->apiOutput("Therapist Data Not Found", 400);
+                    }
+                    $this->data = (new TherapistScheduleResource ($schedule));
+                    $this->apiSuccess("Schedule Detail loaded Successfully");
+                    return $this->apiOutput();
+                }catch(Exception $e){
+                    return $this->apiOutput($this->getError($e), 500);
+                }
+
+
+                // try{
+                //     $therapist = $request->user();
+                //     $appointment = TherapistSchedule::where("id", $request->id)
+                //         ->where("therapist_id", $therapist->id)->first();
+                //     if( empty($appointment) ){
+                //         return $this->apiOutput("Appointment Data Not Found", 400);
+                //     }
+                //     $this->data = (new TherapistScheduleResource ($appointment));
+                //     $this->apiSuccess("Therapist Detail Show Successfully");
+                //     return $this->apiOutput();
+                // }catch(Exception $e){
+                //     return $this->apiOutput($this->getError($e), 500);
+                // }
     }
 
 

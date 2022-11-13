@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\V1;
 
+use App\Events\AccountRegistration;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -106,7 +107,23 @@ class PatientController extends Controller
             return $this->apiOutput($this->getError($e), 500);
         }
     }
+    
+     public function missingInfoPatient()
+    {
+        try{
+        $users=User::whereNull('city')
+               ->orWhereNull('occupation')
+               ->orWhereNull('age')
+               ->orWhereNull('emergency_contact')
+               ->get();
+            $this->data = UserResource::collection($users);
+            $this->apiSuccess("Patient MissingInfo Loaded Successfully");
+            return $this->apiOutput();
 
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
+        }
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -157,7 +174,7 @@ class PatientController extends Controller
                 // $data->patient_picture_location = $imageUrl;            
                 $data->email = $request->email;
                 $data->phone = $request->phone;
-                $data->alternet_phone = $request->alternet_phone ?? 0;
+                $data->alternet_phone = $request->alternet_phone;
                 // $data->password = !empty($request->password) ? bcrypt($request->password) : $data->password;
                 $data->address = $request->address;
                 $data->area = $request->area;
@@ -165,7 +182,7 @@ class PatientController extends Controller
                 $data->bsn_number = $request->bsn_number;
                 $data->dob_number = $request->dob_number;
                 $data->insurance_number = $request->insurance_number;
-                $data->emergency_contact = $request->emergency_contact ?? 0;
+                $data->emergency_contact = $request->emergency_contact;
                 $data->age = $request->age;
                 $data->gender = $request->gender;
                 $data->marital_status = $request->marital_status;
@@ -174,20 +191,19 @@ class PatientController extends Controller
                 $data->date_of_birth = $request->date_of_birth;
                 $data->occupation = $request->occupation;
                 $data->remarks = $request->remarks ?? '';
-                $data->password = bcrypt($request->password);
+                $data->password = bcrypt($request->email);
                 if($request->hasFile('picture')){
                     $data->image_url = $this->uploadFile($request, 'picture', $this->patient_uploads, null,null,$data->image_url);
                 }
-
+                $data->patientstatus=$request->patientstatus;
                 $data->save();
                 $this->saveFileInfo($request, $data);
-                   
                 
                 DB::commit();
                 try{
-                    // event(new Registered($data));
+                    event(new AccountRegistration($data, "patient"));
                 }catch(Exception $e){
-                    //
+                    
                 }
             }
             catch(Exception $e){
@@ -235,20 +251,30 @@ class PatientController extends Controller
     }
 
     //Update File Info
-    public function updateFileInfo($request, $patient){
-    
-            $data = PatientUpload::find($request->id);
-            $data->updated_by   = $request->user()->id ?? null;
-            $data->patient_id   = $patient->id;
-            $data->file_name    = $request->file_name ?? "Patient Upload updated";
-            $data->file_url     = $this->uploadFile($request, 'file', $this->patient_uploads,null,null,$data->file_url);
-            $data->file_type    = $request->file_type;
-            $data->status       = $request->status;
-            $data->remarks      = $request->remarks ?? '';
-            $data->save();
-  
-        
-   }
+//     public function updateFileInfo($request, $patient){
+//             $data = PatientUpload::find($request->id);
+//             $data->updated_by   = $request->user()->id ?? null;
+//             $data->patient_id   = $patient->id;
+//             $data->file_name    = $request->file_name ?? "Patient Upload updated";
+//             $data->file_url     = $this->uploadFile($request, 'file', $this->patient_uploads,null,null,$data->file_url);
+//             $data->file_type    = $request->file_type;
+//             $data->status       = $request->status;
+//             $data->remarks      = $request->remarks ?? '';
+//             $data->save();
+//   }
+   
+   public function updateFileInfo($request, $id){
+        $upload_files = $this->uploadFile($request, 'file', $this->patient_uploads);
+        if( is_array($upload_files) ){
+            foreach($upload_files as $file){
+                $upload = new PatientUpload();
+                $upload->patient_id = $id;
+                $upload->file_name    = $request->file_name ?? "Patient Upload Updated";
+                $upload->file_url     = $file;
+                $upload->save();    
+            }
+        }
+    }
 
     /**
      * Display the specified resource.
@@ -280,7 +306,7 @@ class PatientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,$id)
+    public function update(Request $request)
     {
         // $temp=User::find($id);
         // return $temp;
@@ -293,8 +319,8 @@ class PatientController extends Controller
                 "id"            => ["required", "exists:users,id"],
                 //'first_name'    => 'required',
                 //'last_name'     => 'required',
-                //"email"         => ["required", "email",/* "unique:users",*/Rule::unique('users', 'email')->ignore($request->id)],
-                //"phone"         => ["required", "numeric",/* "unique:users"*/Rule::unique('users', 'phone')->ignore($request->id)]
+                "email"         => ["required", "email",/* "unique:users",*/Rule::unique('users', 'email')->ignore($request->id)],
+                "phone"         => ["required", "numeric",/* "unique:users"*/Rule::unique('users', 'phone')->ignore($request->id)]
             ]);
                 
             if ($validator->fails()) {
@@ -316,7 +342,7 @@ class PatientController extends Controller
             // $data->patient_picture_location = $imageUrl;            
             $data->email = $request->email;
             $data->phone = $request->phone;
-            $data->alternet_phone = $request->alternet_phone ?? 0;
+            $data->alternet_phone = $request->alternet_phone;
             // $data->password = !empty($request->password) ? bcrypt($request->password) : $data->password;
             $data->address = $request->address;
             $data->area = $request->area;
@@ -324,7 +350,7 @@ class PatientController extends Controller
             $data->bsn_number = $request->bsn_number;
             $data->dob_number = $request->dob_number;
             $data->insurance_number = $request->insurance_number;
-            $data->emergency_contact = $request->emergency_contact ?? 0;
+            $data->emergency_contact = $request->emergency_contact;
             $data->age = $request->age;
             $data->gender = $request->gender;
             $data->marital_status = $request->marital_status;
@@ -337,10 +363,11 @@ class PatientController extends Controller
             if($request->hasFile('picture')){
                 $data->image_url = $this->uploadFile($request, 'picture', $this->patient_uploads, null,null,$data->image_url);
             }
+            $data->patientstatus=$request->patientstatus;
             //$this->updateFileInfo($request, $data);
 
             $data->save();
-            //$this->updateFileInfo($request, $data);
+            $this->updateFileInfo($request, $data->id);
 
             DB::commit();
             //try{
@@ -377,4 +404,45 @@ class PatientController extends Controller
             return $this->apiOutput($this->getError( $e), 500);
         }
     }
+
+
+    public function deleteFilePatient(Request $request){
+        try{
+            $validator = Validator::make( $request->all(),[
+                "id"            => ["required", "exists:patient_uploads,id"],
+            ]);
+
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 200);
+            }
+    
+            $patientupload=PatientUpload::where('id',$request->id);
+            $patientupload->delete();
+            $this->apiSuccess("Patient File Deleted successfully");
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }
+    }
+
+    // public function additionalFileAdd(Request $request){
+    //     try{
+    //         $validator = Validator::make($request->all(), [
+    //             "id"            => ["required", "exists:users,id"],
+              
+    //         ]);
+                
+    //         if ($validator->fails()) {
+    //             return $this->apiOutput($this->getValidationError($validator), 400);
+    //         }
+    //         //DB::beginTransaction();
+    //         $data = new PatientUpload();
+    //         $data->patient_id   = $request->patient_id;
+
+            
+    //     }
+    //     catch(Exception $e){
+            
+    //     }
+    // }
 }

@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ticket extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
     public function createdBy(){
         return $this->belongsTo(Admin::class, "created_by")->withTrashed();
     }
@@ -15,26 +17,22 @@ class Ticket extends Model
         return $this->belongsTo(Admin::class, "updated_by")->withTrashed();
     }
     public function patient(){
-       
         return $this->belongsTo(User::class, 'patient_id');
-        
     }
     public function therapist(){
-       
         return $this->belongsTo(Therapist::class, 'therapist_id');
-        
     }
     public function ticketDepartment(){
         return $this->belongsTo(TicketDepartment::class, 'ticket_department_id'); 
     }
-
-    public function department(){
-        return $this->belongsTo(Admin::class, 'assign_to_user');
+    public function replies(){
+        return $this->hasMany(TicketReply::class, "ticket_id");
     }
 
-    public function group(){
-        return $this->belongsTo(Group::class, 'group_id'); 
+    public function fileInfo(){
+        return $this->hasMany(TicketUpload::class, 'ticket_id');
     }
+    
 
    
 }

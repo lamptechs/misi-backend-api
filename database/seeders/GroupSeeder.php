@@ -22,9 +22,5 @@ class GroupSeeder extends Seeder
             "is_admin"      => 1
         ]);
 
-        GroupAccess::create([
-            "group_id"      => 1,
-            "group_access"  => ["admin_list","admin_create","admin_delete","admin_restore",]
-        ]);
     }
 }

@@ -41,13 +41,14 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->filter([
+        return $this->filterFields([
             "id"                => $this->id,
             "source"            => $this->source,
             "first_name"        => $this->first_name,
             "last_name"         => $this->last_name,
             "email"             => $this->email,
             "phone"             => $this->phone,
+            "patientstatus"     => $this->patientstatus,
             "alternet_phone"    => $this->alternet_phone,
             "address"           => $this->address,
             "area"              => $this->area,
@@ -68,11 +69,9 @@ class UserResource extends JsonResource
             "blood_group"       => (new BloodGroupResource($this->blood))->hide(["created_by", "updated_by"]),
             "country"           => (new CountryResource($this->country))->hide(["created_by", "updated_by"]),
             "state"             => (new StateResource($this->state))->hide(["created_by", "updated_by"]),
-            "created_by"        => (new AdminResource($this->createdBy))->hide(["groupid","department", "created_by","updated_by"]),
-            "updated_by"        => (new AdminResource($this->updatedBy))->hide(["groupid","department", "created_by","updated_by"]),
+            "created_by"        => isset($this->created_by) ? (new AdminResource($this->createdBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
+            "updated_by"        => isset($this->updated_by) ? (new AdminResource($this->updatedBy))->hide(["groupId","department", "created_by","updated_by"]) : null,
             "upload_files"      => PatientUploadResource::collection($this->fileInfo),
-            "group"             => $this->group,
-            // "question and scale" => ScaleResource::collection($this->scale)
         ]);
     }
 }

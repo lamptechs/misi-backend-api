@@ -18,6 +18,8 @@ trait Upload{
     protected  $patient_uploads = "storage/uploads/patient/";
     protected  $nid_patient_uploads = "storage/uploads/nidpicture/";
     protected  $therapist_uploads = "storage/uploads/therapist/";
+    protected  $appointment_uploads = "storage/uploads/appointment/";
+    protected  $ticket_uploads = "storage/uploads/ticket/";
     protected  $admin_profile = "storage/uploads/admin/profile";
     protected  $logo_dir = "storage/uploads/logo";
     protected  $others_dir = "storage/uploads/others";
