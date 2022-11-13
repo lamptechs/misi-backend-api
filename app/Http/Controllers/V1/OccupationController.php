@@ -73,9 +73,16 @@ class OccupationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
+        try{
+            $occupation = Ocupation::find($request->id);
+            $this->apiSuccess();
+            $this->data = (new OccupationResource($occupation));
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }
     }
 
     /**

@@ -120,6 +120,7 @@ class PitScaleController extends Controller
     {
         try{
             $validator = Validator::make($request->all(),[
+                "id"                    => ["required", "exists:pit_scales,id"],
                 'patient_id'            => ['required', "exists:users,id"],
                 'pit_formula_id'        => ['required', "exists:pit_formulas,id"],
                 'question_id'           => ['nullable', "exists:questions,id"],
@@ -164,8 +165,7 @@ class PitScaleController extends Controller
     public function destroy(Request $request)
     {
         try{
-            $data = $this->getModel()->find($request->id);
-            $data->delete();
+            $data = $this->getModel()->where("id", $request->id)->delete();
             $this->apiSuccess();
             return $this->apiOutput("PIT Scale Deleted Successfully", 200);
         }catch(Exception $e){

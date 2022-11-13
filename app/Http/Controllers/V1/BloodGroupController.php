@@ -132,9 +132,12 @@ class BloodGroupController extends Controller
      */
     public function destroy($id)
     {
-        $blood_group = BloodGroup::find($id);
-        $blood_group->delete();
-        $this->apiSuccess();
-        return $this->apiOutput("Blood Group Deleted Successfully", 200);
+        try{
+            BloodGroup::where("id", $id)->delete();
+            $this->apiSuccess();
+            return $this->apiOutput("Blood Group Deleted Successfully", 200);
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
+        }
     }
 }

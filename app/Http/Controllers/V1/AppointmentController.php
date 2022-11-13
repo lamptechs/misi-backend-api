@@ -231,10 +231,6 @@ class AppointmentController extends Controller
                 $reschedule = true;
                 $schedule = TherapistSchedule::where("id", $appoinement->therapist_schedule_id)
                     ->update(["status" => "open", "patient_id" => null]);
-    
-                $schedule->status = "open";
-                $schedule->patient_id = null;
-                $schedule->save();
 
                 $schedule = TherapistSchedule::where("id", $request->therapist_schedule_id)->first();
                 if($schedule->status != "open"){
@@ -322,9 +318,7 @@ class AppointmentController extends Controller
     public function destroy($id)
     {
         try{
-            $data = $this->getModel()->find($id);
-            //AppointmentUpload::where('appointment_id',$data->id)->delete();
-            $data->delete();
+            $data = $this->getModel()->where("id", $id)->delete();
             $this->apiSuccess();
             return $this->apiOutput("Appointment Deleted Successfully", 200);
         }catch(Exception $e){

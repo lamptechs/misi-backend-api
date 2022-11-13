@@ -4,6 +4,7 @@
 namespace App\Http\Controllers\V1;
 
 use App\Events\AccountRegistration;
+use App\Events\PasswordReset as PasswordResetEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use Exception;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\RequestGuard;
 use Illuminate\Support\Facades\Session;
 use App\Http\Resources\AdminResource;
+use App\Models\PasswordReset;
 
 class AdminController extends Controller
 {
@@ -67,23 +69,19 @@ class AdminController extends Controller
         }
     }
     public function logout(Request $request){
-        $user = auth('sanctum')->user();
-        // 
+        $user = $request->user();
         foreach ($user->tokens as $token) {
             $token->delete();
-       }
+        }
        $this->apiSuccess("Logout Successfull");
        return $this->apiOutput();
-   
     }
     
-     public function index()
+    public function index()
     {
-       
         try{
             $this->data = AdminResource::collection(Admin::all());
             $this->apiSuccess("Admin Load has been Successfully done");
-            // return $this->apiOutput("Therapist Loaded Successfully",200);
             return $this->apiOutput();
 
         }catch(Exception $e){
@@ -109,18 +107,13 @@ class AdminController extends Controller
     public function store(Request $request)
     {
         try{
-        $validator = Validator::make(
-            $request->all(),
-            [
-                //'name' => 'required|min:4',
-    
-            ]
-           );
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|min:4',
+            ]);
             
-           if ($validator->fails()) {
-    
-            $this->apiOutput($this->getValidationError($validator), 400);
-           }
+            if ($validator->fails()) {
+                $this->apiOutput($this->getValidationError($validator), 400);
+            }
    
             $admin = new Admin();
             $admin->name = $request->name;
@@ -140,20 +133,14 @@ class AdminController extends Controller
         }catch(Exception $e){
             return $this->apiOutput($this->getError( $e), 500);
         }
-        
-        
     }
     
-     public function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
         try{
-        $validator = Validator::make(
-            $request->all(),
-            [
-                // 'name' => 'required|min:4',
-                // 'remarks' => 'nullable|min:4'
-            ]
-           );
+        $validator = Validator::make($request->all(),[
+                'name' => 'required|min:4',
+            ]);
             
            if ($validator->fails()) {    
             $this->apiOutput($this->getValidationError($validator), 400);
@@ -164,7 +151,7 @@ class AdminController extends Controller
             $admin->bio = $request->bio;
             $admin->email = $request->email;
             $admin->group_id = $request->group_id;
-            $admin->password = !empty($request->password) ? bcrypt($request->password) : $data->password ;
+            $admin->password = !empty($request->password) ? bcrypt($request->password) : $admin->password ;
             $admin->save();
             $this->apiSuccess("Admin Updated Successfully");
             $this->data = (new AdminResource($admin));
@@ -181,6 +168,40 @@ class AdminController extends Controller
         $this->apiSuccess();
         return $this->apiOutput("Admin Deleted Successfully", 200);
     }
-    
+
+    /**
+     * Forget Password
+     */
+    public function forgetPassword(Request $request){
+        try{
+            $validator = Validator::make($request->all(), [
+                "email"     => ["required", "exists:admins,email"],
+            ],[
+                "email.exists"  => "No Record found under this email",
+            ]);
+
+            if($validator->fails()){
+                return $this->getValidationError($validator);
+            }
+            $admin = Admin::where("email", $request->email)->first();
+            $token = rand(111111, 999999);
+
+            $password_reset = new PasswordReset();
+            $password_reset->tableable      = $admin->getMorphClass();
+            $password_reset->tableable_id   = $admin->id;
+            $password_reset->email          = $admin->email;
+            $password_reset->token          = $token;
+            $password_reset->expire_at      = now()->addHour();
+            $password_reset->save();
+
+            // Send Password Reset Email
+            event(new PasswordResetEvent($password_reset));
+            
+            $this->apiSuccess("Password Reset Code sent to your registared Email.");
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e));
+        }
+    }    
    
 }

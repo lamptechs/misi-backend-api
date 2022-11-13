@@ -47,19 +47,22 @@ use Illuminate\Support\Facades\Route;
 /**
  * Admin Login Section
  */
-Route::get('admin/login', [AdminController::class, "showLogin"]);
-Route::post('admin/login', [AdminController::class, "login"]);
-Route::post('admin/logout', [AdminController::class, "logout"]);
-Route::get('admin/adminview', [AdminController::class, "index"]);
-Route::get('admin/show', [AdminController::class, 'show']);
-Route::post('admin/store', [AdminController::class, "store"]);
-Route::post('/admin/update/{id}', [AdminController::class, 'update']);
-Route::post('/admin/delete/{id}', [AdminController::class, 'destroy']);
+Route::prefix("admin")->group(function(){
+    Route::get('/login', [AdminController::class, "showLogin"]);
+    Route::post('/login', [AdminController::class, "login"]);
+    Route::post('/logout', [AdminController::class, "logout"]);
+    Route::get('/adminview', [AdminController::class, "index"]);
+    Route::get('/show', [AdminController::class, 'show']);
+    Route::post('/store', [AdminController::class, "store"]);
+    Route::post('forget-password', [AdminController::class, "forgetPassword"]);
+});
 
 /**
  * Protect the Route Throw API Token
  */
 Route::middleware(["auth:admin"])->group(function(){
+    Route::post('/admin/update/{id}', [AdminController::class, 'update']);
+    Route::post('/admin/delete/{id}', [AdminController::class, 'destroy']);
     /**
      * Ticket
      */
@@ -341,13 +344,13 @@ Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
     });
     
     // Reply On Ticket
-            Route::prefix("reply")->group(function(){
-                Route::get('/', [TicketController::class, 'replyList']);
-                Route::post('/create', [TicketController::class, 'addReply']);
-                Route::get('/edit', [TicketController::class, 'editReply']);
-                Route::post('/update', [TicketController::class, 'updateReply']);
-                Route::get('/delete', [TicketController::class, 'deleteReply']);
-            });
+    Route::prefix("reply")->group(function(){
+        Route::get('/', [TicketController::class, 'replyList']);
+        Route::post('/create', [TicketController::class, 'addReply']);
+        Route::get('/edit', [TicketController::class, 'editReply']);
+        Route::post('/update', [TicketController::class, 'updateReply']);
+        Route::get('/delete', [TicketController::class, 'deleteReply']);
+    });
     
     Route::prefix('appointment')->group(function(){
         Route::get('/', [TherapistAppointmentController::class, 'index']);

@@ -80,12 +80,12 @@ class ServiceCategoryController extends Controller
             ]);
              
             if ($validator->fails()) {    
-                $this->apiOutput($this->getValidationError($validator), 400);
+                return $this->apiOutput($this->getValidationError($validator), 400);
             }
     
             $service = ServiceCategory::find($request->id);
             if( empty($service) ){
-                $this->apiOutput("Service Category Not Found", 400);
+                return $this->apiOutput("Service Category Not Found", 400);
             }
             $service->name = $request->name;
             $service->status = $request->status;
