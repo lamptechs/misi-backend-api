@@ -184,13 +184,18 @@ class AdminController extends Controller
                 return $this->getValidationError($validator);
             }
             $admin = Admin::where("email", $request->email)->first();
-            $token = rand(111111, 999999);
-
-            $password_reset = new PasswordReset();
-            $password_reset->tableable      = $admin->getMorphClass();
-            $password_reset->tableable_id   = $admin->id;
-            $password_reset->email          = $admin->email;
-            $password_reset->token          = $token;
+            $password_reset = PasswordReset::where("tableable", $admin->getMorphClass())
+                ->where("tableable_id", $admin->id)->where("is_used", false)
+                ->where("expire_at", ">=", now()->format('Y-m-d H:i:s'))
+                ->orderBy("id", "DESC")->first();
+            if( empty($password_reset) ){
+                $token = rand(111111, 999999);
+                $password_reset = new PasswordReset();
+                $password_reset->tableable      = $admin->getMorphClass();
+                $password_reset->tableable_id   = $admin->id;
+                $password_reset->email          = $admin->email;
+                $password_reset->token          = $token;
+            }   
             $password_reset->expire_at      = now()->addHour();
             $password_reset->save();
 

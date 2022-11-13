@@ -15,13 +15,17 @@ class PasswordReset
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
+     * @var Model
+     */
+    public $password_reset;
+    /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($password_reset)
     {
-        //
+        $this->password_reset = $password_reset;
     }
 
     /**

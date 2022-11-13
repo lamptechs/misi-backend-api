@@ -9,7 +9,7 @@ class PasswordReset extends Model
 {
     use HasFactory;
 
-    public function tableable(){
+    public function user(){
         return $this->morphTo(__FUNCTION__, "tableable", "tableable_id");
     }
 }
