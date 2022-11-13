@@ -58,7 +58,7 @@ class PitScaleController extends Controller
                 'question_id'           => ['nullable', "exists:questions,id"],
                 "scale_value"           => ["required", "numeric", "min:0", "max:100"],
                 "status"                => ["nullable", Rule::in(["active", "inactive", "pending", "cancel"])],
-                "remarks"               => ["required", "string"]
+                "remarks"               => ["nullable", "string"]
             ]);
     
             if ($validator->fails()) {
@@ -125,7 +125,7 @@ class PitScaleController extends Controller
                 'question_id'           => ['nullable', "exists:questions,id"],
                 "scale_value"           => ["required", "numeric", "min:0", "max:100"],
                 "status"                => ["nullable", Rule::in(["active", "inactive", "pending", "cancel"])],
-                "remarks"               => ["required", "string"]
+                "remarks"               => ["nullable", "string"]
             ]);
     
             if ($validator->fails()) {

@@ -173,7 +173,7 @@ class Permission{
         $_access_arr = [];
         foreach($_access_list as $key => $data){
             if(is_array($data)){
-                $_access_arr = array_values($data);
+                $_access_arr  = array_merge($_access_arr, array_values($data));
             }
         }
         return  $_access_arr;
