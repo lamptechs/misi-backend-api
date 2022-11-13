@@ -64,23 +64,19 @@ class AdminController extends Controller
         }
     }
     public function logout(Request $request){
-        $user = auth('sanctum')->user();
-        // 
+        $user = $request->user();
         foreach ($user->tokens as $token) {
             $token->delete();
        }
        $this->apiSuccess("Logout Successfull");
        return $this->apiOutput();
-   
     }
     
-     public function index()
+    public function index()
     {
-       
         try{
             $this->data = AdminResource::collection(Admin::all());
             $this->apiSuccess("Admin Load has been Successfully done");
-            // return $this->apiOutput("Therapist Loaded Successfully",200);
             return $this->apiOutput();
 
         }catch(Exception $e){
@@ -194,7 +190,7 @@ class AdminController extends Controller
             $password_reset->save();
 
             // Send Password Reset Email
-            // event()
+            event();
             
             $this->apiSuccess("Password Reset Code sent to your registared Email.");
             return $this->apiOutput();
