@@ -24,6 +24,7 @@ class Permission{
             "menu"      => "Group", 
             "access"    => [
                 "group_list"        => "Show Group List", 
+                "group_show"        => "Show Group List", 
                 "group_create"      => "Create New Group", 
                 "group_update"      => "Update Group", 
                 "group_delete"      => "Delete Group",
