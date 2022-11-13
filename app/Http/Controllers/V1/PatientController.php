@@ -396,6 +396,9 @@ class PatientController extends Controller
     {
         try{
             $data = $this->getModel()->find($id);
+            if( empty($data) ){
+                return $this->apiOutput("Data Not Found", 400);
+            }
             PatientUpload::where('patient_id',$data->id)->delete();
             $data->delete();
             $this->apiSuccess();
@@ -425,24 +428,4 @@ class PatientController extends Controller
         }
     }
 
-    // public function additionalFileAdd(Request $request){
-    //     try{
-    //         $validator = Validator::make($request->all(), [
-    //             "id"            => ["required", "exists:users,id"],
-              
-    //         ]);
-                
-    //         if ($validator->fails()) {
-    //             return $this->apiOutput($this->getValidationError($validator), 400);
-    //         }
-    //         //DB::beginTransaction();
-    //         $data = new PatientUpload();
-    //         $data->patient_id   = $request->patient_id;
-
-            
-    //     }
-    //     catch(Exception $e){
-            
-    //     }
-    // }
 }

@@ -344,13 +344,13 @@ Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
     });
     
     // Reply On Ticket
-            Route::prefix("reply")->group(function(){
-                Route::get('/', [TicketController::class, 'replyList']);
-                Route::post('/create', [TicketController::class, 'addReply']);
-                Route::get('/edit', [TicketController::class, 'editReply']);
-                Route::post('/update', [TicketController::class, 'updateReply']);
-                Route::get('/delete', [TicketController::class, 'deleteReply']);
-            });
+    Route::prefix("reply")->group(function(){
+        Route::get('/', [TicketController::class, 'replyList']);
+        Route::post('/create', [TicketController::class, 'addReply']);
+        Route::get('/edit', [TicketController::class, 'editReply']);
+        Route::post('/update', [TicketController::class, 'updateReply']);
+        Route::get('/delete', [TicketController::class, 'deleteReply']);
+    });
     
     Route::prefix('appointment')->group(function(){
         Route::get('/', [TherapistAppointmentController::class, 'index']);

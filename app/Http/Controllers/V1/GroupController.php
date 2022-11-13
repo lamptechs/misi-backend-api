@@ -129,16 +129,19 @@ class GroupController extends Controller
     public function update(Request $request, $id)
     {
          try{
-            $validator = Validator::make( $request->all(),[
-                'name' => 'required|min:4',
-                'description' => 'nullable|min:4',
+            $validator = Validator::make($request->all(),[
+                'name'          => ["required", "min:4"],
+                'description'   => ["nullable", "min:4"],
             ]);
             
             if ($validator->fails()) {    
-                $this->apiOutput($this->getValidationError($validator), 400);
+                return $this->apiOutput($this->getValidationError($validator), 400);
             }
    
             $group = Group::find($id);
+            if(empty($group)){
+                return $this->apiOutput("No Data Found", $group);
+            }
             $group->name = $request->name ;
             $group->description = $request->description;
             $group->created_by = $request->user()->id ;
@@ -157,13 +160,10 @@ class GroupController extends Controller
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     */
-
-   
+     */   
     public function destroy($id)
     {
-        $group = Group::find($id);
-        $group->delete();
+        Group::where("id", $id)->delete();
         $this->apiSuccess();
         return $this->apiOutput("Group Deleted Successfully", 200);
     }

@@ -119,6 +119,7 @@ class PibScaleController extends Controller
     {
         try{
             $validator = Validator::make($request->all(),[
+                "id"                    => ["required", "exists:pib_scales,id"],
                 'patient_id'            => ['required', "exists:users,id"],
                 'pib_formula_id'        => ['required', "exists:pib_formulas,id"],
                 'question_id'           => ['nullable', "exists:questions,id"],

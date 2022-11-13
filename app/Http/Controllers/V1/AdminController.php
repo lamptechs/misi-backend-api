@@ -4,6 +4,7 @@
 namespace App\Http\Controllers\V1;
 
 use App\Events\AccountRegistration;
+use App\Events\PasswordReset as PasswordResetEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use Exception;
@@ -71,7 +72,7 @@ class AdminController extends Controller
         $user = $request->user();
         foreach ($user->tokens as $token) {
             $token->delete();
-       }
+        }
        $this->apiSuccess("Logout Successfull");
        return $this->apiOutput();
     }
@@ -194,7 +195,7 @@ class AdminController extends Controller
             $password_reset->save();
 
             // Send Password Reset Email
-            event();
+            event(new PasswordResetEvent($password_reset));
             
             $this->apiSuccess("Password Reset Code sent to your registared Email.");
             return $this->apiOutput();
