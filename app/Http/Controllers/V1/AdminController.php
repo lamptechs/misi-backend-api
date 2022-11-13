@@ -33,8 +33,7 @@ class AdminController extends Controller
      * Login 
      */
     public function login(Request $request){
-        $admin=Admin::all();
-        // return $group;
+
         try{
             $validator = Validator::make($request->all(), [
                 "email"     => ["required", "email", "exists:admins,email"],
@@ -50,11 +49,16 @@ class AdminController extends Controller
             if( !$admin->status ){
                 return $this->apiOutput("Sorry! your account is temporaly blocked", 401);
             }
+
             // Issueing Access Token
             $this->access_token = $admin->createToken($request->ip() ?? "admin_access_token")->plainTextToken;
+            
             Session::put('access_token',$this->access_token);
             // echo Session::get('access_token');
             $this->apiSuccess("Login Successfully");
+            // Flash Admin Group Permission 
+            Session::forget("group_access");
+            
             $this->data = (new AdminResource($admin));
             return $this->apiOutput();
 
