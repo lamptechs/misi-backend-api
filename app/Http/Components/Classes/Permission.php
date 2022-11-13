@@ -24,6 +24,7 @@ class Permission{
             "menu"      => "Group", 
             "access"    => [
                 "group_list"        => "Show Group List", 
+                "group_show"        => "Show Group List", 
                 "group_create"      => "Create New Group", 
                 "group_update"      => "Update Group", 
                 "group_delete"      => "Delete Group",
@@ -172,7 +173,7 @@ class Permission{
         $_access_arr = [];
         foreach($_access_list as $key => $data){
             if(is_array($data)){
-                $_access_arr = array_values($data);
+                $_access_arr  = array_merge($_access_arr, array_values($data));
             }
         }
         return  $_access_arr;

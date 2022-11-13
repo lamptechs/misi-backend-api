@@ -20,6 +20,9 @@ class Appointmnet extends Model
     public function therapist(){       
         return $this->belongsTo(Therapist::class, 'therapist_id');        
     }
+    public function ticket(){       
+        return $this->belongsTo(Ticket::class, 'ticket_id');        
+    }
     public function schedule(){       
         return $this->belongsTo(TherapistSchedule::class, 'therapist_schedule_id');        
     }

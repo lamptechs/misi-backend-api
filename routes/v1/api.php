@@ -131,7 +131,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::get('', [PatientController::class, 'index']);
         Route::get('/missingInfoPatient', [PatientController::class, 'missingInfoPatient']);
         Route::get('/show', [PatientController::class, 'show']);
-         Route::get('/missingInfoPatient', [PatientController::class, 'missingInfoPatient']);
+        Route::get('/missingInfoPatient', [PatientController::class, 'missingInfoPatient']);
         Route::post('/store', [PatientController::class, 'store']);
         Route::post('/update/{id}', [PatientController::class, 'update']);
         Route::post('/patientuploaddelete', [PatientController::class, 'deleteFilePatient']);
@@ -222,8 +222,10 @@ Route::middleware(["auth:admin"])->group(function(){
     });
 
     //Question
+    //Question
     Route::get('/question', [QuestionController::class, 'index']);
     Route::post('/question/store', [QuestionController::class, 'store']);
+    Route::get('/question/show', [QuestionController::class, 'show']);
     Route::post('/question/update/{id}', [QuestionController::class, 'update']);
     Route::post('/question/delete/{id}', [QuestionController::class, 'destroy']);
     
