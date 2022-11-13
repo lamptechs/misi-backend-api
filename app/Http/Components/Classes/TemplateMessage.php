@@ -108,6 +108,9 @@ class TemplateMessage{
             if( isset($this->model->address) ){
                 $this->message = str_replace("{therapist_address}", $this->model->address, $this->message);
             }
+            if( isset($this->model->token) ){
+                $this->message = str_replace("{token}", $this->model->token, $this->message);
+            }
         }catch(Exception $e){
             throw new Exception($e->getMessage(). ' On File'.$e->getFile().":". $e->getLine(), 500);
         }
