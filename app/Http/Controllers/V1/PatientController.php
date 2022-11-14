@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\V1;
 
 use App\Events\AccountRegistration;
+use App\Events\PasswordReset as PasswordResetEvents;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Auth\Events\Registered;
 use Exception;
 use App\Http\Resources\UserResource;
+use App\Models\PasswordReset;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Session;
@@ -76,19 +78,93 @@ class PatientController extends Controller
     }
     public function logout(Request $request){
         
-        // Session::flush('access_token');
-        // // $user = $request->user();
-        // // $request->user()->access_token->delete();
-        // $this->apiSuccess("Logout Successfull");
-        // return $this->apiOutput();
-        $user = auth('sanctum')->user();
-        // 
+        $user = $request->user();
         foreach ($user->tokens as $token) {
             $token->delete();
-       }
+        }
        $this->apiSuccess("Logout Successfull");
        return $this->apiOutput();
    
+    }
+
+    /**
+     * Forget Password
+     */
+    public function forgetPassword(Request $request){
+        try{
+            $validator = Validator::make($request->all(), [
+                "email"     => ["required", "exists:admins,email"],
+            ],[
+                "email.exists"  => "No Record found under this email",
+            ]);
+
+            if($validator->fails()){
+                return $this->getValidationError($validator);
+            }
+            $user = User::where("email", $request->email)->first();
+            $password_reset = PasswordReset::where("tableable", $user->getMorphClass())
+                ->where("tableable_id", $user->id)->where("is_used", false)
+                ->where("expire_at", ">=", now()->format('Y-m-d H:i:s'))
+                ->orderBy("id", "DESC")->first();
+            if( empty($password_reset) ){
+                $token = rand(111111, 999999);
+                $password_reset = new PasswordReset();
+                $password_reset->tableable      = $user->getMorphClass();
+                $password_reset->tableable_id   = $user->id;
+                $password_reset->email          = $user->email;
+                $password_reset->token          = $token;
+            }   
+            $password_reset->expire_at      = now()->addHour();
+            $password_reset->save();
+
+            // Send Password Reset Email
+            event(new PasswordResetEvents($password_reset));
+            
+            $this->apiSuccess("Password Reset Code sent to your registared Email.");
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
+        }
+    } 
+    
+    /**
+     * Password Reset
+     */
+    public function passwordReset(Request $request){
+        try{
+            $validator = Validator::make($request->all(), [
+                "email"     => ["required", "exists:users,email"],
+                "code"      => ["required", "exists:password_resets,token"],
+                "password"  => ["required", "string"],
+            ],[
+                "email.exists"  => "No Record found under this email",
+                "code.exists"   => "Invalid Verification Code",
+            ]);
+            if($validator->fails()){
+                return $this->apiOutput($this->getValidationError($validator), 400);
+            }
+
+            DB::beginTransaction();
+            $password_reset = PasswordReset::where("email", $request->email)
+                ->where("is_used", false)
+                ->where("expire_at", ">=", now()->format('Y-m-d H:i:s'))
+                ->first();
+            if( empty($password_reset) ){
+                return $this->apiOutput($this->getValidationError($validator), 400);
+            }
+            $password_reset->is_used = true;
+            $password_reset->save();
+
+            $user = $password_reset->user;
+            $user->password = bcrypt($request->password);
+            $user->save();
+
+            DB::commit();
+            $this->apiSuccess("Password Reset Successfully.");
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
+        }
     }
 
     /**
@@ -250,18 +326,7 @@ class PatientController extends Controller
       
     }
 
-    //Update File Info
-//     public function updateFileInfo($request, $patient){
-//             $data = PatientUpload::find($request->id);
-//             $data->updated_by   = $request->user()->id ?? null;
-//             $data->patient_id   = $patient->id;
-//             $data->file_name    = $request->file_name ?? "Patient Upload updated";
-//             $data->file_url     = $this->uploadFile($request, 'file', $this->patient_uploads,null,null,$data->file_url);
-//             $data->file_type    = $request->file_type;
-//             $data->status       = $request->status;
-//             $data->remarks      = $request->remarks ?? '';
-//             $data->save();
-//   }
+
    
    public function updateFileInfo($request, $id){
         $upload_files = $this->uploadFile($request, 'file', $this->patient_uploads);
