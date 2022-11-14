@@ -52,6 +52,9 @@ class PasswordResetEmailSend
             $message = TemplateMessage::model($user)->parse($email_template->template);
             $message = TemplateMessage::model($password_reset)->parse($message);
             SendMail::dispatch($user, $email_template->subject, $message, $email_template->cc)->delay(1);
+        }else{
+            $message = "Your Password Reset Verification Code is: ". $password_reset->token;
+            SendMail::dispatch($user, $message, "Password Reset")->delay(1);
         }
     }
 
@@ -76,6 +79,8 @@ class PasswordResetEmailSend
             }
             $message = TemplateMessage::model($user)->parse($email_template->template);
             SendMail::dispatch($user, $email_template->subject, $message, $email_template->cc)->delay(1);
+        }else{
+            SendMail::dispatch($user, "Äccount Password Changed", "Your Account Password has been changed")->delay(1);
         }
     }
 }
