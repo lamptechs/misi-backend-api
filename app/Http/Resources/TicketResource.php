@@ -60,6 +60,7 @@ class TicketResource extends JsonResource
             "nd_account"            =>$this->nd_account,
             "avc_alfmvm_sbg"        =>$this->avc_alfmvm_sbg,
             "honos"                 =>$this->honos,
+            "status"                =>$this->status,
             "berha_intake"          =>$this->berha_intake,
             "rom_start"             =>$this->rom_start,
             "rom_end"               =>$this->rom_end,

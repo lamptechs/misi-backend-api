@@ -96,6 +96,7 @@ class TicketController extends Controller
             $ticket->therapist_id = $request->therapist_id ?? null;
             $ticket->ticket_department_id = $request->ticket_department_id;
             $ticket->location = $request->location ?? null;
+            $ticket->ticket_status     = $request->ticket_status;
             $ticket->language = $request->language ?? null;
             $ticket->date = now()->format("Y-m-d");
             $ticket->strike = $request->strike ?? null;
