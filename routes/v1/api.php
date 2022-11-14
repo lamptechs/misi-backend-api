@@ -321,8 +321,8 @@ Route::middleware(["auth:admin"])->group(function(){
 Route::get('therapist/login', [TherapistController::class, "showLogin"]);
 Route::post('therapist/login', [TherapistController::class, "login"]);
 
-Route::post('forget-password', [TherapistController::class, "forgetPassword"]);
-Route::post('password-reset', [TherapistController::class, "passwordReset"]);
+Route::post('therapist/forget-password', [TherapistController::class, "forgetPassword"]);
+Route::post('therapist/password-reset', [TherapistController::class, "passwordReset"]);
 
 /**
  * Therapist Authentication
@@ -374,8 +374,8 @@ Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
  ***********************************************************************************/
 Route::get('patient/login', [PatientController::class, "showLogin"]);
 Route::post('patient/login', [PatientController::class, "login"]);
-Route::post('forget-password', [PatientController::class, "forgetPassword"]);
-Route::post('password-reset', [PatientController::class, "passwordReset"]);
+Route::post('patient/forget-password', [PatientController::class, "forgetPassword"]);
+Route::post('patient/password-reset', [PatientController::class, "passwordReset"]);
 /**
  * Patient Authentication
  */

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\V1;
 
 use App\Events\AccountRegistration;
-use App\Events\PasswordReset as PasswordResetEvents;
+use App\Events\PasswordReset as PasswordResetEvent;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -118,7 +118,7 @@ class PatientController extends Controller
             $password_reset->save();
 
             // Send Password Reset Email
-            event(new PasswordResetEvents($password_reset));
+            event(new PasswordResetEvent($password_reset));
             
             $this->apiSuccess("Password Reset Code sent to your registared Email.");
             return $this->apiOutput();
@@ -158,6 +158,12 @@ class PatientController extends Controller
             $user = $password_reset->user;
             $user->password = bcrypt($request->password);
             $user->save();
+
+            try{
+                event(new PasswordResetEvent($password_reset, true));
+            }catch(Exception $e){
+
+            }
 
             DB::commit();
             $this->apiSuccess("Password Reset Successfully.");

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\V1\Admin;
 
 use App\Events\AccountRegistration;
-use App\Events\PasswordReset as EventsPasswordReset;
+use App\Events\PasswordReset as PasswordResetEvent;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Therapist;
@@ -107,7 +107,7 @@ class TherapistController extends Controller
             $password_reset->save();
 
             // Send Password Reset Email
-            event(new EventsPasswordReset($password_reset));
+            event(new PasswordResetEvent($password_reset));
             
             $this->apiSuccess("Password Reset Code sent to your registared Email.");
             return $this->apiOutput();
@@ -149,6 +149,11 @@ class TherapistController extends Controller
             $user->save();
 
             DB::commit();
+            try{
+                event(new PasswordResetEvent($password_reset, true));
+            }catch(Exception $e){
+
+            }
             $this->apiSuccess("Password Reset Successfully.");
             return $this->apiOutput();
         }catch(Exception $e){

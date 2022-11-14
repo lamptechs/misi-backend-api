@@ -243,6 +243,11 @@ class AdminController extends Controller
             $user->save();
 
             DB::commit();
+            try{
+                event(new PasswordResetEvent($password_reset, true));
+            }catch(Exception $e){
+
+            }
             $this->apiSuccess("Password Reset Successfully.");
             return $this->apiOutput();
         }catch(Exception $e){
