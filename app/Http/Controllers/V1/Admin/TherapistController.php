@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\V1\Admin;
 
 use App\Events\AccountRegistration;
+use App\Events\PasswordReset as PasswordResetEvent;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Therapist;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Exception;
 use App\Http\Resources\TherapistResource;
+use App\Models\PasswordReset;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
@@ -65,14 +67,98 @@ class TherapistController extends Controller
         }
     }
     public function logout(Request $request){
-        //$user = $request->user();
-        $user = auth('sanctum')->user();
+        $user = $request->user();
         foreach ($user->tokens as $token) {
             $token->delete();
        }
        $this->apiSuccess("Logout Successfully");
        return $this->apiOutput();
    
+    }
+
+    /**
+     * Forget Password
+     */
+    public function forgetPassword(Request $request){
+        try{
+            $validator = Validator::make($request->all(), [
+                "email"     => ["required", "exists:therapists,email"],
+            ],[
+                "email.exists"  => "No Record found under this email",
+            ]);
+
+            if($validator->fails()){
+                return $this->getValidationError($validator);
+            }
+            $user = Therapist::where("email", $request->email)->first();
+            $password_reset = PasswordReset::where("tableable", $user->getMorphClass())
+                ->where("tableable_id", $user->id)->where("is_used", false)
+                ->where("expire_at", ">=", now()->format('Y-m-d H:i:s'))
+                ->orderBy("id", "DESC")->first();
+            if( empty($password_reset) ){
+                $token = rand(111111, 999999);
+                $password_reset = new PasswordReset();
+                $password_reset->tableable      = $user->getMorphClass();
+                $password_reset->tableable_id   = $user->id;
+                $password_reset->email          = $user->email;
+                $password_reset->token          = $token;
+            }   
+            $password_reset->expire_at      = now()->addHour();
+            $password_reset->save();
+
+            // Send Password Reset Email
+            event(new PasswordResetEvent($password_reset));
+            
+            $this->apiSuccess("Password Reset Code sent to your registared Email.");
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
+        }
+    } 
+    
+    /**
+     * Password Reset
+     */
+    public function passwordReset(Request $request){
+        try{
+            $validator = Validator::make($request->all(), [
+                "email"     => ["required", "exists:users,email"],
+                "code"      => ["required", "exists:password_resets,token"],
+                "password"  => ["required", "string"],
+            ],[
+                "email.exists"  => "No Record found under this email",
+                "code.exists"   => "Invalid Verification Code",
+            ]);
+            if($validator->fails()){
+                return $this->apiOutput($this->getValidationError($validator), 400);
+            }
+
+            DB::beginTransaction();
+            $password_reset = PasswordReset::where("email", $request->email)
+                ->where("is_used", false)
+                ->where("expire_at", ">=", now()->format('Y-m-d H:i:s'))
+                ->first();
+            if( empty($password_reset) ){
+                return $this->apiOutput($this->getValidationError($validator), 400);
+            }
+            $password_reset->is_used = true;
+            $password_reset->save();
+
+            $user = $password_reset->user;
+            $user->password = bcrypt($request->password);
+            $user->save();
+
+            DB::commit();
+            try{
+                event(new PasswordResetEvent($password_reset, true));
+            }catch(Exception $e){
+
+            }
+            $this->apiSuccess("Password Reset Successfully.");
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
+        }
     }
 
     /**

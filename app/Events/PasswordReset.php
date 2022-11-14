@@ -18,14 +18,16 @@ class PasswordReset
      * @var Model
      */
     public $password_reset;
+    public $after_reset;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($password_reset)
+    public function __construct($password_reset, $after_reset = false)
     {
-        $this->password_reset = $password_reset;
+        $this->password_reset   = $password_reset;
+        $this->after_reset      = $after_reset;
     }
 
     /**

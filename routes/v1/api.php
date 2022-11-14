@@ -55,6 +55,7 @@ Route::prefix("admin")->group(function(){
     Route::get('/show', [AdminController::class, 'show']);
     Route::post('/store', [AdminController::class, "store"]);
     Route::post('forget-password', [AdminController::class, "forgetPassword"]);
+    Route::post('password-reset', [AdminController::class, "passwordReset"]);
 });
 
 /**
@@ -319,7 +320,10 @@ Route::middleware(["auth:admin"])->group(function(){
  ***********************************************************************************/
 Route::get('therapist/login', [TherapistController::class, "showLogin"]);
 Route::post('therapist/login', [TherapistController::class, "login"]);
-Route::post('therapist/logout', [TherapistController::class, "logout"]);
+
+Route::post('therapist/forget-password', [TherapistController::class, "forgetPassword"]);
+Route::post('therapist/password-reset', [TherapistController::class, "passwordReset"]);
+
 /**
  * Therapist Authentication
  */
@@ -327,7 +331,8 @@ Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
     Route::get('', [TherapistController::class, 'index']);
     Route::get('/profile', [TherapistController::class, 'getProfile']);
     Route::post('profile/update', [TherapistController::class, 'updateProfile']);
-    //Route::post('/logout',[TherapistController::class,'logout']);
+    Route::post('/logout',[TherapistController::class,'logout']);
+
    
     /**
      * Therapist Tickets
@@ -369,12 +374,14 @@ Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
  ***********************************************************************************/
 Route::get('patient/login', [PatientController::class, "showLogin"]);
 Route::post('patient/login', [PatientController::class, "login"]);
-Route::post('patient/logout', [PatientController::class, "logout"]);
+Route::post('patient/forget-password', [PatientController::class, "forgetPassword"]);
+Route::post('patient/password-reset', [PatientController::class, "passwordReset"]);
 /**
  * Patient Authentication
  */
 Route::middleware(["auth:patient"])->prefix("patient")->group(function(){
     
+    Route::post('logout', [PatientController::class, "logout"]);
     Route::get('/', [PatientController::class, 'index']);
     Route::get('/show', [PatientController::class, 'show']);
     Route::post('/store', [PatientController::class, 'store']);
