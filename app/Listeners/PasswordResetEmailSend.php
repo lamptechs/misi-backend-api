@@ -54,7 +54,7 @@ class PasswordResetEmailSend
             SendMail::dispatch($user, $email_template->subject, $message, $email_template->cc)->delay(1);
         }else{
             $message = "Your Password Reset Verification Code is: ". $password_reset->token;
-            SendMail::dispatch($user, $message, "Password Reset")->delay(1);
+            SendMail::dispatch($user, "Password Reset", $message)->delay(1);
         }
     }
 
