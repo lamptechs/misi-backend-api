@@ -47,19 +47,23 @@ use Illuminate\Support\Facades\Route;
 /**
  * Admin Login Section
  */
-Route::get('admin/login', [AdminController::class, "showLogin"]);
-Route::post('admin/login', [AdminController::class, "login"]);
-Route::post('admin/logout', [AdminController::class, "logout"]);
-Route::get('admin/adminview', [AdminController::class, "index"]);
-Route::get('admin/show', [AdminController::class, 'show']);
-Route::post('admin/store', [AdminController::class, "store"]);
-Route::post('/admin/update/{id}', [AdminController::class, 'update']);
-Route::post('/admin/delete/{id}', [AdminController::class, 'destroy']);
+Route::prefix("admin")->group(function(){
+    Route::get('/login', [AdminController::class, "showLogin"]);
+    Route::post('/login', [AdminController::class, "login"]);
+    Route::post('/logout', [AdminController::class, "logout"]);
+    Route::get('/adminview', [AdminController::class, "index"]);
+    Route::get('/show', [AdminController::class, 'show']);
+    Route::post('/store', [AdminController::class, "store"]);
+    Route::post('forget-password', [AdminController::class, "forgetPassword"]);
+    Route::post('password-reset', [AdminController::class, "passwordReset"]);
+});
 
 /**
  * Protect the Route Throw API Token
  */
 Route::middleware(["auth:admin"])->group(function(){
+    Route::post('/admin/update/{id}', [AdminController::class, 'update']);
+    Route::post('/admin/delete/{id}', [AdminController::class, 'destroy']);
     /**
      * Ticket
      */
@@ -132,6 +136,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::post('/store', [PatientController::class, 'store']);
         Route::post('/update/{id}', [PatientController::class, 'update']);
         Route::post('/patientuploaddelete', [PatientController::class, 'deleteFilePatient']);
+        Route::post('/patientAddfile', [PatientController::class, 'addFilePatient']);
         Route::post('/delete/{id}', [PatientController::class, 'destroy']);
     });
 
@@ -316,7 +321,10 @@ Route::middleware(["auth:admin"])->group(function(){
  ***********************************************************************************/
 Route::get('therapist/login', [TherapistController::class, "showLogin"]);
 Route::post('therapist/login', [TherapistController::class, "login"]);
-Route::post('therapist/logout', [TherapistController::class, "logout"]);
+
+Route::post('therapist/forget-password', [TherapistController::class, "forgetPassword"]);
+Route::post('therapist/password-reset', [TherapistController::class, "passwordReset"]);
+
 /**
  * Therapist Authentication
  */
@@ -324,7 +332,8 @@ Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
     Route::get('', [TherapistController::class, 'index']);
     Route::get('/profile', [TherapistController::class, 'getProfile']);
     Route::post('profile/update', [TherapistController::class, 'updateProfile']);
-    //Route::post('/logout',[TherapistController::class,'logout']);
+    Route::post('/logout',[TherapistController::class,'logout']);
+
    
     /**
      * Therapist Tickets
@@ -341,13 +350,13 @@ Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
     });
     
     // Reply On Ticket
-            Route::prefix("reply")->group(function(){
-                Route::get('/', [TicketController::class, 'replyList']);
-                Route::post('/create', [TicketController::class, 'addReply']);
-                Route::get('/edit', [TicketController::class, 'editReply']);
-                Route::post('/update', [TicketController::class, 'updateReply']);
-                Route::get('/delete', [TicketController::class, 'deleteReply']);
-            });
+    Route::prefix("reply")->group(function(){
+        Route::get('/', [TicketController::class, 'replyList']);
+        Route::post('/create', [TicketController::class, 'addReply']);
+        Route::get('/edit', [TicketController::class, 'editReply']);
+        Route::post('/update', [TicketController::class, 'updateReply']);
+        Route::get('/delete', [TicketController::class, 'deleteReply']);
+    });
     
     Route::prefix('appointment')->group(function(){
         Route::get('/', [TherapistAppointmentController::class, 'index']);
@@ -366,12 +375,14 @@ Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
  ***********************************************************************************/
 Route::get('patient/login', [PatientController::class, "showLogin"]);
 Route::post('patient/login', [PatientController::class, "login"]);
-Route::post('patient/logout', [PatientController::class, "logout"]);
+Route::post('patient/forget-password', [PatientController::class, "forgetPassword"]);
+Route::post('patient/password-reset', [PatientController::class, "passwordReset"]);
 /**
  * Patient Authentication
  */
 Route::middleware(["auth:patient"])->prefix("patient")->group(function(){
     
+    Route::post('logout', [PatientController::class, "logout"]);
     Route::get('/', [PatientController::class, 'index']);
     Route::get('/show', [PatientController::class, 'show']);
     Route::post('/store', [PatientController::class, 'store']);

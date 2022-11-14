@@ -19,7 +19,7 @@ class PitScale extends Model
     }
 
     public function pitformula(){
-        return $this->hasMany(PitFormula::class, 'pit_formula_id');
+        return $this->belongsTo(PitFormula::class, 'pit_formula_id');
     }
     public function question(){
         return $this->belongsTo(Question::class, 'question_id');

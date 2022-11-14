@@ -173,8 +173,7 @@ class PitFormulaController extends Controller
     public function destroy(Request $request)
     {
         try{
-            $data = $this->getModel()->find($request->id);
-            $data->delete();
+            $this->getModel()->where("id",$request->id)->delete();
             $this->apiSuccess();
             return $this->apiOutput("PIB Deleted Successfully", 200);
         }catch(Exception $e){

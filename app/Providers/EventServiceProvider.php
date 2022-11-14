@@ -4,9 +4,11 @@ namespace App\Providers;
 
 use App\Events\AccountRegistration;
 use App\Events\Appointment;
+use App\Events\PasswordReset;
 use App\Events\TicketRaise;
 use App\Listeners\AccountSignupEmail;
 use App\Listeners\AppointmentEmailSend;
+use App\Listeners\PasswordResetEmailSend;
 use App\Listeners\TicketEmailSend;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -38,6 +40,11 @@ class EventServiceProvider extends ServiceProvider
         // Ticket Email
         TicketRaise::class => [
             TicketEmailSend::class,
+        ],
+
+        // Password Reset
+        PasswordReset::class => [
+            PasswordResetEmailSend::class,
         ]
     ];
 

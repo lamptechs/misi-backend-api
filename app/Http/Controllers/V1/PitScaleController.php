@@ -58,7 +58,7 @@ class PitScaleController extends Controller
                 'question_id'           => ['nullable', "exists:questions,id"],
                 "scale_value"           => ["required", "numeric", "min:0", "max:100"],
                 "status"                => ["nullable", Rule::in(["active", "inactive", "pending", "cancel"])],
-                "remarks"               => ["required", "string"]
+                "remarks"               => ["nullable", "string"]
             ]);
     
             if ($validator->fails()) {
@@ -120,12 +120,13 @@ class PitScaleController extends Controller
     {
         try{
             $validator = Validator::make($request->all(),[
+                "id"                    => ["required", "exists:pit_scales,id"],
                 'patient_id'            => ['required', "exists:users,id"],
                 'pit_formula_id'        => ['required', "exists:pit_formulas,id"],
                 'question_id'           => ['nullable', "exists:questions,id"],
                 "scale_value"           => ["required", "numeric", "min:0", "max:100"],
                 "status"                => ["nullable", Rule::in(["active", "inactive", "pending", "cancel"])],
-                "remarks"               => ["required", "string"]
+                "remarks"               => ["nullable", "string"]
             ]);
     
             if ($validator->fails()) {
@@ -164,8 +165,7 @@ class PitScaleController extends Controller
     public function destroy(Request $request)
     {
         try{
-            $data = $this->getModel()->find($request->id);
-            $data->delete();
+            $data = $this->getModel()->where("id", $request->id)->delete();
             $this->apiSuccess();
             return $this->apiOutput("PIT Scale Deleted Successfully", 200);
         }catch(Exception $e){

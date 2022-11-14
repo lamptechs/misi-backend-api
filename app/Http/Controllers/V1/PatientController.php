@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\V1;
 
 use App\Events\AccountRegistration;
+use App\Events\PasswordReset as PasswordResetEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PatientUploadResource;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\PatientUpload;
@@ -13,6 +15,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Auth\Events\Registered;
 use Exception;
 use App\Http\Resources\UserResource;
+use App\Models\PasswordReset;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Session;
@@ -76,19 +79,99 @@ class PatientController extends Controller
     }
     public function logout(Request $request){
         
-        // Session::flush('access_token');
-        // // $user = $request->user();
-        // // $request->user()->access_token->delete();
-        // $this->apiSuccess("Logout Successfull");
-        // return $this->apiOutput();
-        $user = auth('sanctum')->user();
-        // 
+        $user = $request->user();
         foreach ($user->tokens as $token) {
             $token->delete();
-       }
+        }
        $this->apiSuccess("Logout Successfull");
        return $this->apiOutput();
    
+    }
+
+    /**
+     * Forget Password
+     */
+    public function forgetPassword(Request $request){
+        try{
+            $validator = Validator::make($request->all(), [
+                "email"     => ["required", "exists:admins,email"],
+            ],[
+                "email.exists"  => "No Record found under this email",
+            ]);
+
+            if($validator->fails()){
+                return $this->getValidationError($validator);
+            }
+            $user = User::where("email", $request->email)->first();
+            $password_reset = PasswordReset::where("tableable", $user->getMorphClass())
+                ->where("tableable_id", $user->id)->where("is_used", false)
+                ->where("expire_at", ">=", now()->format('Y-m-d H:i:s'))
+                ->orderBy("id", "DESC")->first();
+            if( empty($password_reset) ){
+                $token = rand(111111, 999999);
+                $password_reset = new PasswordReset();
+                $password_reset->tableable      = $user->getMorphClass();
+                $password_reset->tableable_id   = $user->id;
+                $password_reset->email          = $user->email;
+                $password_reset->token          = $token;
+            }   
+            $password_reset->expire_at      = now()->addHour();
+            $password_reset->save();
+
+            // Send Password Reset Email
+            event(new PasswordResetEvent($password_reset));
+            
+            $this->apiSuccess("Password Reset Code sent to your registared Email.");
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
+        }
+    } 
+    
+    /**
+     * Password Reset
+     */
+    public function passwordReset(Request $request){
+        try{
+            $validator = Validator::make($request->all(), [
+                "email"     => ["required", "exists:users,email"],
+                "code"      => ["required", "exists:password_resets,token"],
+                "password"  => ["required", "string"],
+            ],[
+                "email.exists"  => "No Record found under this email",
+                "code.exists"   => "Invalid Verification Code",
+            ]);
+            if($validator->fails()){
+                return $this->apiOutput($this->getValidationError($validator), 400);
+            }
+
+            DB::beginTransaction();
+            $password_reset = PasswordReset::where("email", $request->email)
+                ->where("is_used", false)
+                ->where("expire_at", ">=", now()->format('Y-m-d H:i:s'))
+                ->first();
+            if( empty($password_reset) ){
+                return $this->apiOutput($this->getValidationError($validator), 400);
+            }
+            $password_reset->is_used = true;
+            $password_reset->save();
+
+            $user = $password_reset->user;
+            $user->password = bcrypt($request->password);
+            $user->save();
+
+            try{
+                event(new PasswordResetEvent($password_reset, true));
+            }catch(Exception $e){
+
+            }
+
+            DB::commit();
+            $this->apiSuccess("Password Reset Successfully.");
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
+        }
     }
 
     /**
@@ -250,18 +333,7 @@ class PatientController extends Controller
       
     }
 
-    //Update File Info
-//     public function updateFileInfo($request, $patient){
-//             $data = PatientUpload::find($request->id);
-//             $data->updated_by   = $request->user()->id ?? null;
-//             $data->patient_id   = $patient->id;
-//             $data->file_name    = $request->file_name ?? "Patient Upload updated";
-//             $data->file_url     = $this->uploadFile($request, 'file', $this->patient_uploads,null,null,$data->file_url);
-//             $data->file_type    = $request->file_type;
-//             $data->status       = $request->status;
-//             $data->remarks      = $request->remarks ?? '';
-//             $data->save();
-//   }
+
    
    public function updateFileInfo($request, $id){
         $upload_files = $this->uploadFile($request, 'file', $this->patient_uploads);
@@ -396,6 +468,9 @@ class PatientController extends Controller
     {
         try{
             $data = $this->getModel()->find($id);
+            if( empty($data) ){
+                return $this->apiOutput("Data Not Found", 400);
+            }
             PatientUpload::where('patient_id',$data->id)->delete();
             $data->delete();
             $this->apiSuccess();
@@ -425,24 +500,53 @@ class PatientController extends Controller
         }
     }
 
-    // public function additionalFileAdd(Request $request){
-    //     try{
-    //         $validator = Validator::make($request->all(), [
-    //             "id"            => ["required", "exists:users,id"],
-              
-    //         ]);
-                
-    //         if ($validator->fails()) {
-    //             return $this->apiOutput($this->getValidationError($validator), 400);
-    //         }
-    //         //DB::beginTransaction();
-    //         $data = new PatientUpload();
-    //         $data->patient_id   = $request->patient_id;
 
-            
-    //     }
-    //     catch(Exception $e){
-            
-    //     }
-    // }
+    public function addFilePatient(Request $request){
+        try{
+            $validator = Validator::make( $request->all(),[
+                "patient_id"            => ["required","exists:users,id"],
+
+            ]);
+
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 200);
+            }
+
+            $this->saveAddFileInfo($request);
+            $this->apiSuccess("Patient Info Added Successfully");
+            return $this->apiOutput();
+           
+           
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }
+    }
+
+    /**
+     * Save File Info
+     */
+    public function saveAddFileInfo($request){
+
+        $file_path = $this->uploadFile($request, 'file', $this->patient_uploads,720);
+
+        if( !is_array($file_path) ){
+            $file_path = (array) $file_path;
+        }
+        foreach($file_path as $path){
+
+                $data = new PatientUpload();
+                $data->created_by   = $request->user()->id;
+                $data->patient_id   = $request->patient_id;
+                $data->file_name    = $request->file_name ?? "Paitent Upload";
+                $data->file_url     = $path;
+                $data->file_type    = $request->file_type ;
+                $data->status       = $request->status;
+                $data->remarks      = $request->remarks ?? '';
+                $data->save();            
+
+            }
+      
+    }
+
+
 }
