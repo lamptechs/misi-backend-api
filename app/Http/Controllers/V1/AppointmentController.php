@@ -81,7 +81,7 @@ class AppointmentController extends Controller
             $validator = Validator::make($request->all(), [
                 "therapist_id"  => ["required", "exists:therapists,id"],
                 "patient_id"    => ["required", "exists:users,id"],
-                "ticket_id"  => ["required", "exists:tickets,id"],
+                //"ticket_id"  => ["required", "exists:tickets,id"],
                 "therapist_schedule_id" => ["required", "exists:therapist_schedules,id"],
                 "status"        => ["required", "boolean"]
             ]);
@@ -102,7 +102,7 @@ class AppointmentController extends Controller
             $data->created_by   = $request->user()->id;
             $data->therapist_id = $request->therapist_id;
             $data->patient_id   = $request->patient_id;
-            $data->ticket_id    = $request->ticket_id;
+            $data->ticket_id    = $request->ticket_id ?? null;
             $data->trx_type     = $request->trx_type;
             $data->therapist_schedule_id = $request->therapist_schedule_id;
             $number      = Appointmnet::max('appointmentnumber')+1000;
@@ -216,7 +216,7 @@ class AppointmentController extends Controller
             $validator = Validator::make($request->all(), [
                 "id"                    => ["required", "exists:appointmnets,id"],
                 "therapist_id"  => ["required", "exists:therapists,id"],
-                "ticket_id"  => ["required", "exists:tickets,id"],
+                //"ticket_id"  => ["required", "exists:tickets,id"],
                 "patient_id"    => ["required", "exists:users,id"],
                 "therapist_schedule_id" => ["required", "exists:therapist_schedules,id"],
                 "status"        => ["required", "boolean"]
@@ -252,7 +252,7 @@ class AppointmentController extends Controller
             $appoinement->fee          = $request->fee;
             $appoinement->language     = $request->language;
             $appoinement->type         = $request->type;
-            $appoinement->ticket_id    = $request->ticket_id;
+            $appoinement->ticket_id    = $request->ticket_id ?? null;
             $appoinement->trx_type     = $request->trx_type;
             $appoinement->therapist_comment = $request->comment ?? null;
             $appoinement->remarks      = $request->remarks ?? null;

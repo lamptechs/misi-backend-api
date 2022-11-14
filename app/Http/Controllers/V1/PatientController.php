@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1;
 use App\Events\AccountRegistration;
 use App\Events\PasswordReset as PasswordResetEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PatientUploadResource;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\PatientUpload;
@@ -498,5 +499,54 @@ class PatientController extends Controller
             return $this->apiOutput($this->getError( $e), 500);
         }
     }
+
+
+    public function addFilePatient(Request $request){
+        try{
+            $validator = Validator::make( $request->all(),[
+                "patient_id"            => ["required","exists:users,id"],
+
+            ]);
+
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 200);
+            }
+
+            $this->saveAddFileInfo($request);
+            $this->apiSuccess("Patient Info Added Successfully");
+            return $this->apiOutput();
+           
+           
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }
+    }
+
+    /**
+     * Save File Info
+     */
+    public function saveAddFileInfo($request){
+
+        $file_path = $this->uploadFile($request, 'file', $this->patient_uploads,720);
+
+        if( !is_array($file_path) ){
+            $file_path = (array) $file_path;
+        }
+        foreach($file_path as $path){
+
+                $data = new PatientUpload();
+                $data->created_by   = $request->user()->id;
+                $data->patient_id   = $request->patient_id;
+                $data->file_name    = $request->file_name ?? "Paitent Upload";
+                $data->file_url     = $path;
+                $data->file_type    = $request->file_type ;
+                $data->status       = $request->status;
+                $data->remarks      = $request->remarks ?? '';
+                $data->save();            
+
+            }
+      
+    }
+
 
 }
