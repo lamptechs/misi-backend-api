@@ -79,8 +79,6 @@ class PasswordResetEmailSend
             }
             $message = TemplateMessage::model($user)->parse($email_template->template);
             SendMail::dispatch($user, $email_template->subject, $message, $email_template->cc)->delay(1);
-        }else{
-            SendMail::dispatch($user, "Äccount Password Changed", "Your Account Password has been changed")->delay(1);
         }
     }
 }
