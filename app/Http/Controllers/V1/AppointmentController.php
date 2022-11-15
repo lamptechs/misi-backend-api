@@ -345,4 +345,51 @@ class AppointmentController extends Controller
         }
     }
 
+    public function addFileAppointment(Request $request){
+        try{
+            $validator = Validator::make( $request->all(),[
+                "appointment_id"            => ["required","exists:appointmnets,id"],
+
+            ]);
+
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 200);
+            }
+
+            $this->saveAddFileInfo($request);
+            $this->apiSuccess("Appointment File Added Successfully");
+            return $this->apiOutput();
+           
+           
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }
+    }
+
+    /**
+     * Save File Info
+     */
+    public function saveAddFileInfo($request){
+
+        $file_path = $this->uploadFile($request, 'file', $this->appointment_uploads,720);
+        
+        if( !is_array($file_path) ){
+            $file_path = (array) $file_path;
+        }
+        foreach($file_path as $path){
+
+                $data = new AppointmentUpload();
+                //$data->created_by   = $request->user()->id;
+                $data->appointment_id   = $request->appointment_id;
+                $data->file_name    = $request->file_name ?? "Appointment Upload";
+                $data->file_url     = $path;
+                //$data->file_type    = $request->file_type ;
+                //$data->status       = $request->status;
+                //$data->remarks      = $request->remarks ?? '';
+                $data->save();            
+
+            }
+      
+    }
+
 }
