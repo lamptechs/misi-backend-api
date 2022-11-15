@@ -192,6 +192,7 @@ class TherapistController extends Controller
             'first_name' => 'required',
             'last_name' => 'required',
             "email"     => ["required", "email", "unique:therapists"],
+            "status"        => ["required", "boolean"],
             "phone"     => ["required", "numeric", "unique:therapists"]
         ]);
             
@@ -306,6 +307,7 @@ class TherapistController extends Controller
             "bsn_number" => ["nullable", "string"],
             "dob_number" => ["nullable", "string"],
             "gender"     => ["required", "string"],
+            "status"        => ["required", "boolean"],
             "profile_pic"=> ["nullable", "file"],
         ]);
         
