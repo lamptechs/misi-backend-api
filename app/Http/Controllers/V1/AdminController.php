@@ -182,7 +182,7 @@ class AdminController extends Controller
             ]);
 
             if($validator->fails()){
-                return $this->getValidationError($validator);
+                return $this->apiOutput($this->getValidationError($validator), 400);
             }
             $admin = Admin::where("email", $request->email)->first();
             $password_reset = PasswordReset::where("tableable", $admin->getMorphClass())

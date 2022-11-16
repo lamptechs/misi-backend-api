@@ -88,7 +88,7 @@ class TherapistController extends Controller
             ]);
 
             if($validator->fails()){
-                return $this->getValidationError($validator);
+                return $this->apiOutput($this->getValidationError($validator), 400);
             }
             $user = Therapist::where("email", $request->email)->first();
             $password_reset = PasswordReset::where("tableable", $user->getMorphClass())
@@ -122,7 +122,7 @@ class TherapistController extends Controller
     public function passwordReset(Request $request){
         try{
             $validator = Validator::make($request->all(), [
-                "email"     => ["required", "exists:users,email"],
+                "email"     => ["required", "exists:therapists,email"],
                 "code"      => ["required", "exists:password_resets,token"],
                 "password"  => ["required", "string"],
             ],[

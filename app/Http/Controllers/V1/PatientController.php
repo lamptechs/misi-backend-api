@@ -94,13 +94,13 @@ class PatientController extends Controller
     public function forgetPassword(Request $request){
         try{
             $validator = Validator::make($request->all(), [
-                "email"     => ["required", "exists:admins,email"],
+                "email"     => ["required", "exists:users,email"],
             ],[
                 "email.exists"  => "No Record found under this email",
             ]);
 
             if($validator->fails()){
-                return $this->getValidationError($validator);
+                return $this->apiOutput($this->getValidationError($validator), 400);
             }
             $user = User::where("email", $request->email)->first();
             $password_reset = PasswordReset::where("tableable", $user->getMorphClass())
