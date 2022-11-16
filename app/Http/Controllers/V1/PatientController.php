@@ -546,5 +546,9 @@ class PatientController extends Controller
       
     }
 
+    public function updatePatientFileInfo(){
+            
+    }
+
 
 }
