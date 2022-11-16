@@ -80,11 +80,9 @@ class PatientController extends Controller
     public function logout(Request $request){
         
         $user = $request->user();
-        foreach ($user->tokens as $token) {
-            $token->delete();
-        }
-       $this->apiSuccess("Logout Successfull");
-       return $this->apiOutput();
+        $user->tokens()->delete();
+        $this->apiSuccess("Logout Successfull");
+        return $this->apiOutput();
    
     }
 

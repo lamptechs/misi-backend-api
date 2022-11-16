@@ -50,7 +50,6 @@ use Illuminate\Support\Facades\Route;
 Route::prefix("admin")->group(function(){
     Route::get('/login', [AdminController::class, "showLogin"]);
     Route::post('/login', [AdminController::class, "login"]);
-    Route::post('/logout', [AdminController::class, "logout"]);
     Route::get('/adminview', [AdminController::class, "index"]);
     Route::get('/show', [AdminController::class, 'show']);
     Route::post('/store', [AdminController::class, "store"]);
@@ -62,6 +61,7 @@ Route::prefix("admin")->group(function(){
  * Protect the Route Throw API Token
  */
 Route::middleware(["auth:admin"])->group(function(){
+    Route::post('admin/logout', [AdminController::class, "logout"]);
     Route::post('/admin/update/{id}', [AdminController::class, 'update']);
     Route::post('/admin/delete/{id}', [AdminController::class, 'destroy']);
     /**
