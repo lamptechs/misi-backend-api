@@ -103,6 +103,7 @@ class TicketController extends Controller
             $ticket->strike_history = $request->strike_history ?? null;
             $ticket->ticket_history = $request->ticket_history ?? null;
             $ticket->remarks = $request->remarks ?? null;
+            $ticket->comments = $request->comments ?? null;
             $ticket->status     = $request->status;
             $ticket->created_by = $request->user()->id ?? null;
             $ticket->mono_multi_zd = $request->mono_multi_zd ?? null ;
