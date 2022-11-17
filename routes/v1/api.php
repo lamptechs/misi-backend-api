@@ -138,6 +138,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::post('/update/{id}', [PatientController::class, 'update']);
         Route::post('/patientuploaddelete', [PatientController::class, 'deleteFilePatient']);
         Route::post('/patientAddfile', [PatientController::class, 'addFilePatient']);
+        Route::post('/patientUpdateImage', [PatientController::class, 'updatePatientFileInfo']);
         Route::post('/delete/{id}', [PatientController::class, 'destroy']);
     });
 
