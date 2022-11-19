@@ -558,14 +558,15 @@ class PatientController extends Controller
             }
 
             $data = PatientUpload::find($request->id);
-            //$patientupload=PatientUpload::where('id',$request->id);
+
             if($request->hasFile('picture')){
                 $data->file_url = $this->uploadFile($request, 'picture', $this->patient_uploads, null,null,$data->file_url);
             }
 
             $data->save();
-            //$this->saveAddFileInfo($request);
+            
             $this->apiSuccess("Patient File Updated Successfully");
+            
             return $this->apiOutput();
            
            
