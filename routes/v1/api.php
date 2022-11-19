@@ -226,6 +226,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::post('/appointmentticketstatus', [AppointmentController::class, 'assignedappointmentticketstatus']);
         Route::post('/appointmentuploaddelete', [AppointmentController::class, 'deleteFileAppointment']);
         Route::post('/appointmentAddfile', [AppointmentController::class, 'addFileAppointment']);
+        Route::post('/appointmentUpdateImage', [AppointmentController::class, 'updateAppointmentFileInfo']);
         Route::post('/delete/{id}', [AppointmentController::class, 'destroy']);
     });
 
