@@ -180,4 +180,27 @@ class PibFormulaController extends Controller
         }
     }
 
+
+    // public function show(Request $request)
+    // {
+    //     try{
+            
+    //         $validator = Validator::make( $request->all(),[
+    //             "type"            => ["required"],
+               
+    //         ]);
+    //         if ($validator->fails()) {
+    //             return $this->apiOutput($this->getValidationError($validator), 200);
+    //         }
+    //         $question = Question::where("type",$request->type)->get();
+
+    //         $this->data = QuestionResource::collection($question);
+    //         $this->apiSuccess("Question Loaded Successfully");
+    //         return $this->apiOutput();
+
+    //     }catch(Exception $e){
+    //         return $this->apiOutput($this->getError($e), 500);
+    //     }
+    // }
+
 }
