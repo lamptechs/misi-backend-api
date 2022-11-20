@@ -353,6 +353,7 @@ Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
         Route::get('/tickethistory', [TicketController::class, 'ticketHistoryActivity']);
         Route::get('/tickethistoryshow', [TicketController::class, 'ticketHistoryActivityshow']);
         Route::post('/therapistuploaddelete', [TherapistController::class, 'deleteFileTherapist']);
+        Route::post('/ticketUpdateImage', [TicketController::class, 'updateTicketFileInfo']);
         Route::post('/delete/{id}', [TherapistTicketController::class, 'deleteTicket']);
     });
     
@@ -371,6 +372,7 @@ Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
         Route::post('/store', [TherapistAppointmentController::class, 'store']);
         Route::post('/update', [TherapistAppointmentController::class, 'update']);
         Route::post('ticketstatus', [TherapistAppointmentController::class, 'appointmentstatus']);
+        Route::post('/appointmentUpdateImage', [AppointmentController::class, 'updateAppointmentFileInfo']);
         Route::post('/delete', [TherapistAppointmentController::class, 'destroy']);
     });
     
@@ -405,6 +407,7 @@ Route::middleware(["auth:patient"])->prefix("patient")->group(function(){
                 Route::post('/cancelticket', [TicketController::class, 'cancelticket']);
                 Route::post('/assignedticket', [TicketController::class, 'assignedticket']);
                 Route::post('/ticketuploaddelete', [TicketController::class, 'deleteFileTicket']);
+                Route::post('/ticketUpdateImage', [TicketController::class, 'updateTicketFileInfo']);
             });
            
 
@@ -426,6 +429,7 @@ Route::middleware(["auth:patient"])->prefix("patient")->group(function(){
         Route::post('/update', [AppointmentController::class, 'update']);
         Route::post('ticketstatus', [AppointmentController::class, 'appointmentstatus']);
         Route::post('/delete', [AppointmentController::class, 'destroy']);
+        Route::post('/appointmentUpdateImage', [AppointmentController::class, 'updateAppointmentFileInfo']);
     });
 });
 
