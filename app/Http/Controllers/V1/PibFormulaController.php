@@ -193,9 +193,9 @@ class PibFormulaController extends Controller
                 return $this->apiOutput($this->getValidationError($validator), 200);
             }
             $pibdata = PibFormula::where("patient_id",$request->patient_id)
-                                 ->where("ticket_id",$request->ticket_id)
+                                 ->orWhere("ticket_id",$request->ticket_id)
                                  ->get();
-
+            
             $this->data = PibFormulaResource::collection($pibdata);
             $this->apiSuccess("Question Loaded Successfully");
             return $this->apiOutput();

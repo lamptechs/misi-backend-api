@@ -116,6 +116,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::get('/', [PibFormulaController::class, 'index']);
         Route::post('/store', [PibFormulaController::class, 'store']);
         Route::get('/show', [PibFormulaController::class, 'show']);
+        Route::get('ticketPatientShow/show', [PibFormulaController::class, 'pibshowPatientTicket']);
         Route::post('/update', [PibFormulaController::class, 'update']);
         Route::post('/delete', [PibFormulaController::class, 'destroy']);
     });
@@ -125,6 +126,8 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::get('/', [PibScaleController::class, 'index']);
         Route::post('/store', [PibScaleController::class, 'store']);
         Route::get('/show', [PibScaleController::class, 'show']);
+        Route::get('pibScalePatientShow/show', [PibScaleController::class, 'pibScaleshowPatient']);
+        Route::post('/update', [PibFormulaController::class, 'update']);
         Route::post('/update', [PibScaleController::class, 'update']);
         Route::any('/delete', [PibScaleController::class, 'destroy']);
     });
