@@ -97,6 +97,7 @@ Route::middleware(["auth:admin"])->group(function(){
     Route::prefix('pit')->group(function(){
         Route::get('/', [PitFormulaController::class, 'index']);
         Route::get('/show', [PitFormulaController::class, 'show']);
+        Route::get('/pitTicketPatientShow/show', [PitFormulaController::class, 'pitshowPatientTicket']);
         Route::post('/store', [PitFormulaController::class, 'store']);
         Route::post('/update/{id}', [PitFormulaController::class, 'update']);
         Route::post('/delete/{id}', [PitFormulaController::class, 'destroy']);
@@ -117,7 +118,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::get('/', [PibFormulaController::class, 'index']);
         Route::post('/store', [PibFormulaController::class, 'store']);
         Route::get('/show', [PibFormulaController::class, 'show']);
-        Route::get('ticketPatientShow/show', [PibFormulaController::class, 'pibshowPatientTicket']);
+        Route::get('/ticketPatientShow/show', [PibFormulaController::class, 'pibshowPatientTicket']);
         Route::post('/update', [PibFormulaController::class, 'update']);
         Route::post('/delete', [PibFormulaController::class, 'destroy']);
     });

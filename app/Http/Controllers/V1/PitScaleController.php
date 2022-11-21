@@ -178,7 +178,7 @@ class PitScaleController extends Controller
         try{
             
             $validator = Validator::make( $request->all(),[
-                //"type"            => ["required"],
+                'patient_id'            => ['required', "exists:users,id"],
                
             ]);
             if ($validator->fails()) {
