@@ -106,6 +106,7 @@ Route::middleware(["auth:admin"])->group(function(){
     Route::prefix('pitscale')->group(function(){
         Route::get('/', [PitScaleController::class, 'index']);
         Route::get('/show', [PitScaleController::class, 'show']);
+        Route::get('/pitScalePatientShow', [PitScaleController::class, 'pitScaleshowPatient']);
         Route::post('/store', [PitScaleController::class, 'store']);
         Route::post('/update/{id}', [PitScaleController::class, 'update']);
         Route::post('/delete/{id}', [PitScaleController::class, 'destroy']);

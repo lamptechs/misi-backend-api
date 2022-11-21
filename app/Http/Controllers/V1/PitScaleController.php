@@ -172,4 +172,25 @@ class PitScaleController extends Controller
             return $this->apiOutput($this->getError( $e), 500);
         }
     }
+
+    public function pitScaleshowPatient(Request $request)
+    {
+        try{
+            
+            $validator = Validator::make( $request->all(),[
+                //"type"            => ["required"],
+               
+            ]);
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 200);
+            }
+            $pitscaledata = PitScale::where("patient_id",$request->patient_id)->get();  
+            $this->data = PitScaleResource::collection($pitscaledata);
+            $this->apiSuccess("Question Loaded Successfully");
+            return $this->apiOutput();
+
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
+        }
+    }
 }
