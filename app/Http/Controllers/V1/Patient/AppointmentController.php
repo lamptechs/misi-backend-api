@@ -274,4 +274,33 @@ class AppointmentController extends Controller
             return $this->apiOutput($this->getError( $e), 500);
         }
     }
+
+
+    public function updateAppointmentFileInfo(Request $request){
+        try{
+            $validator = Validator::make( $request->all(),[
+                "id"            => ["required", "exists:appointment_uploads,id"],
+
+            ]);
+
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 200);
+            }
+
+            $data = AppointmentUpload::find($request->id);
+            
+            if($request->hasFile('picture')){
+                $data->file_url = $this->uploadFile($request, 'picture', $this->appointment_uploads, null,null,$data->file_url);
+            }
+
+            $data->save();
+          
+            $this->apiSuccess("Appointment File Updated Successfully");
+            return $this->apiOutput();
+           
+           
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }
+    }
 }

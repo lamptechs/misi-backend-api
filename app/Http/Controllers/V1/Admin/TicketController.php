@@ -351,6 +351,10 @@ class TicketController extends Controller
                 $ticket->aanm_intake_1 =$request->aanm_intake_1;
                 ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket aanm_intake_1 ".$ticket->aanm_intake_1 . " updated Successfully");
             }
+            if( $ticket->comments !=$request->comments){
+                $ticket->comments =$request->comments;
+                ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket comment ".$ticket->comments . " updated Successfully");
+            }
             //$ticket->assigned_to_user_name=$request->assigned_to_user_name?? null;
             //$ticket->assigned_to_user_status=$request->assigned_to_user_status?? null;
             //$ticket->file = $this->uploadFile($request, "file", $this->others_dir, null, null, $ticket->file);
@@ -723,6 +727,34 @@ class TicketController extends Controller
 
             }
       
+    }
+
+    public function updateTicketFileInfo(Request $request){
+        try{
+            $validator = Validator::make( $request->all(),[
+                "id"            => ["required", "exists:ticket_uploads,id"],
+
+            ]);
+
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 200);
+            }
+
+            $data = TicketUpload::find($request->id);
+            
+            if($request->hasFile('picture')){
+                $data->file_url = $this->uploadFile($request, 'picture', $this->ticket_uploads, null,null,$data->file_url);
+            }
+
+            $data->save();
+          
+            $this->apiSuccess("Ticket File Updated Successfully");
+            return $this->apiOutput();
+           
+           
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }
     }
     
 }
