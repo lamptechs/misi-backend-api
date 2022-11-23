@@ -19,8 +19,8 @@ class Ticket extends Model
     public function patient(){
         return $this->belongsTo(User::class, 'patient_id');
     }
-    public function therapist(){
-        return $this->belongsTo(Therapist::class, 'therapist_id');
+    public function assignTherapist(){
+        return $this->hasMany(TicketAssignTherapist::class, 'ticket_id');
     }
     public function ticketDepartment(){
         return $this->belongsTo(TicketDepartment::class, 'ticket_department_id'); 
@@ -28,7 +28,6 @@ class Ticket extends Model
     public function replies(){
         return $this->hasMany(TicketReply::class, "ticket_id");
     }
-
     public function fileInfo(){
         return $this->hasMany(TicketUpload::class, 'ticket_id');
     }

@@ -13,11 +13,13 @@ use App\Models\TicketReply;
 use App\Models\TicketUpload;
 use Illuminate\Support\Facades\DB;
 use App\Http\Components\Classes\Facade\ActivityLog;
+use App\Http\Components\Traits\TherapistTicket;
 use App\Http\Resources\UserActivityResource;
 use App\Models\UserActivity;
 
 class TicketController extends Controller
 {
+    use TherapistTicket;
     /**
      * Display a listing of the resource.
      *
@@ -75,7 +77,8 @@ class TicketController extends Controller
             // }
            $validator = Validator::make( $request->all(),[
                 'patient_id'    => ['nullable', "exists:users,id"],
-                'therapist_id'  => ['nullable', "exists:therapists,id"],
+                'therapist_id'  => ['nullable', "array"],
+                "therapist_id.*" => ["exists:therapists,id"],
                 "ticket_department_id" => ["required"],
                 "location"      => ["required", "string", "min:2"],
                 "language"      => ["required", "string", "min:2"],
@@ -93,7 +96,6 @@ class TicketController extends Controller
             DB::beginTransaction();
             $ticket = new Ticket();            
             $ticket->patient_id = $request->patient_id ?? null;
-            $ticket->therapist_id = $request->therapist_id ?? null;
             $ticket->ticket_department_id = $request->ticket_department_id;
             $ticket->location = $request->location ?? null;
             $ticket->ticket_status     = $request->ticket_status;
@@ -124,7 +126,7 @@ class TicketController extends Controller
             $ticket->assigned_to_user_name=$request->assigned_to_user_name?? null;
             $ticket->assigned_to_user_status=$request->assigned_to_user_status?? null;
             $ticket->save();
-            $ticket->id;
+            $this->AssignTherapistIntoTicket($ticket->id, $request->therapist_id);
             $this->saveFileInfo($request, $ticket);
 
             ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket ID: ". $ticket->id." Created Successfully");
@@ -186,7 +188,6 @@ class TicketController extends Controller
      */
     public function update(Request $request)
     {
-        
         try{
             // if(!PermissionController::hasAccess("ticket_update")){
             //     return $this->apiOutput("Permission Missing", 403);
@@ -354,6 +355,7 @@ class TicketController extends Controller
             //$ticket->assigned_to_user_status=$request->assigned_to_user_status?? null;
             //$ticket->file = $this->uploadFile($request, "file", $this->others_dir, null, null, $ticket->file);
             $ticket->save();
+            $this->AssignTherapistIntoTicket($ticket->id, $request->therapist_id);
             //ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Updated Successfully");
 
             $this->apiSuccess("Ticket Info Updated successfully");
@@ -368,8 +370,7 @@ class TicketController extends Controller
      * Assigned Ticket Yourself
      */
     public function assignedticket(Request $request)
-    {
-        
+    {  
         try{
             // if(!PermissionController::hasAccess("assignedticket")){
             //     return $this->apiOutput("Permission Missing", 403);
@@ -444,8 +445,7 @@ class TicketController extends Controller
             }
     
             $ticket = Ticket::where("id", $request->id)->first();
-            //$this->RemoveFile($this->$ticket);
-            //TicketUpload::where('id',$request->id)->delete();
+            TicketUpload::where('id',$request->id)->delete();
             $ticket->delete();
             $this->apiSuccess("Ticket Deleted successfully");
             return $this->apiOutput();
@@ -468,7 +468,7 @@ class TicketController extends Controller
                 return $this->apiOutput($this->getValidationError($validator), 200);
             }
     
-            //$ticket = Ticket::where("id", $request->id)->first();
+            // $ticket = Ticket::where("id", $request->id)->first();
             //$this->RemoveFile($this->$ticket);
             $ticketupload=TicketUpload::where('id',$request->id);
             $ticketupload->delete();

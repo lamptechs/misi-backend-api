@@ -11,12 +11,14 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Components\Classes\Facade\ActivityLog;
+use App\Http\Components\Traits\TherapistTicket;
 use App\Http\Controllers\V1\Admin\PermissionController;
 use App\Http\Resources\UserActivityResource;
 use App\Models\UserActivity;
 
 class TicketController extends Controller
 {
+    use TherapistTicket;
     /**
      * Display a listing of the resource.
      *
@@ -66,9 +68,6 @@ class TicketController extends Controller
     public function store(Request $request)
     {
         try{
-            if(!PermissionController::hasAccess("ticket_create")){
-                return $this->apiOutput("Permission Missing", 403);
-            }
            $validator = Validator::make( $request->all(),[
                 'patient_id'    => ['nullable', "exists:users,id"],
                 "ticket_department_id" => ["required"],
@@ -119,6 +118,7 @@ class TicketController extends Controller
             $ticket->assigned_to_user_status=$request->assigned_to_user_status?? null;
             $ticket->file = $this->uploadFile($request, "file", $this->others_dir, null, null, $ticket->file);
             $ticket->save();
+            $this->AssignTherapistIntoTicket($ticket->id, $request->therapist_id);
             
             ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Created Successfully");
             $this->apiSuccess("Ticket Create Successfully");

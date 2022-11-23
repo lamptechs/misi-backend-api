@@ -342,12 +342,12 @@ Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
      * Therapist Tickets
      */
     Route::prefix('ticket')->group(function(){
-        Route::get('/', [TicketController::class, 'index']);
-        Route::get('/show', [TicketController::class, 'show']);
-        Route::post('/store', [TicketController::class, 'store']);
-        Route::post('/update', [TicketController::class, 'update']);
-        Route::get('/tickethistory', [TicketController::class, 'ticketHistoryActivity']);
-        Route::get('/tickethistoryshow', [TicketController::class, 'ticketHistoryActivityshow']);
+        Route::get('/', [TherapistTicketController::class, 'index']);
+        Route::get('/show', [TherapistTicketController::class, 'show']);
+        Route::post('/store', [TherapistTicketController::class, 'store']);
+        Route::post('/update', [TherapistTicketController::class, 'update']);
+        Route::get('/tickethistory', [TherapistTicketController::class, 'ticketHistoryActivity']);
+        Route::get('/tickethistoryshow', [TherapistTicketController::class, 'ticketHistoryActivityshow']);
         Route::post('/therapistuploaddelete', [TherapistController::class, 'deleteFileTherapist']);
         Route::post('/delete/{id}', [TherapistTicketController::class, 'deleteTicket']);
     });
