@@ -56,6 +56,7 @@ class TicketController extends Controller
             }
 
             $tickets = $tickets->get();
+            
             $this->data = TicketResource::collection($tickets)->hide(["replies", "created_by", "updated_by"]);
             $this->apiSuccess("Ticket Loaded Successfully");
             return $this->apiOutput();

@@ -13,6 +13,7 @@ trait TherapistTicket{
         if( !is_array($therapist) && !empty($therapist) ){
             $therapist = (array) $therapist;
         }
+        
         if( is_array($therapist) ){
             foreach($therapist as $therapist_id){
                 $ticket_assign_therapist = new TicketAssignTherapist();
