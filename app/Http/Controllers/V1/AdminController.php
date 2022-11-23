@@ -252,5 +252,18 @@ class AdminController extends Controller
             return $this->apiOutput($this->getError($e), 500);
         }
     }
+
+    public function adminActiveShow()
+    {
+        try{
+            $adminactive=Admin::where("status",true)->get();
+            $this->data = AdminResource::collection($adminactive);
+            $this->apiSuccess("Admin Load has been Successfully done");
+            return $this->apiOutput();
+
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
+        }
+    }
    
 }

@@ -68,6 +68,7 @@ class TicketResource extends JsonResource
             "vtcb_date"             =>$this->vtcb_date,
             "closure"               =>$this->closure,
             "aanm_intake_1"         =>$this->aanm_intake_1,
+            "assigned_user_id"      =>$this->assigned_user_id,
             "assigned_to_user_name" =>$this->assigned_to_user_name,
             "assigned_to_user_status"=>$this->assigned_to_user_status,
             "cancel_ticket_type"    =>$this->cancel_ticket_type,
