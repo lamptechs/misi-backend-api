@@ -47,7 +47,9 @@ class TicketController extends Controller
                 $tickets->where("date", $request->date);
             }
             if( !empty($request->therapist_id) ){
-                $tickets->where("therapist_id", $request->therapist_id);
+                $tickets->whereHas("assignTherapist", function($qry) use($request){
+                    $qry->where("therapist_id", $request->therapist_id);
+                });
             }
             if( !empty($request->patient_id) ){
                 $tickets->where("patient_id", $request->patient_id);
@@ -142,8 +144,8 @@ class TicketController extends Controller
         }
     }
 
-      // Save File Info
-      public function saveFileInfo($request, $ticket){
+    // Save File Info
+    public function saveFileInfo($request, $ticket){
         $file_path = $this->uploadFile($request, 'file', $this->ticket_uploads, 720);
   
         if( !is_array($file_path) ){
