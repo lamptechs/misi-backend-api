@@ -546,5 +546,34 @@ class PatientController extends Controller
       
     }
 
+    public function updatePatientFileInfo(Request $request){
+        try{
+            $validator = Validator::make( $request->all(),[
+                "id"            => ["required", "exists:patient_uploads,id"],
+
+            ]);
+
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 200);
+            }
+
+            $data = PatientUpload::find($request->id);
+
+            if($request->hasFile('picture')){
+                $data->file_url = $this->uploadFile($request, 'picture', $this->patient_uploads, null,null,$data->file_url);
+            }
+
+            $data->save();
+            
+            $this->apiSuccess("Patient File Updated Successfully");
+            
+            return $this->apiOutput();
+           
+           
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }
+    }
+
 
 }

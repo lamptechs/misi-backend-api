@@ -172,4 +172,25 @@ class PibScaleController extends Controller
             return $this->apiOutput($this->getError( $e), 500);
         }
     }
+
+    public function pibScaleshowPatient(Request $request)
+    {
+        try{
+            
+            $validator = Validator::make( $request->all(),[
+                'patient_id'            => ['required', "exists:users,id"],
+               
+            ]);
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 200);
+            }
+            $pibscaledata = PibScale::where("patient_id",$request->patient_id)->get();  
+            $this->data = PibScaleResource::collection($pibscaledata);
+            $this->apiSuccess("Question Loaded Successfully");
+            return $this->apiOutput();
+
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
+        }
+    }
 }

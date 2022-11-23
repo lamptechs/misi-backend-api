@@ -180,4 +180,29 @@ class PibFormulaController extends Controller
         }
     }
 
+
+    public function pibshowPatientTicket(Request $request)
+    {
+        try{
+            
+            $validator = Validator::make( $request->all(),[
+                //"type"            => ["required"],
+               
+            ]);
+            if ($validator->fails()) {
+                return $this->apiOutput($this->getValidationError($validator), 200);
+            }
+            $pibdata = PibFormula::where("patient_id",$request->patient_id)
+                                 ->orWhere("ticket_id",$request->ticket_id)
+                                 ->get();
+            
+            $this->data = PibFormulaResource::collection($pibdata);
+            $this->apiSuccess("Question Loaded Successfully");
+            return $this->apiOutput();
+
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError($e), 500);
+        }
+    }
+
 }

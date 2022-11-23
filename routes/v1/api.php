@@ -79,6 +79,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::post('/assignedticket', [TicketController::class, 'assignedticket']);
         //Route::get('/tickethistoryshow', [TicketController::class, 'ticketHistoryActivityshow']);
         Route::post('/ticketuploaddelete', [TicketController::class, 'deleteFileTicket']);
+        Route::post('/ticketUpdateImage', [TicketController::class, 'updateTicketFileInfo']);
         Route::post('/ticketAddfile', [TicketController::class, 'addFileTicket']);
 
         // Reply On Ticket
@@ -96,6 +97,7 @@ Route::middleware(["auth:admin"])->group(function(){
     Route::prefix('pit')->group(function(){
         Route::get('/', [PitFormulaController::class, 'index']);
         Route::get('/show', [PitFormulaController::class, 'show']);
+        Route::get('/pitTicketPatientShow/show', [PitFormulaController::class, 'pitshowPatientTicket']);
         Route::post('/store', [PitFormulaController::class, 'store']);
         Route::post('/update/{id}', [PitFormulaController::class, 'update']);
         Route::post('/delete/{id}', [PitFormulaController::class, 'destroy']);
@@ -105,6 +107,7 @@ Route::middleware(["auth:admin"])->group(function(){
     Route::prefix('pitscale')->group(function(){
         Route::get('/', [PitScaleController::class, 'index']);
         Route::get('/show', [PitScaleController::class, 'show']);
+        Route::get('/pitScalePatientShow', [PitScaleController::class, 'pitScaleshowPatient']);
         Route::post('/store', [PitScaleController::class, 'store']);
         Route::post('/update/{id}', [PitScaleController::class, 'update']);
         Route::post('/delete/{id}', [PitScaleController::class, 'destroy']);
@@ -115,6 +118,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::get('/', [PibFormulaController::class, 'index']);
         Route::post('/store', [PibFormulaController::class, 'store']);
         Route::get('/show', [PibFormulaController::class, 'show']);
+        Route::get('/ticketPatientShow/show', [PibFormulaController::class, 'pibshowPatientTicket']);
         Route::post('/update', [PibFormulaController::class, 'update']);
         Route::post('/delete', [PibFormulaController::class, 'destroy']);
     });
@@ -124,6 +128,8 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::get('/', [PibScaleController::class, 'index']);
         Route::post('/store', [PibScaleController::class, 'store']);
         Route::get('/show', [PibScaleController::class, 'show']);
+        Route::get('pibScalePatientShow/show', [PibScaleController::class, 'pibScaleshowPatient']);
+        Route::post('/update', [PibFormulaController::class, 'update']);
         Route::post('/update', [PibScaleController::class, 'update']);
         Route::any('/delete', [PibScaleController::class, 'destroy']);
     });
@@ -138,6 +144,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::post('/update/{id}', [PatientController::class, 'update']);
         Route::post('/patientuploaddelete', [PatientController::class, 'deleteFilePatient']);
         Route::post('/patientAddfile', [PatientController::class, 'addFilePatient']);
+        Route::post('/patientUpdateImage', [PatientController::class, 'updatePatientFileInfo']);
         Route::post('/delete/{id}', [PatientController::class, 'destroy']);
     });
 
@@ -183,6 +190,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::post('/update', [TherapistController::class, 'update']);
         Route::post('/therapistuploaddelete', [TherapistController::class, 'deleteFileTherapist']);
         Route::post('/therapistAddfile', [TherapistController::class, 'addFileTherapist']);
+        Route::post('/therapistUpdateImage', [TherapistController::class, 'updateTherapistFileInfo']);
         Route::post('/delete/{id}', [TherapistController::class, 'destroy']);
     });
 
@@ -223,6 +231,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::post('/appointmentticketstatus', [AppointmentController::class, 'assignedappointmentticketstatus']);
         Route::post('/appointmentuploaddelete', [AppointmentController::class, 'deleteFileAppointment']);
         Route::post('/appointmentAddfile', [AppointmentController::class, 'addFileAppointment']);
+        Route::post('/appointmentUpdateImage', [AppointmentController::class, 'updateAppointmentFileInfo']);
         Route::post('/delete/{id}', [AppointmentController::class, 'destroy']);
     });
 
@@ -349,6 +358,7 @@ Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
         Route::get('/tickethistory', [TherapistTicketController::class, 'ticketHistoryActivity']);
         Route::get('/tickethistoryshow', [TherapistTicketController::class, 'ticketHistoryActivityshow']);
         Route::post('/therapistuploaddelete', [TherapistController::class, 'deleteFileTherapist']);
+        Route::post('/ticketUpdateImage', [TicketController::class, 'updateTicketFileInfo']);
         Route::post('/delete/{id}', [TherapistTicketController::class, 'deleteTicket']);
     });
     
@@ -367,6 +377,7 @@ Route::middleware(["auth:therapist"])->prefix("therapist")->group(function(){
         Route::post('/store', [TherapistAppointmentController::class, 'store']);
         Route::post('/update', [TherapistAppointmentController::class, 'update']);
         Route::post('ticketstatus', [TherapistAppointmentController::class, 'appointmentstatus']);
+        Route::post('/appointmentUpdateImage', [AppointmentController::class, 'updateAppointmentFileInfo']);
         Route::post('/delete', [TherapistAppointmentController::class, 'destroy']);
     });
     
@@ -421,6 +432,7 @@ Route::middleware(["auth:patient"])->prefix("patient")->group(function(){
         Route::post('/update', [AppointmentController::class, 'update']);
         Route::post('ticketstatus', [AppointmentController::class, 'appointmentstatus']);
         Route::post('/delete', [AppointmentController::class, 'destroy']);
+        Route::post('/appointmentUpdateImage', [AppointmentController::class, 'updateAppointmentFileInfo']);
     });
 });
 
