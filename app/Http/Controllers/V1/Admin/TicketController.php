@@ -161,7 +161,6 @@ class TicketController extends Controller
             $data->file_url     = $path;
             $data->save();
         }
-       
     }
 
 
