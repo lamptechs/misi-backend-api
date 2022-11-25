@@ -127,6 +127,7 @@ class TicketController extends Controller
             $ticket->vtcb_date=$request->vtcb_date?? null;
             $ticket->closure=$request->closure?? null;
             $ticket->aanm_intake_1=$request->aanm_intake_1?? null;
+            $ticket->assigned_user_id=$request->assigned_user_id?? null;
             $ticket->assigned_to_user_name=$request->assigned_to_user_name?? null;
             $ticket->assigned_to_user_status=$request->assigned_to_user_status?? null;
             $ticket->save();

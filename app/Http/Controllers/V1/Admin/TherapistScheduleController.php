@@ -188,4 +188,21 @@ class TherapistScheduleController extends Controller
         $this->apiSuccess("Schedule Deleted Successfully");
         return $this->apiOutput();
     }
+
+    public function therapistAvailableSchedule(){
+        
+        $users = DB::table('therapist_schedules')
+            ->join('therapists', 'therapists.id', '=', 'therapist_schedules.therapist_id')
+            ->where("therapist_schedules.date", "<", date("Y-m-d"))
+            ->where("therapist_schedules.status", '=',"open")
+            ->select('therapists.id','therapist_schedules.status','therapists.first_name', 'therapists.last_name','therapist_schedules.date')
+            //->distinct()
+            //->pluck('therapists.first_name')
+            ->get();
+        return $users;
+        // $schedule = TherapistSchedule::orderBy("date", "ASC")->orderBY("id", "ASC");
+        // $this->data = TherapistScheduleResource::collection($users)->hide(["patient","created_by", "updated_by"]);
+        // $this->apiSuccess("Therapist Schedules Loaded Successfully");
+        // return $this->apiOutput();
+    }
 }

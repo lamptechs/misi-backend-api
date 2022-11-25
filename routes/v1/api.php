@@ -51,6 +51,7 @@ Route::prefix("admin")->group(function(){
     Route::get('/login', [AdminController::class, "showLogin"]);
     Route::post('/login', [AdminController::class, "login"]);
     Route::get('/adminview', [AdminController::class, "index"]);
+    Route::get('/adminactiveview', [AdminController::class, "adminActiveShow"]);
     Route::get('/show', [AdminController::class, 'show']);
     Route::post('/store', [AdminController::class, "store"]);
     Route::post('forget-password', [AdminController::class, "forgetPassword"]);
@@ -219,6 +220,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::get('/create', [TherapistScheduleController::class, 'create']);
         Route::post('/create', [TherapistScheduleController::class, 'store']);
         Route::get('/show', [TherapistScheduleController::class, 'show']);
+        Route::get('/availableTherapistShow', [TherapistScheduleController::class, 'therapistAvailableSchedule']);
         Route::post('delete', [TherapistScheduleController::class, 'destroy']);
     });
 
