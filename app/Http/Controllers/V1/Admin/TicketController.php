@@ -415,8 +415,7 @@ class TicketController extends Controller
             if(!PermissionController::hasAccess("cancelticket")){
                 return $this->apiOutput("Permission Missing", 403);
             }
-        $validator = Validator::make(
-            $request->all(),[
+            $validator = Validator::make($request->all(),[
                 "id"            => ["required", "exists:tickets,id"]
             ]);
 
