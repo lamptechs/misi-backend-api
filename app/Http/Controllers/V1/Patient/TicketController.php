@@ -232,8 +232,9 @@ class TicketController extends Controller
             $ticket->aanm_intake_1=$request->aanm_intake_1?? null;
             $ticket->assigned_to_user_name=$request->assigned_to_user_name?? null;
             $ticket->assigned_to_user_status=$request->assigned_to_user_status?? null;
-            $ticket->file = $this->uploadFile($request, "file", $this->others_dir, null, null, $ticket->file);
+            // $ticket->file = $this->uploadFile($request, "file", $this->others_dir, null, null, $ticket->file);
             $ticket->save();
+            $this->saveFileInfo($request, $ticket);
             $this->AssignTherapistIntoTicket($ticket->id, $request->therapist_id);
 
             ActivityLog::model($ticket)->user($request->user())->save($request, "Ticket Updated Successfully");
@@ -244,7 +245,8 @@ class TicketController extends Controller
             return $this->apiOutput($this->getError( $e), 500);
         }
     }
-     
+
+    
 
     /**
      * Cancel Ticket

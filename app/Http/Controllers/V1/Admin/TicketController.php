@@ -28,9 +28,9 @@ class TicketController extends Controller
     public function index(Request $request)
     {
         try{
-            // if(!PermissionController::hasAccess("ticket_list")){
-            //     return $this->apiOutput("Permission Missing", 403);
-            // }
+            if(!PermissionController::hasAccess("ticket_list")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
 
             $validator = Validator::make( $request->all(),[
                 'patient_id'    => ['nullable', "exists:users,id"],
@@ -75,9 +75,9 @@ class TicketController extends Controller
     {
         
         try{
-            // if(!PermissionController::hasAccess("ticket_create")){
-            //     return $this->apiOutput("Permission Missing", 403);
-            // }
+            if(!PermissionController::hasAccess("ticket_create")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
            $validator = Validator::make( $request->all(),[
                 'patient_id'    => ['nullable', "exists:users,id"],
                 'therapist_id'  => ['nullable', "array"],
@@ -161,7 +161,6 @@ class TicketController extends Controller
             $data->file_url     = $path;
             $data->save();
         }
-       
     }
 
 
@@ -173,9 +172,9 @@ class TicketController extends Controller
     {
         
         try{
-            // if(!PermissionController::hasAccess("ticket_show")){
-            //     return $this->apiOutput("Permission Missing", 403);
-            // }
+            if(!PermissionController::hasAccess("ticket_show")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $ticket = Ticket::find($request->id);
             if( empty($ticket) ){
                 return $this->apiOutput("Ticket Data Not Found", 400);
@@ -194,13 +193,14 @@ class TicketController extends Controller
     public function update(Request $request)
     {
         try{
-            // if(!PermissionController::hasAccess("ticket_update")){
-            //     return $this->apiOutput("Permission Missing", 403);
-            // }
+            if(!PermissionController::hasAccess("ticket_update")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $validator = Validator::make( $request->all(),[
                 "id"            => ["required", "exists:tickets,id"],
                 'patient_id'    => ['nullable', "exists:users,id"],
-                'therapist_id'  => ['nullable', "exists:therapists,id"],
+                'therapist_id'  => ['nullable', "array"],
+                "therapist_id.*" => ["exists:therapists,id"],
                 "location"      => ["nullable", "string"],
                 "language"      => ["required", "string"],
                 "strike"        => ["required", "string"],
@@ -218,7 +218,6 @@ class TicketController extends Controller
     
             $ticket = Ticket::find($request->id);
             $ticket->patient_id = $request->patient_id ?? null;
-            $ticket->therapist_id = $request->therapist_id ?? null;
             
             if($ticket->ticket_department_id != $request->ticket_department_id)
             {
@@ -381,9 +380,9 @@ class TicketController extends Controller
     public function assignedticket(Request $request)
     {  
         try{
-            // if(!PermissionController::hasAccess("assignedticket")){
-            //     return $this->apiOutput("Permission Missing", 403);
-            // }
+            if(!PermissionController::hasAccess("assignedticket")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
          $validator = Validator::make(
             $request->all(),[
                 "id"            => ["required", "exists:tickets,id"]
@@ -412,11 +411,10 @@ class TicketController extends Controller
     {
         
         try{
-            // if(!PermissionController::hasAccess("cancelticket")){
-            //     return $this->apiOutput("Permission Missing", 403);
-            // }
-        $validator = Validator::make(
-            $request->all(),[
+            if(!PermissionController::hasAccess("cancelticket")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
+            $validator = Validator::make($request->all(),[
                 "id"            => ["required", "exists:tickets,id"]
             ]);
 
@@ -442,9 +440,9 @@ class TicketController extends Controller
     public function deleteTicket(Request $request){
         
         try{
-            // if(!PermissionController::hasAccess("ticket_delete")){
-            //     return $this->apiOutput("Permission Missing", 403);
-            // }
+            if(!PermissionController::hasAccess("ticket_delete")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $validator = Validator::make( $request->all(),[
                 "id"            => ["required", "exists:tickets,id"],
             ]);
@@ -495,9 +493,9 @@ class TicketController extends Controller
      */
     public function replyList(Request $request){
         try{
-            // if(!PermissionController::hasAccess("ticket_replyList")){
-            //     return $this->apiOutput("Permission Missing", 403);
-            // }
+            if(!PermissionController::hasAccess("ticket_replyList")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $validator = Validator::make( $request->all(),[
                 "ticket_id"     => ["required", "exists:tickets,id"],
             ]);
@@ -524,9 +522,9 @@ class TicketController extends Controller
      */
     public function addReply(Request $request){
         try{
-            // if(!PermissionController::hasAccess("ticket_addReply")){
-            //     return $this->apiOutput("Permission Missing", 403);
-            // }
+            if(!PermissionController::hasAccess("ticket_addReply")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $validator = Validator::make( $request->all(),[
                 "ticket_id" => ["required", "exists:tickets,id"],
                 "comment"   => ["nullable", "string"],
@@ -562,9 +560,9 @@ class TicketController extends Controller
      */
     public function editReply(Request $request){
         try{
-            // if(!PermissionController::hasAccess("ticket_editReply")){
-            //     return $this->apiOutput("Permission Missing", 403);
-            // }
+            if(!PermissionController::hasAccess("ticket_editReply")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $validator = Validator::make( $request->all(),[
                 "id"            => ["required", "exists:ticket_replies,id"],
                 "ticket_id"     => ["required", "exists:tickets,id"],
@@ -590,9 +588,9 @@ class TicketController extends Controller
      */
     public function updateReply(Request $request){
         try{
-            // if(!PermissionController::hasAccess("ticket_updateReply")){
-            //     return $this->apiOutput("Permission Missing", 403);
-            // }
+            if(!PermissionController::hasAccess("ticket_updateReply")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $validator = Validator::make( $request->all(),[
                 "id"            => ["required", "exists:ticket_replies,id"],
                 "ticket_id" => ["required", "exists:tickets,id"],
@@ -628,9 +626,9 @@ class TicketController extends Controller
      */
     public function deleteReply(Request $request){
         try{
-            // if(!PermissionController::hasAccess("ticket_deleteReply")){
-            //     return $this->apiOutput("Permission Missing", 403);
-            // }
+            if(!PermissionController::hasAccess("ticket_deleteReply")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $validator = Validator::make( $request->all(),[
                 "id"            => ["required", "exists:ticket_replies,id"],
                 "ticket_id"     => ["required", "exists:tickets,id"],
@@ -651,9 +649,9 @@ class TicketController extends Controller
     public function ticketHistoryActivity(Request $request)
     {
         try{
-            // if(!PermissionController::hasAccess("ticket_ticketHistoryActivity")){
-            //     return $this->apiOutput("Permission Missing", 403);
-            // }
+            if(!PermissionController::hasAccess("ticket_ticketHistoryActivity")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $ticketactivity = UserActivity::where("tableable_type", (new Ticket())->getMorphClass())->orderBy('id', "DESC");
             if( !empty($request->ticket_id) ){
                 $ticketactivity->where("tableable_id", $request->ticket_id);
@@ -672,9 +670,9 @@ class TicketController extends Controller
      public function ticketHistoryActivityshow(Request $request)
       {
         try{
-            // if(!PermissionController::hasAccess("ticket_ticketHistoryActivityshow")){
-            //     return $this->apiOutput("Permission Missing", 403);
-            // }
+            if(!PermissionController::hasAccess("ticket_ticketHistoryActivityshow")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $ticket = UserActivity::where("tableable_type", (new Ticket())->getMorphClass())
                 ->where("tableable_id", $request->ticket_id)->get();
                 
