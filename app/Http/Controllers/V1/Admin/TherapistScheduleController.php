@@ -221,8 +221,8 @@ class TherapistScheduleController extends Controller
                 ->join('therapists', 'therapists.id', '=', 'therapist_schedules.therapist_id')
                 ->where("therapist_schedules.date", ">=", date("Y-m-d"))
                 ->where("therapist_schedules.status", '=',"open")
-                //->select('therapists.id','therapist_schedules.status','therapists.first_name', 'therapists.last_name','therapist_schedules.date')
-                ->select([DB::RAW('DISTINCT(therapists.id)'),'therapist_schedules.status','therapists.first_name', 'therapists.last_name','therapist_schedules.date'])
+
+                ->select([DB::RAW('DISTINCT(therapists.id)'),'therapist_schedules.status','therapists.first_name', 'therapists.last_name','therapist_schedules.date','therapists.phone'])
                 //->distinct()
                 //->pluck('therapists.first_name')
                 ->get();
