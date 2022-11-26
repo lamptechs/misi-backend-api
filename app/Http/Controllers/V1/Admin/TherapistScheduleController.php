@@ -217,14 +217,18 @@ class TherapistScheduleController extends Controller
     public function therapistAvailableSchedule(){
         
       
-            $users = DB::table('therapist_schedules')
+                $users = DB::table('therapist_schedules')
                 ->join('therapists', 'therapists.id', '=', 'therapist_schedules.therapist_id')
-                ->select('therapists.id','therapist_schedules.status','therapists.first_name', 'therapists.last_name','therapist_schedules.date')
-                ->where("therapist_schedules.date", ">", date("Y-m-d"))
-                ->where("therapist_schedules.status", '=',"open")      
-                ->groupBy('therapists.id')
+                ->where("therapist_schedules.date", ">=", date("Y-m-d"))
+                ->where("therapist_schedules.status", '=',"open")
+                //->select('therapists.id','therapist_schedules.status','therapists.first_name', 'therapists.last_name','therapist_schedules.date')
+                ->select([DB::RAW('DISTINCT(therapists.id)'),'therapist_schedules.status','therapists.first_name', 'therapists.last_name','therapist_schedules.date'])
+                //->distinct()
+                //->pluck('therapists.first_name')
                 ->get();
-            return $users;
-        
+                return $users;
+
+           
+                           
     }
 }
