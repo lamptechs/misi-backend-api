@@ -221,6 +221,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::post('/create', [TherapistScheduleController::class, 'store']);
         Route::get('/show', [TherapistScheduleController::class, 'show']);
         Route::get('/availableTherapistShow', [TherapistScheduleController::class, 'therapistAvailableSchedule']);
+        Route::post('/cancelTherapistSchedule', [TherapistScheduleController::class, 'cancelTherapistSchedule']);
         Route::post('delete', [TherapistScheduleController::class, 'destroy']);
     });
 
