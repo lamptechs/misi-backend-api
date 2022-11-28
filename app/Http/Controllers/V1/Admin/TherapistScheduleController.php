@@ -216,28 +216,18 @@ class TherapistScheduleController extends Controller
     }
 
     public function therapistAvailableSchedule(){
-
-
-                
-                // $users = DB::table('therapist_schedules')
-                //     ->join('therapists', 'therapists.id', '=', 'therapist_schedules.therapist_id')
-                //     ->where("therapist_schedules.date", ">=", date("Y-m-d"))
-                //     ->where("therapist_schedules.status", '=',"open")
-                //     ->select([DB::RAW('DISTINCT(therapists.id)'),'therapist_schedules.status','therapists.first_name', 'therapists.last_name','therapist_schedules.date','therapists.phone'])
-                //     ->get();
-                //     return response()->json($users, 201);
-        
-      
-                $users = DB::table('therapists')
-                    ->join('therapist_schedules', 'therapist_schedules.therapist_id', '=', 'therapists.id')
-                    //->join('therapists', 'therapists.id', '=', 'therapist_schedules.therapist_id')
-                    ->where("therapist_schedules.date", ">=", date("Y-m-d"))
-                    ->where("therapist_schedules.status", '=',"open")
-                    ->select('therapists.id','therapists.first_name','therapists.last_name','therapists.phone',DB::raw('count(*) as  total') )
-                    ->groupBy('therapists.id','therapists.first_name','therapists.last_name','therapists.phone')
-                    ->get();
-                    return response()->json($users, 201);
-        
-                           
+        try{
+            $therapist_list = Therapist::join("therapist_schedules", "therapist_schedules.therapist_id", "=", "therapists.id")
+                ->where("therapist_schedules.date", ">=", date("Y-m-d"))
+                ->where("therapist_schedules.status", '=',"open")
+                ->select(
+                    "therapists.id", 'therapists.first_name', 'therapists.last_name',
+                    'therapists.phone', DB::raw('count(therapists.id) as  total')
+                    )->groupBy('therapists.id')->get();
+                $this->data = $therapist_list;
+            return $this->apiOutput();
+        }catch(Exception $e){
+            return $this->apiOutput($this->getError( $e), 500);
+        }                                          
     }
 }
