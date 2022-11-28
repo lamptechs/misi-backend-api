@@ -105,6 +105,46 @@ class Permission{
                 "therapist_delete"      => "Delete Therapist Info",
             ],
         ],
+        
+        "therapistschedule" => [
+            "menu"      => "Therapist Schedule", 
+            "access"    => [
+                "therapistschedule_list"        => "Show Therapist Schedule List", 
+                "therapistschedule_create"      => "Add New Therapist Schedule", 
+                "therapistschedule_update"      => "Update Therapist Schedule", 
+                "therapistschedule_delete"      => "Delete Therapist Schedule",
+            ],
+        ],
+        
+        "emailtemplate" => [
+            "menu"      => "Email Template", 
+            "access"    => [
+                "emailtemplate_list"        => "Show Email Template List", 
+                "emailtemplate_create"      => "Add New Email Template", 
+                "emailtemplate_update"      => "Update Email Template", 
+                "emailtemplate_delete"      => "Delete Email Template",
+            ],
+        ],
+        
+        "question" => [
+            "menu"      => "Question", 
+            "access"    => [
+                "question_list"        => "Show Question List", 
+                "question_create"      => "Add New Question", 
+                "question_update"      => "Update Question", 
+                "question_delete"      => "Delete Question",
+            ],
+        ],
+        
+        "missinginfo" => [
+            "menu"      => "Question", 
+            "access"    => [
+                "missinginfo_list"        => "Show Missing Info List", 
+                "missinginfo_update"      => "Update Missing Info", 
+                "missinginfo_delete"      => "Delete Missing Info",
+            ],
+        ],
+        
         "patient" => [
             "menu"      => "Patient", 
             "access"    => [
@@ -114,6 +154,65 @@ class Permission{
                 "patient_delete"      => "Delete Patient Info",
             ],
         ],
+        
+        
+        "zdpatient" => [
+            "menu"      => "ZD Patient", 
+            "access"    => [
+                "zdpatient_list"        => "Show All Ticket List", 
+                "zdpatient_create"        => "Add New ZD Patient", 
+                "zdpatient_update"      => "Update ZD Patient", 
+                "zdpatient_delete"      => "Delete ZD Patient",
+            ],
+        ],
+        
+        "allticket" => [
+            "menu"      => "All Ticket", 
+            "access"    => [
+                "allticket_list"        => "Show All Ticket List", 
+                "allticket_create"      => "Add New Ticket", 
+                "allticket_update"      => "Update Ticket", 
+                "allticket_delete"      => "Delete Ticket",
+            ],
+        ],
+        
+        "schedules" => [
+            "menu"      => "Schedule", 
+            "access"    => [
+                "schedules_list"        => "Show Schedule List", 
+                "schedules_create"      => "Add New Schedule", 
+                "schedules_update"      => "Update Schedule", 
+                "schedules_delete"      => "Delete Schedule",
+            ],
+        ],
+        
+        "cancelticket" => [
+            "menu"      => "Cancel Ticket", 
+            "access"    => [
+                "cancelticket_list"        => "Show Cancel Ticket List", 
+                "cancelticket_update"      => "Update Cancel Ticket", 
+                "cancelticket_delete"      => "Delete Cancel Ticket",
+            ],
+        ],
+        
+        "cancelappointment" => [
+            "menu"      => "Cancel Appointment", 
+            "access"    => [
+                "cancelappointment_list"        => "Show Cancel Appointment List", 
+                "cancelappointment_update"      => "Update Cancel Appointment", 
+                "cancelappointment_delete"      => "Delete Cancel Appointment",
+            ],
+        ],
+        
+        "intakeappointment" => [
+            "menu"      => "Intake Appointment", 
+            "access"    => [
+                "intakeappointment_list"        => "Show Intake Appointment List", 
+                "intakeappointment_update"      => "Update Intake Appointment", 
+                "intakeappointment_delete"      => "Delete Intake Appointment",
+            ],
+        ],
+        
         "ticket" => [
             "menu"      => "Ticket", 
             "access"    => [
@@ -156,7 +255,6 @@ class Permission{
                 "appointment_assignedappointmentticketstatus" => "Assigned Appointment Ticket Status",
                 "appointment_delete"                          => "Appointment Delete",
                 "delete_file_appointment"                     => "Delete File Appointment",
-
             ],
         ]    
     ];
