@@ -31,7 +31,7 @@ class Permission{
         ],
         
         "heralmelding" => [
-            "menu"      => "heralmelding", 
+            "menu"      => "Heralmelding", 
             "access"    => [
                 "heralmelding_list"    => "Show Heralmelding List", 
                 "heralmelding_update"  => "Update Heralmelding", 
@@ -137,7 +137,7 @@ class Permission{
         ],
         
         "missinginfo" => [
-            "menu"      => "Question", 
+            "menu"      => "Missing Info", 
             "access"    => [
                 "missinginfo_list"        => "Show Missing Info List", 
                 "missinginfo_update"      => "Update Missing Info", 
