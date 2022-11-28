@@ -234,16 +234,16 @@ class Permission{
             ],
         ],
         
-//         "TicketDepartment" => [
-//             "menu"      => "Ticket Department", 
-//             "access"    => [
-//                 "ticket_department_list"              => "Show Ticket Department List", 
-//                 "ticket_department_create"            => "Add New Ticket Department", 
-//                 "ticket_department_show"              => "Ticket Department Info Show", 
-//                 "ticket_department_update"            => "Ticket Department Updated Info",
-//                 "ticket_department_delete"            => "Ticket Department Info Delete",
-//             ],
-//         ],
+        "TicketDepartment" => [
+            "menu"      => "Ticket Department", 
+            "access"    => [
+                "ticket_department_list"              => "Show Ticket Department List", 
+                "ticket_department_create"            => "Add New Ticket Department", 
+                "ticket_department_show"              => "Ticket Department Info Show", 
+                "ticket_department_update"            => "Ticket Department Updated Info",
+                "ticket_department_delete"            => "Ticket Department Info Delete",
+            ],
+        ],
         
         "appointment" => [
             "menu"      => "Appointment", 

@@ -30,5 +30,9 @@ class Appointmnet extends Model
     public function fileInfo(){
         return $this->hasMany(AppointmentUpload::class, 'appointment_id');
     }
+
+    public function intake(){
+        return $this->hasMany(AppointmentIntake::class, 'appointment_id');
+    }
     
 }
