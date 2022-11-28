@@ -20,6 +20,70 @@ class Permission{
                 "admin_restore" => "Restore Admin",
             ],
         ],
+        
+        "screener" => [
+            "menu"      => "Screener", 
+            "access"    => [
+                "screener_list"    => "Show Screener List", 
+                "screener_update"  => "Update Screener", 
+                "screener_delete"  => "Delete Screener", 
+            ],
+        ],
+        
+        "heralmelding" => [
+            "menu"      => "heralmelding", 
+            "access"    => [
+                "heralmelding_list"    => "Show Heralmelding List", 
+                "heralmelding_update"  => "Update Heralmelding", 
+                "heralmelding_delete"  => "Delete Heralmelding", 
+            ],
+        ],
+        
+        "pib" => [
+            "menu"      => "PIB", 
+            "access"    => [
+                "pib_list"    => "Show PIB List", 
+                "pib_update"  => "Update PIB", 
+                "pib_delete"  => "Delete PIB", 
+            ],
+        ],
+        
+        "pit" => [
+            "menu"      => "PIT", 
+            "access"    => [
+                "pit_list"    => "Show PIT List", 
+                "pit_update"  => "Update PIT", 
+                "pit_delete"  => "Delete PIT", 
+            ],
+        ],
+        
+        "yes" => [
+            "menu"      => "YES Approval", 
+            "access"    => [
+                "yes_list"    => "Show YES Approval List", 
+                "yes_update"  => "Update YES Approval", 
+                "yes_delete"  => "Delete YES Approval", 
+            ],
+        ],
+        
+        "no" => [
+            "menu"      => "NO Approval", 
+            "access"    => [
+                "no_list"    => "Show NO Approval List", 
+                "no_update"  => "Update NO Approval", 
+                "no_delete"  => "Delete NO Approval", 
+            ],
+        ],
+        
+        "appointmentgroup" => [
+            "menu"      => "Appointment Group", 
+            "access"    => [
+                "appointmentgroup_list"    => "Show Appointment Group List", 
+                "appointmentgroup_update"  => "Update Appointment Group", 
+                "appointmentgroup_delete"  => "Delete Appointment Group", 
+            ],
+        ],
+        
         "group" => [
             "menu"      => "Group", 
             "access"    => [
@@ -28,7 +92,6 @@ class Permission{
                 "group_create"      => "Create New Group", 
                 "group_update"      => "Update Group", 
                 "group_delete"      => "Delete Group",
-
                 "permission_list"    => "View Group Permission", 
                 "permission_create"  => "Add / Update Group Permission"
             ],
@@ -71,16 +134,18 @@ class Permission{
                 "deleteFileTicket"                    => "Ticket File Deleted Successfully",
             ],
         ],
-        "TicketDepartment" => [
-            "menu"      => "Ticket Department", 
-            "access"    => [
-                "ticket_department_list"              => "Show Ticket Department List", 
-                "ticket_department_create"            => "Add New Ticket Department", 
-                "ticket_department_show"              => "Ticket Department Info Show", 
-                "ticket_department_update"            => "Ticket Department Updated Info",
-                "ticket_department_delete"            => "Ticket Department Info Delete",
-            ],
-        ],
+        
+//         "TicketDepartment" => [
+//             "menu"      => "Ticket Department", 
+//             "access"    => [
+//                 "ticket_department_list"              => "Show Ticket Department List", 
+//                 "ticket_department_create"            => "Add New Ticket Department", 
+//                 "ticket_department_show"              => "Ticket Department Info Show", 
+//                 "ticket_department_update"            => "Ticket Department Updated Info",
+//                 "ticket_department_delete"            => "Ticket Department Info Delete",
+//             ],
+//         ],
+        
         "appointment" => [
             "menu"      => "Appointment", 
             "access"    => [
