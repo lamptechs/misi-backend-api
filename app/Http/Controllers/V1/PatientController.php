@@ -256,7 +256,7 @@ class PatientController extends Controller
                 $data->email = $request->email;
                 $data->phone = $request->phone;
                 $data->alternet_phone = $request->alternet_phone;
-                // $data->password = !empty($request->password) ? bcrypt($request->password) : $data->password;
+                $data->password = !empty($request->password) ? bcrypt($request->password) : $data->password;
                 $data->address = $request->address;
                 $data->area = $request->area;
                 $data->city = $request->city;
@@ -272,7 +272,7 @@ class PatientController extends Controller
                 $data->date_of_birth = $request->date_of_birth;
                 $data->occupation = $request->occupation;
                 $data->remarks = $request->remarks ?? '';
-                $data->password = bcrypt($request->email);
+                //$data->password = bcrypt($request->email);
                 if($request->hasFile('picture')){
                     $data->image_url = $this->uploadFile($request, 'picture', $this->patient_uploads, null,null,$data->image_url);
                 }

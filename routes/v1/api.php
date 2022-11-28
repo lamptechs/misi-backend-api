@@ -21,6 +21,7 @@ use App\Http\Controllers\V1\DegreeController;
 use App\Http\Controllers\V1\QuestionController;
 use App\Http\Controllers\V1\GroupController;
 use App\Http\Controllers\V1\Admin\TherapistScheduleController;
+use App\Http\Controllers\V1\AppointmentIntakeController;
 use App\Http\Controllers\V1\Patient\TicketController as PatientTicketController;
 use App\Http\Controllers\V1\PibFormulaController;
 use App\Http\Controllers\V1\PitFormulaController;
@@ -326,6 +327,19 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::post('/update', [EmailController::class, 'update']);
         Route::get('view', [EmailController::class, 'view']);
         Route::get('/delete', [EmailController::class, 'delete']);
+    });
+
+     /**
+     * Appointment Intake
+     */
+    Route::prefix('appointment-intake')->group(function(){
+        
+        Route::get('/list', [AppointmentIntakeController::class, 'index']);
+        Route::get('/show', [AppointmentIntakeController::class, 'show']);
+        Route::post('/store', [AppointmentIntakeController::class, 'store']);
+        Route::post('/update', [AppointmentIntakeController::class, 'update']);
+        Route::post('/delete', [AppointmentIntakeController::class, 'destroy']);
+       
     });
 
 });
