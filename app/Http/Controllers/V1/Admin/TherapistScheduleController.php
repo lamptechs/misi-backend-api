@@ -233,8 +233,8 @@ class TherapistScheduleController extends Controller
                     //->join('therapists', 'therapists.id', '=', 'therapist_schedules.therapist_id')
                     ->where("therapist_schedules.date", ">=", date("Y-m-d"))
                     ->where("therapist_schedules.status", '=',"open")
-                    ->select('therapists.id','therapists.first_name','therapists.last_name','therapists.phone',DB::raw('count(*) as  total') )
-                    ->groupBy('therapists.id','therapists.first_name','therapists.last_name','therapists.phone')
+                    ->select('therapists.id','therapists.first_name','therapists.last_name','therapists.phone','therapists.profile_pic',DB::raw('count(*) as  total') )
+                    ->groupBy('therapists.id','therapists.first_name','therapists.last_name','therapists.phone','therapists.profile_pic')
                     ->get();
                     return response()->json($users, 201);
         
