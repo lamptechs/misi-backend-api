@@ -3,20 +3,21 @@
 
 namespace App\Http\Controllers\V1;
 
-use App\Events\AccountRegistration;
-use App\Events\PasswordReset as PasswordResetEvent;
-use App\Http\Controllers\Controller;
-use App\Models\Admin;
 use Exception;
+use App\Models\Admin;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Auth\RequestGuard;
-use Illuminate\Support\Facades\Session;
-use App\Http\Resources\AdminResource;
 use App\Models\PasswordReset;
+use Illuminate\Auth\RequestGuard;
 use Illuminate\Support\Facades\DB;
+use App\Events\AccountRegistration;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\AdminResource;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
+use App\Events\PasswordReset as PasswordResetEvent;
+use App\Http\Controllers\V1\Admin\PermissionController;
 
 class AdminController extends Controller
 {
@@ -33,15 +34,17 @@ class AdminController extends Controller
     }
 
     /**
-     * Login 
+     * Login
      */
     public function login(Request $request){
 
         try{
+
+
             $validator = Validator::make($request->all(), [
                 "email"     => ["required", "email", "exists:admins,email"],
                 "password"  => ["required", "string", "min:4", "max:40"]
-            ]); 
+            ]);
             if($validator->fails()){
                 return $this->apiOutput($this->getValidationError($validator), 400);
             }
@@ -55,13 +58,13 @@ class AdminController extends Controller
 
             // Issueing Access Token
             $this->access_token = $admin->createToken($request->ip() ?? "admin_access_token")->plainTextToken;
-            
+
             Session::put('access_token',$this->access_token);
             // echo Session::get('access_token');
             $this->apiSuccess("Login Successfully");
-            // Flash Admin Group Permission 
+            // Flash Admin Group Permission
             Session::forget("group_access");
-            
+
             $this->data = (new AdminResource($admin));
             return $this->apiOutput();
 
@@ -75,9 +78,13 @@ class AdminController extends Controller
         $this->apiSuccess("Logout Successfull");
         return $this->apiOutput();
     }
-    
+
     public function index()
     {
+        if(!PermissionController::hasAccess("admin_list")){
+            return $this->apiOutput("Permission Missing", 403);
+        }
+
         try{
             $this->data = AdminResource::collection(Admin::all());
             $this->apiSuccess("Admin Load has been Successfully done");
@@ -102,18 +109,22 @@ class AdminController extends Controller
             return $this->apiOutput($this->getError($e), 500);
         }
     }
-    
+
     public function store(Request $request)
     {
+        if(!PermissionController::hasAccess("admin_create")){
+            return $this->apiOutput("Permission Missing", 403);
+        }
+
         try{
             $validator = Validator::make($request->all(), [
                 'name' => 'required|min:4',
             ]);
-            
+
             if ($validator->fails()) {
                 $this->apiOutput($this->getValidationError($validator), 400);
             }
-   
+
             $admin = new Admin();
             $admin->name = $request->name;
             $admin->bio = $request->bio;
@@ -133,18 +144,22 @@ class AdminController extends Controller
             return $this->apiOutput($this->getError( $e), 500);
         }
     }
-    
+
     public function update(Request $request, $id)
     {
+        if(!PermissionController::hasAccess("admin_update")){
+            return $this->apiOutput("Permission Missing", 403);
+        }
+
         try{
         $validator = Validator::make($request->all(),[
                 'name' => 'required|min:4',
             ]);
-            
-           if ($validator->fails()) {    
+
+           if ($validator->fails()) {
             $this->apiOutput($this->getValidationError($validator), 400);
            }
-   
+
             $admin = Admin::find($id);
             $admin->name = $request->name;
             $admin->bio = $request->bio;
@@ -159,9 +174,13 @@ class AdminController extends Controller
             return $this->apiOutput($this->getError( $e), 500);
         }
     }
-    
+
     public function destroy($id)
     {
+        if(!PermissionController::hasAccess("admin_delete")){
+            return $this->apiOutput("Permission Missing", 403);
+        }
+
         $admin = Admin::find($id);
         $admin->delete();
         $this->apiSuccess();
@@ -194,20 +213,20 @@ class AdminController extends Controller
                 $password_reset->tableable_id   = $admin->id;
                 $password_reset->email          = $admin->email;
                 $password_reset->token          = $token;
-            }   
+            }
             $password_reset->expire_at      = now()->addHour();
             $password_reset->save();
 
             // Send Password Reset Email
             event(new PasswordResetEvent($password_reset));
-            
+
             $this->apiSuccess("Password Reset Code sent to your registared Email.");
             return $this->apiOutput();
         }catch(Exception $e){
             return $this->apiOutput($this->getError($e), 500);
         }
-    } 
-    
+    }
+
     /**
      * Password Reset
      */
@@ -265,5 +284,5 @@ class AdminController extends Controller
             return $this->apiOutput($this->getError($e), 500);
         }
     }
-   
+
 }
