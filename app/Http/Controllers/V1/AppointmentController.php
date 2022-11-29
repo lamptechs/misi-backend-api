@@ -118,6 +118,7 @@ class AppointmentController extends Controller
             $data->therapist_comment = $request->comment ?? null;
             $data->remarks      = $request->remarks ?? null;
             $data->status       = $request->status;
+            $data->total_intake = $request->total_intake ?? null;
             if($request->hasFile('picture')){
                 $data->image_url = $this->uploadFile($request, 'picture', $this->appointment_uploads, null,null,$data->image_url);
             }

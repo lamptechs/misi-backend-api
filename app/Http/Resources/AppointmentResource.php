@@ -54,6 +54,7 @@ class AppointmentResource extends JsonResource
             "therapist_comment" => $this->therapist_comment,
             "remarks"           => $this->remarks,
             "status"            => $this->status,
+            "total_intake"      => $this->total_intake,
             "image"             => $this->image,
             "image_url"         => asset($this->image_url),
             "invoice_url"       => !empty($this->invoice_url) && Storage::disk("public")->exists($this->invoice_url) ? asset(Storage::disk("public")->url($this->invoice_url)) : "",
