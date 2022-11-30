@@ -45,6 +45,10 @@ class Permission{
                 "pib_list"    => "Show PIB List",
                 "pib_update"  => "Update PIB",
                 "pib_delete"  => "Delete PIB",
+                "pib_assigned"  => "Assigned Yourself PIT",
+                "pib_cancel"  => "Cancel PIT",
+                "pib_form"    => "PIT Form",
+                "pib_reply"    => "PIT Reply",
             ],
         ],
 
@@ -54,6 +58,7 @@ class Permission{
                 "pit_list"    => "Show PIT List",
                 "pit_update"  => "Update PIT",
                 "pit_delete"  => "Delete PIT",
+                "pit_assigned"  => "Assigned Yourself PIT",
                 "pit_cancel"  => "Cancel PIT",
                 "pit_form"    => "PIT Form",
                 "pit_reply"   => "PIT Reply",
