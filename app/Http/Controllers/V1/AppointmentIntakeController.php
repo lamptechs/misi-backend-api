@@ -9,6 +9,7 @@ use App\Models\Intake;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class AppointmentIntakeController extends Controller
 {
@@ -107,4 +108,7 @@ class AppointmentIntakeController extends Controller
             return $this->apiOutput($this->getError($e), 500);
         }
     }
+
+
+    
 }
