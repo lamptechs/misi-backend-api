@@ -21,9 +21,7 @@ class GroupController extends Controller
      */
     public function index()
     {
-        if(!PermissionController::hasAccess("group_list")){
-            return $this->apiOutput("Permission Missing", 403);
-        }
+
        try{
             if(!PermissionController::hasAccess("group_list")){
                 return $this->apiOutput("Permission Missing", 403);
@@ -55,9 +53,6 @@ class GroupController extends Controller
      */
     public function store(Request $request)
     {
-        if(!PermissionController::hasAccess("group_create")){
-            return $this->apiOutput("Permission Missing", 403);
-        }
 
         try{
 
@@ -175,7 +170,7 @@ class GroupController extends Controller
         if(!PermissionController::hasAccess("group_delete")){
             return $this->apiOutput("Permission Missing", 403);
         }
-        
+
         Group::where("id", $id)->delete();
         $this->apiSuccess();
         return $this->apiOutput("Group Deleted Successfully", 200);

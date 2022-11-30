@@ -81,11 +81,12 @@ class AdminController extends Controller
 
     public function index()
     {
-        if(!PermissionController::hasAccess("admin_list")){
-            return $this->apiOutput("Permission Missing", 403);
-        }
 
         try{
+            if(!PermissionController::hasAccess("admin_list")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
+
             $this->data = AdminResource::collection(Admin::all());
             $this->apiSuccess("Admin Load has been Successfully done");
             return $this->apiOutput();
