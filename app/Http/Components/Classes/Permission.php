@@ -71,6 +71,9 @@ class Permission{
                 "yes_list"    => "Show YES Approval List",
                 "yes_update"  => "Update YES Approval",
                 "yes_delete"  => "Delete YES Approval",
+                "yes_assigned"=> "Assigned Yourself YES Approval",
+                "yes_cancel"  => "Cancel YES Approval",
+                "yes_reply"   => "Reply YES Approval",
             ],
         ],
 
@@ -80,6 +83,9 @@ class Permission{
                 "no_list"    => "Show NO Approval List",
                 "no_update"  => "Update NO Approval",
                 "no_delete"  => "Delete NO Approval",
+                "no_assigned"=> "Assigened Yourself NO Approval",
+                "no_cancel"  => "Cancel NO Approval",
+                "no_reply"   => "Reply NO Approval",
             ],
         ],
 
