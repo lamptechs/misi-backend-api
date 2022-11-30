@@ -21,6 +21,7 @@ class TicketController extends Controller
     public function index(Request $request)
     {
         try{
+            
             $validator = Validator::make( $request->all(),[
                 'patient_id'    => ['nullable', "exists:users,id"],
                 'therapist_id'  => ['nullable', "exists:therapists,id"],
@@ -78,7 +79,7 @@ class TicketController extends Controller
                 return $this->apiOutput($this->getValidationError($validator), 200);
             }
 
-            $ticket = new Ticket();            
+            $ticket = new Ticket();
             $ticket->patient_id = $request->patient_id ?? null;
             $ticket->therapist_id = $request->therapist_id ?? null;
             $ticket->ticket_department_id = $request->ticket_department_id;
@@ -160,7 +161,7 @@ class TicketController extends Controller
             if ($validator->fails()) {
                 return $this->apiOutput($this->getValidationError($validator), 200);
             }
-    
+
             $ticket = Ticket::find($request->id);
             $ticket->patient_id = $request->patient_id ?? null;
             $ticket->therapist_id = $request->therapist_id ?? null;
@@ -196,7 +197,7 @@ class TicketController extends Controller
             if ($validator->fails()) {
                 return $this->apiOutput($this->getValidationError($validator), 200);
             }
-    
+
             Ticket::where("id", $request->id)->delete();
             $this->apiSuccess("Ticket Deleted successfully");
             return $this->apiOutput();
@@ -205,7 +206,7 @@ class TicketController extends Controller
         }
     }
 
-    
+
 
     /**
      * Ticket Reply List
@@ -219,7 +220,7 @@ class TicketController extends Controller
             if ($validator->fails()) {
                 return $this->apiOutput($this->getValidationError($validator), 200);
             }
-    
+
             $reply = TicketReply::where("ticket_id", $request->ticket_id)
                 ->orderBy("created_at", "desc")->get();
             $this->data = TicketReplyResource::collection($reply)->hide(["created_by", "updated_by"]);
@@ -228,7 +229,7 @@ class TicketController extends Controller
         }catch(Exception $e){
             return $this->apiOutput($this->getError( $e), 500);
         }
-          
+
     }
 
 
@@ -242,14 +243,14 @@ class TicketController extends Controller
                 "comment"   => ["nullable", "string"],
                 "file"      => ["nullable", "file"],
             ]);
-    
+
             if ($validator->fails()) {
                 return $this->apiOutput($this->getValidationError($validator), 200);
             }
             if( empty($request->comment) && !$request->hasFile('file') ){
                 return $this->apiOutput("Comment or File Upload is required", 200);
             }
-    
+
             $reply = new TicketReply();
             $reply->ticket_id = $request->ticket_id;
             $reply->comment = $request->comment;
@@ -300,14 +301,14 @@ class TicketController extends Controller
                 "comment"   => ["nullable", "string"],
                 "file"      => ["nullable", "file"],
             ]);
-    
+
             if ($validator->fails()) {
                 return $this->apiOutput($this->getValidationError($validator), 200);
             }
             if( empty($request->comment) && $request->hasFile('file') ){
                 $this->apiOutput("Comment or File Upload is required", 200);
             }
-    
+
             $reply =  TicketReply::where("id", $request->id)->where("ticket_id", $request->ticket_id)->first();
             $reply->ticket_id = $request->ticket_id;
             $reply->comment = $request->comment;
@@ -337,7 +338,7 @@ class TicketController extends Controller
             if ($validator->fails()) {
                 return $this->apiOutput($this->getValidationError($validator), 200);
             }
-    
+
             TicketReply::where("id", $request->id)->where("ticket_id", $request->ticket_id)->delete();
             $this->apiSuccess("Ticket reply Deleted successfully");
             return $this->apiOutput();

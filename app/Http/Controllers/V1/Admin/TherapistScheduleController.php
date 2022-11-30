@@ -30,6 +30,11 @@ class TherapistScheduleController extends Controller
     public function index(Request $request)
     {
         try{
+
+            if(!PermissionController::hasAccess("therapistschedule_list")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
+
             $schedule = TherapistSchedule::orderBy("date", "ASC")->orderBY("id", "ASC");
             if( !empty($request->date) ){
                 $schedule->where("date", ">=", Carbon::parse($request->date)->format("Y-m-d"));
@@ -57,6 +62,10 @@ class TherapistScheduleController extends Controller
     public function create(Request $request)
     {
         try{
+
+            if(!PermissionController::hasAccess("therapistschedule_create")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $validator = Validator::make($request->all(), [
                 "therapist_id"  => ["required", "exists:therapists,id"]
             ]);
@@ -80,10 +89,10 @@ class TherapistScheduleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-   
+
     public function store(Request $request)
-    {  
-        $days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];   
+    {
+        $days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
         $validator = Validator::make($request->all(),[
             "therapist_id"  => ["required", "exists:therapists,id"],
             "interval_time" => ["required", "numeric", "min:10"],
@@ -93,14 +102,18 @@ class TherapistScheduleController extends Controller
             'end_date'      => ['required', 'date', 'after_or_equal:start_date'],
             "holiday"       => ["required", "array", Rule::in($days)],
         ],[
-            "holiday.in"    => "Day Name is not Match. use small letter in days name",   
+            "holiday.in"    => "Day Name is not Match. use small letter in days name",
         ]);
-            
+
         if ($validator->fails()) {
             return $this->apiOutput($this->getValidationError($validator), 400);
         }
 
         try{
+
+            if(!PermissionController::hasAccess("therapistschedule_create")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
 
             DB::beginTransaction();
             $settings = $this->addOrUpdateScheduleSettings($request);
@@ -109,15 +122,15 @@ class TherapistScheduleController extends Controller
             $schedules = TherapistSchedule::orderBy("date", "ASC")->orderBY("id", "ASC")
                 ->whereBetween("date", [$request->start_date, $request->end_date])
                 ->where("therapist_id", $settings->therapist_id)->get();
-            
+
             $this->data = $this->data = TherapistScheduleResource::collection( $schedules);
             $this->apiSuccess("Therapist Schedule Added Successfully");
-            return $this->apiOutput();        
+            return $this->apiOutput();
         }
         catch(Exception $e){
             DB::rollBack();
             return $this->apiOutput($this->getError( $e), 500);
-        }                
+        }
     }
     /**
      * Display the specified resource.
@@ -132,7 +145,7 @@ class TherapistScheduleController extends Controller
                     "id"  => ["required", "exists:therapist_schedules,id"],
                 ],[
                     "id.required" => "Therapist Schedule ID Required",
-                ]); 
+                ]);
                 if ($validator->fails()) {
                     return $this->apiOutput($this->getValidationError($validator), 400);
                 }
@@ -173,18 +186,21 @@ class TherapistScheduleController extends Controller
      */
     public function destroy(Request $request)
     {
+        if(!PermissionController::hasAccess("therapistschedule_delete")){
+            return $this->apiOutput("Permission Missing", 403);
+        }
         $validator = Validator::make($request->all(),[
             "id"  => ["required", "exists:therapist_schedules,id"],
         ],[
             "id.required" => "Therapist Schedule ID Required",
-        ]); 
+        ]);
         if ($validator->fails()) {
             return $this->apiOutput($this->getValidationError($validator), 400);
         }
         $schedule = TherapistSchedule::where("id", $request->id)->first();
         if($schedule->status != "open"){
             return $this->apiOutput("Sorry! You Can't Delete this schedule at this time", 400);
-        } 
+        }
         $schedule->delete();
         $this->apiSuccess("Schedule Deleted Successfully");
         return $this->apiOutput();
@@ -195,7 +211,7 @@ class TherapistScheduleController extends Controller
     {
         //return 10;
         try{
-               
+
         $validator = Validator::make(
             $request->all(),[
                 "id"            => ["required", "exists:therapist_schedules,id"]
@@ -218,7 +234,7 @@ class TherapistScheduleController extends Controller
     public function therapistAvailableSchedule(){
 
 
-                
+
                 // $users = DB::table('therapist_schedules')
                 //     ->join('therapists', 'therapists.id', '=', 'therapist_schedules.therapist_id')
                 //     ->where("therapist_schedules.date", ">=", date("Y-m-d"))
@@ -226,8 +242,8 @@ class TherapistScheduleController extends Controller
                 //     ->select([DB::RAW('DISTINCT(therapists.id)'),'therapist_schedules.status','therapists.first_name', 'therapists.last_name','therapist_schedules.date','therapists.phone'])
                 //     ->get();
                 //     return response()->json($users, 201);
-        
-      
+
+
                 $users = DB::table('therapists')
                     ->join('therapist_schedules', 'therapist_schedules.therapist_id', '=', 'therapists.id')
                     //->join('therapists', 'therapists.id', '=', 'therapist_schedules.therapist_id')
@@ -237,7 +253,7 @@ class TherapistScheduleController extends Controller
                     ->groupBy('therapists.id','therapists.first_name','therapists.last_name','therapists.phone','therapists.profile_pic')
                     ->get();
                     return response()->json($users, 201);
-        
-                           
+
+
     }
 }

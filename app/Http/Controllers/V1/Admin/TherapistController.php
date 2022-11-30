@@ -45,7 +45,7 @@ class TherapistController extends Controller
             $validator = Validator::make($request->all(), [
                 "email"     => ["required", "email", "exists:therapists,email"],
                 "password"  => ["required", "string", "min:4", "max:40"]
-            ]); 
+            ]);
             if($validator->fails()){
                 return $this->apiOutput($this->getValidationError($validator), 400);
             }
@@ -71,7 +71,7 @@ class TherapistController extends Controller
         $user->tokens()->delete();
         $this->apiSuccess("Logout Successfully");
         return $this->apiOutput();
-   
+
     }
 
     /**
@@ -100,20 +100,20 @@ class TherapistController extends Controller
                 $password_reset->tableable_id   = $user->id;
                 $password_reset->email          = $user->email;
                 $password_reset->token          = $token;
-            }   
+            }
             $password_reset->expire_at      = now()->addHour();
             $password_reset->save();
 
             // Send Password Reset Email
             event(new PasswordResetEvent($password_reset));
-            
+
             $this->apiSuccess("Password Reset Code sent to your registared Email.");
             return $this->apiOutput();
         }catch(Exception $e){
             return $this->apiOutput($this->getError($e), 500);
         }
-    } 
-    
+    }
+
     /**
      * Password Reset
      */
@@ -167,6 +167,10 @@ class TherapistController extends Controller
     public function index()
     {
         try{
+            if(!PermissionController::hasAccess("therapist_list")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
+
             $therapists = Therapist::all();
             $this->data = TherapistResource::collection($therapists);
             $this->apiSuccess("Therapist Loaded Successfully");
@@ -185,7 +189,7 @@ class TherapistController extends Controller
      */
     public function store(Request $request)
     {
-      
+
         $validator = Validator::make($request->all(),[
             'first_name' => 'required',
             'last_name' => 'required',
@@ -193,18 +197,23 @@ class TherapistController extends Controller
             "status"        => ["required", "boolean"],
             "phone"     => ["required", "numeric", "unique:therapists"]
         ]);
-            
+
         if ($validator->fails()) {
             return $this->apiOutput($this->getValidationError($validator), 400);
         }
 
         try{
+
+            if(!PermissionController::hasAccess("therapist_create")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
+
             DB::beginTransaction();
 
             $data = $this->getModel();
             $data->created_by = $request->user()->id;
-            $data->first_name = $request->first_name;                  
-            $data->last_name = $request->last_name;         
+            $data->first_name = $request->first_name;
+            $data->last_name = $request->last_name;
             $data->email = $request->email;
             $data->phone = $request->phone;
             $data->address = $request->address;
@@ -225,7 +234,7 @@ class TherapistController extends Controller
             if($request->hasFile('picture')){
                 $data->profile_pic = $this->uploadFile($request, 'picture', $this->therapist_uploads, null,null,$data->profile_pic);
             }
-            
+
             $data->save();
             $this->saveFileInfo($request, $data);
             DB::commit();
@@ -236,18 +245,18 @@ class TherapistController extends Controller
             }
             $this->apiSuccess("Therapist Info Added Successfully");
             $this->data = (new TherapistResource($data));
-            return $this->apiOutput();        
+            return $this->apiOutput();
         }
         catch(Exception $e){
             DB::rollBack();
             return $this->apiOutput($this->getError( $e), 500);
-        }                
+        }
     }
 
     // Save File Info
     public function saveFileInfo($request, $therapist){
         $file_path = $this->uploadFile($request, 'file', $this->therapist_uploads, 720);
-  
+
         if( !is_array($file_path) ){
             $file_path = (array) $file_path;
         }
@@ -258,7 +267,7 @@ class TherapistController extends Controller
             $data->file_url     = $path;
             $data->save();
         }
-       
+
     }
 
     /**
@@ -294,6 +303,10 @@ class TherapistController extends Controller
     public function update(Request $request)
     {
         try{
+            if(!PermissionController::hasAccess("therapist_update")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
+
         $validator = Validator::make($request->all(),[
             "id"        => ['required', "exists:therapists,id"],
             'first_name' =>['required', "string", "min:2"],
@@ -308,7 +321,7 @@ class TherapistController extends Controller
             "status"        => ["required", "boolean"],
             "profile_pic"=> ["nullable", "file"],
         ]);
-        
+
         if ($validator->fails()) {
             return $this->apiOutput($this->getValidationError($validator), 400);
         }
@@ -316,9 +329,9 @@ class TherapistController extends Controller
             //$data = $this->getModel()->find($request->id);
             $data = Therapist::find($request->id);
             $data->updated_by = $request->user()->id ?? null;
-            
-            $data->first_name = $request->first_name;                  
-            $data->last_name = $request->last_name;         
+
+            $data->first_name = $request->first_name;
+            $data->last_name = $request->last_name;
             $data->email = $request->email;
             $data->phone = $request->phone;
             $data->address = $request->address;
@@ -338,14 +351,14 @@ class TherapistController extends Controller
             if($request->hasFile('picture')){
                 $data->profile_pic =  $this->uploadFile($request, "picture", $this->therapist_uploads, "150", null, $data->profile_pic);
             }
-           
+
             $data->save();
             $this->updateFileInfo($request, $data->id);
 
-            DB::commit();            
+            DB::commit();
             $this->apiSuccess("Therapist Info Updated Successfully");
             $this->data = (new TherapistResource($data))->hide(["updated_by", "created_by"]);
-            return $this->apiOutput(); 
+            return $this->apiOutput();
         }
         catch(Exception $e){
             DB::rollBack();
@@ -362,7 +375,7 @@ class TherapistController extends Controller
                 $upload->therapist_id = $id;
                 $upload->file_name    = $request->file_name ?? "Therapist Upload Updated";
                 $upload->file_url     = $file;
-                $upload->save();    
+                $upload->save();
             }
         }
     }
@@ -376,6 +389,10 @@ class TherapistController extends Controller
     public function destroy($id)
     {
         try{
+
+            if(!PermissionController::hasAccess("therapist_delete")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $data = $this->getModel()->find($id);
             TherapistUpload::where('therapist_id',$data->id)->delete();
             $data->delete();
@@ -385,7 +402,7 @@ class TherapistController extends Controller
             return $this->apiOutput($this->getError( $e), 500);
         }
     }
-  
+
     public function deleteFileTherapist(Request $request){
         try{
             $validator = Validator::make( $request->all(),[
@@ -395,7 +412,7 @@ class TherapistController extends Controller
             if ($validator->fails()) {
                 return $this->apiOutput($this->getValidationError($validator), 200);
             }
-    
+
             $therapistupload=TherapistUpload::where('id',$request->id);
             $therapistupload->delete();
             $this->apiSuccess("Therapist File Deleted successfully");
@@ -433,8 +450,8 @@ class TherapistController extends Controller
             $this->saveAddFileInfo($request);
             $this->apiSuccess("Therapist File Added Successfully");
             return $this->apiOutput();
-           
-           
+
+
         }catch(Exception $e){
             return $this->apiOutput($this->getError( $e), 500);
         }
@@ -460,10 +477,10 @@ class TherapistController extends Controller
                 //$data->file_type    = $request->file_type ;
                 //$data->status       = $request->status;
                 //$data->remarks      = $request->remarks ?? '';
-                $data->save();            
+                $data->save();
 
             }
-      
+
     }
 
     public function updateTherapistFileInfo(Request $request){
@@ -478,17 +495,17 @@ class TherapistController extends Controller
             }
 
             $data = TherapistUpload::find($request->id);
-            
+
             if($request->hasFile('picture')){
                 $data->file_url = $this->uploadFile($request, 'picture', $this->therapist_uploads, null,null,$data->file_url);
             }
 
             $data->save();
-          
+
             $this->apiSuccess("Therapist File Updated Successfully");
             return $this->apiOutput();
-           
-           
+
+
         }catch(Exception $e){
             return $this->apiOutput($this->getError( $e), 500);
         }

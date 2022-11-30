@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers\V1;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\IntakeResource;
-use App\Models\AppointmentIntake;
+use Exception;
 use App\Models\Intake;
 use Illuminate\Http\Request;
+use App\Models\AppointmentIntake;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\IntakeResource;
 use Illuminate\Support\Facades\Validator;
-use Exception;
+use App\Http\Controllers\V1\Admin\PermissionController;
 
 class AppointmentIntakeController extends Controller
 {
     public function index(){
         try{
+            if(!PermissionController::hasAccess("intakeappointment_list")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
+
             $this->data=IntakeResource::collection(AppointmentIntake::all());
             $this->apiSuccess("Appointment Intake Loaded Successfully");
             return $this->apiOutput();
@@ -26,7 +31,7 @@ class AppointmentIntakeController extends Controller
 
     public function store(Request $request)
     {
-       
+
         try{
             $validator = Validator::make($request->all(), [
                 "appointment_id" => ["required", "exists:appointmnets,id"],
@@ -70,6 +75,11 @@ class AppointmentIntakeController extends Controller
     public function update(Request $request)
     {
         try{
+
+            if(!PermissionController::hasAccess("intakeappointment_update")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
+
         $validator = Validator::make(
             $request->all(),
             [
@@ -100,6 +110,9 @@ class AppointmentIntakeController extends Controller
     public function destroy(Request $request)
     {
         try{
+            if(!PermissionController::hasAccess("intakeappointment_delete")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             AppointmentIntake::where("id", $request->id)->delete();
             $this->apiSuccess();
             return $this->apiOutput("Appointment Intake Deleted Successfully", 200);

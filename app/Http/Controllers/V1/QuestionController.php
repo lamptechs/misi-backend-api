@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\V1;
 
+use Exception;
+use App\Models\Question;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\QuestionResource;
-use App\Models\Question;
-use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\V1\Admin\PermissionController;
 
 class QuestionController extends Controller
 {
@@ -19,6 +20,9 @@ class QuestionController extends Controller
     public function index()
     {
         try{
+            if(!PermissionController::hasAccess("question_list")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $this->data = QuestionResource::collection(Question::all());
             $this->apiSuccess("Question Loaded Successfully");
             return $this->apiOutput();
@@ -47,19 +51,24 @@ class QuestionController extends Controller
     public function store(Request $request)
     {
         try{
+
+            if(!PermissionController::hasAccess("question_create")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
+
             $validator = Validator::make(
                 $request->all(),
                 [
                     'question' => 'required',
-        
+
                 ]
                );
-                
+
                if ($validator->fails()) {
-        
+
                 $this->apiOutput($this->getValidationError($validator), 200);
                }
-       
+
                 $question = new Question();
                 $question->question = $request->question ?? null;
                 $question->type = $request->type ?? null;
@@ -82,10 +91,10 @@ class QuestionController extends Controller
     public function show(Request $request)
     {
         try{
-            
+
             $validator = Validator::make( $request->all(),[
                 "type"            => ["required"],
-               
+
             ]);
             if ($validator->fails()) {
                 return $this->apiOutput($this->getValidationError($validator), 200);
@@ -122,19 +131,24 @@ class QuestionController extends Controller
     public function update(Request $request, $id)
     {
         try{
+
+            if(!PermissionController::hasAccess("question_update")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
+
             $validator = Validator::make(
                 $request->all(),
                 [
                     'question' => 'required',
-        
+
                 ]
                );
-                
+
                if ($validator->fails()) {
-        
+
                 $this->apiOutput($this->getValidationError($validator), 200);
                }
-       
+
                 $question = Question::find($id);
                 $question->question = $request->question ?? null;
                 $question->type = $request->type ?? null;
@@ -156,9 +170,13 @@ class QuestionController extends Controller
      */
     public function destroy($id)
     {
+        if(!PermissionController::hasAccess("question_delete")){
+            return $this->apiOutput("Permission Missing", 403);
+        }
+
         Question::destroy($id);
         $this->apiSuccess();
         return $this->apiOutput("Question Deleted Successfully", 200);
     }
-    
+
 }

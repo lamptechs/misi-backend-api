@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\TicketResource;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\TicketDepartmentResource;
+use App\Http\Controllers\V1\Admin\PermissionController;
 
 class TicketDepartmentController extends Controller
 {
@@ -21,6 +22,11 @@ class TicketDepartmentController extends Controller
     public function index()
     {
         try{
+
+            if(!PermissionController::hasAccess("ticket_department_list")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
+
             $this->data = TicketDepartmentResource::collection(TicketDepartment::all());
             $this->apiSuccess("Ticket Department Type Loaded Successfully");
             return $this->apiOutput();
@@ -40,6 +46,12 @@ class TicketDepartmentController extends Controller
     public function store(Request $request)
     {
         try{
+
+            if(!PermissionController::hasAccess("ticket_department_create")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
+
+
         $validator = Validator::make( $request->all(),[
                 'name' => 'required|min:4',
                 'remarks' => 'nullable|min:4'
@@ -74,6 +86,10 @@ class TicketDepartmentController extends Controller
     public function show(Request $request)
     {
         try{
+            if(!PermissionController::hasAccess("ticket_department_show")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
+
             $ticket_department = TicketDepartment::find($request->id);
             if( empty($ticket_department) ){
                 return $this->apiOutput("Ticket Data Not Found", 400);
@@ -105,7 +121,7 @@ class TicketDepartmentController extends Controller
         }catch(Exception $e){
             return $this->apiOutput($this->getError($e), 500);
         }
-        
+
     }
 
     /**
@@ -118,6 +134,9 @@ class TicketDepartmentController extends Controller
     public function update(Request $request)
     {
         try{
+            if(!PermissionController::hasAccess("ticket_department_update")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
         $validator = Validator::make(
             $request->all(),
             [
@@ -155,6 +174,9 @@ class TicketDepartmentController extends Controller
      */
     public function destroy($id)
     {
+        if(!PermissionController::hasAccess("ticket_department_delete")){
+            return $this->apiOutput("Permission Missing", 403);
+        }
         TicketDepartment::destroy($id);
         $this->apiSuccess();
         return $this->apiOutput("Ticket Department Deleted Successfully", 200);

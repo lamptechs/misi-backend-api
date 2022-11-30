@@ -2,23 +2,24 @@
 
 namespace App\Http\Controllers\V1;
 
-use App\Events\AccountRegistration;
-use App\Events\PasswordReset as PasswordResetEvent;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\PatientUploadResource;
-use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\PatientUpload;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Auth\Events\Registered;
 use Exception;
-use App\Http\Resources\UserResource;
+use Carbon\Carbon;
+use App\Models\User;
+use Illuminate\Http\Request;
 use App\Models\PasswordReset;
-use Illuminate\Support\Facades\Hash;
+use App\Models\PatientUpload;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use App\Events\AccountRegistration;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\PatientUploadResource;
+use App\Events\PasswordReset as PasswordResetEvent;
+use App\Http\Controllers\V1\Admin\PermissionController;
 
 class PatientController extends Controller
 {
@@ -51,7 +52,7 @@ class PatientController extends Controller
             $validator = Validator::make($request->all(), [
                 "email"     => ["required", "email", "exists:users,email"],
                 "password"  => ["required", "string", "min:4", "max:40"]
-            ]); 
+            ]);
             if($validator->fails()){
                 return $this->apiOutput($this->getValidationError($validator), 400);
             }
@@ -64,7 +65,7 @@ class PatientController extends Controller
             // }
             // Issueing Access Token
              //$this->access_token = $admin->createToken($request->ip() ?? "admin_access_token")->plainTextToken;
-           
+
             // $this->access_token = $patient->createToken($request->ip() ?? "patient_access_token")->plainTextToken;
             // Session::put('access_token',$this->access_token);
             $this->access_token = $patient->createToken($request->ip() ?? "patient_access_token")->plainTextToken;
@@ -78,12 +79,12 @@ class PatientController extends Controller
         }
     }
     public function logout(Request $request){
-        
+
         $user = $request->user();
         $user->tokens()->delete();
         $this->apiSuccess("Logout Successfull");
         return $this->apiOutput();
-   
+
     }
 
     /**
@@ -112,20 +113,20 @@ class PatientController extends Controller
                 $password_reset->tableable_id   = $user->id;
                 $password_reset->email          = $user->email;
                 $password_reset->token          = $token;
-            }   
+            }
             $password_reset->expire_at      = now()->addHour();
             $password_reset->save();
 
             // Send Password Reset Email
             event(new PasswordResetEvent($password_reset));
-            
+
             $this->apiSuccess("Password Reset Code sent to your registared Email.");
             return $this->apiOutput();
         }catch(Exception $e){
             return $this->apiOutput($this->getError($e), 500);
         }
-    } 
-    
+    }
+
     /**
      * Password Reset
      */
@@ -180,6 +181,10 @@ class PatientController extends Controller
     public function index()
     {
         try{
+            if(!PermissionController::hasAccess("patient_list")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
+
             $this->data = UserResource::collection(User::all());
             $this->apiSuccess("Patient Loaded Successfully");
             return $this->apiOutput();
@@ -188,7 +193,7 @@ class PatientController extends Controller
             return $this->apiOutput($this->getError($e), 500);
         }
     }
-    
+
      public function missingInfoPatient()
     {
         try{
@@ -216,16 +221,19 @@ class PatientController extends Controller
     {
         //return 10;
         try{
+            if(!PermissionController::hasAccess("patient_create")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
         $validator = Validator::make(
             $request->all(),
-            [ 
+            [
                 'first_name' => 'required',
                 'last_name' => 'required',
                 "email"     => ["required", "email",/* "unique:users",*/Rule::unique('users', 'email')->ignore($request->id)],
                 "phone"     => ["required", "numeric",/* "unique:users"*/Rule::unique('users', 'phone')->ignore($request->id)]
             ]
            );
-            
+
             if ($validator->fails()) {
                 return $this->apiOutput($this->getValidationError($validator), 400);
             }
@@ -240,19 +248,19 @@ class PatientController extends Controller
                 $data->country_id = $request->country_id;
                 $data->blood_group_id = $request->blood_group_id;
                 $data->source = $request->source;
-                $data->first_name = $request->first_name;                  
+                $data->first_name = $request->first_name;
                 $data->last_name = $request->last_name;
-                
+
                 //$file_path = $this->uploadFile($request, 'file', $this->patient_uploads,720);
-                
+
                 if($request->hasFile('image')){
                     $data->image_url = $this->uploadFile($request, 'image', $this->patient_uploads, null,null,$data->image_url);
                 }
-                
+
                 //$data->image =  $request-> image;
                 //$data->image_url =  $request-> image_url;
-                // $data->patient_picture_name = $imageName;            
-                // $data->patient_picture_location = $imageUrl;            
+                // $data->patient_picture_name = $imageName;
+                // $data->patient_picture_location = $imageUrl;
                 $data->email = $request->email;
                 $data->phone = $request->phone;
                 $data->alternet_phone = $request->alternet_phone;
@@ -279,12 +287,12 @@ class PatientController extends Controller
                 $data->patientstatus=$request->patientstatus;
                 $data->save();
                 $this->saveFileInfo($request, $data);
-                
+
                 DB::commit();
                 try{
                     event(new AccountRegistration($data, "patient"));
                 }catch(Exception $e){
-                    
+
                 }
             }
             catch(Exception $e){
@@ -293,15 +301,15 @@ class PatientController extends Controller
             }
             $this->apiSuccess("Patient Info Added Successfully");
             $this->data = (new UserResource($data));
-            return $this->apiOutput(); 
-                   
+            return $this->apiOutput();
+
             }
             catch(Exception $e){
-            
+
             return $this->apiOutput($this->getError( $e), 500);
         }
     }
-   
+
 
 
     /**
@@ -310,8 +318,8 @@ class PatientController extends Controller
     public function saveFileInfo($request, $patient){
 
         $file_path = $this->uploadFile($request, 'file', $this->patient_uploads,720);
-      
-          
+
+
         if( !is_array($file_path) ){
             $file_path = (array) $file_path;
         }
@@ -328,11 +336,11 @@ class PatientController extends Controller
                 $data->save();
 
             }
-      
+
     }
 
 
-   
+
    public function updateFileInfo($request, $id){
         $upload_files = $this->uploadFile($request, 'file', $this->patient_uploads);
         if( is_array($upload_files) ){
@@ -341,7 +349,7 @@ class PatientController extends Controller
                 $upload->patient_id = $id;
                 $upload->file_name    = $request->file_name ?? "Patient Upload Updated";
                 $upload->file_url     = $file;
-                $upload->save();    
+                $upload->save();
             }
         }
     }
@@ -385,6 +393,9 @@ class PatientController extends Controller
         // return $temp;
         //return $id;
         try{
+            if(!PermissionController::hasAccess("patient_update")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $validator = Validator::make($request->all(), [
                 "id"            => ["required", "exists:users,id"],
                 //'first_name'    => 'required',
@@ -392,24 +403,24 @@ class PatientController extends Controller
                 "email"         => ["required", "email",/* "unique:users",*/Rule::unique('users', 'email')->ignore($request->id)],
                 "phone"         => ["required", "numeric",/* "unique:users"*/Rule::unique('users', 'phone')->ignore($request->id)]
             ]);
-                
+
             if ($validator->fails()) {
                 return $this->apiOutput($this->getValidationError($validator), 400);
             }
-    
+
             DB::beginTransaction();
             $data = $this->getModel()->find($request->id);
             $data->updated_by = $request->user()->id ?? null;
-            
+
 
             $data->state_id = $request->state_id;
             $data->country_id = $request->country_id;
             $data->blood_group_id = $request->blood_group_id;
             $data->source = $request->source;
-            $data->first_name = $request->first_name;                  
+            $data->first_name = $request->first_name;
             $data->last_name = $request->last_name;
-            // $data->patient_picture_name = $imageName;            
-            // $data->patient_picture_location = $imageUrl;            
+            // $data->patient_picture_name = $imageName;
+            // $data->patient_picture_location = $imageUrl;
             $data->email = $request->email;
             $data->phone = $request->phone;
             $data->alternet_phone = $request->alternet_phone;
@@ -465,6 +476,10 @@ class PatientController extends Controller
     public function destroy($id)
     {
         try{
+            if(!PermissionController::hasAccess("patient_delete")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
+
             $data = $this->getModel()->find($id);
             if( empty($data) ){
                 return $this->apiOutput("Data Not Found", 400);
@@ -488,7 +503,7 @@ class PatientController extends Controller
             if ($validator->fails()) {
                 return $this->apiOutput($this->getValidationError($validator), 200);
             }
-    
+
             $patientupload=PatientUpload::where('id',$request->id);
             $patientupload->delete();
             $this->apiSuccess("Patient File Deleted successfully");
@@ -513,8 +528,8 @@ class PatientController extends Controller
             $this->saveAddFileInfo($request);
             $this->apiSuccess("Patient Info Added Successfully");
             return $this->apiOutput();
-           
-           
+
+
         }catch(Exception $e){
             return $this->apiOutput($this->getError( $e), 500);
         }
@@ -540,10 +555,10 @@ class PatientController extends Controller
                 $data->file_type    = $request->file_type ;
                 $data->status       = $request->status;
                 $data->remarks      = $request->remarks ?? '';
-                $data->save();            
+                $data->save();
 
             }
-      
+
     }
 
     public function updatePatientFileInfo(Request $request){
@@ -564,12 +579,12 @@ class PatientController extends Controller
             }
 
             $data->save();
-            
+
             $this->apiSuccess("Patient File Updated Successfully");
-            
+
             return $this->apiOutput();
-           
-           
+
+
         }catch(Exception $e){
             return $this->apiOutput($this->getError( $e), 500);
         }

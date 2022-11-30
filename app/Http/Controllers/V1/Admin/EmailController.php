@@ -36,6 +36,9 @@ class EmailController extends Controller
      */
     public function index(){
         try{
+            if(!PermissionController::hasAccess("emailtemplate_list")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $templates = EmailTemplate::get();
             $this->data["template"] = EmailTemplateResource::collection($templates);
             $this->apiSuccess("Email Template loaded Successfully");
@@ -51,6 +54,7 @@ class EmailController extends Controller
      */
     public function create(){
         try{
+
             $template_type = EmailTemplate::select("email_type")->pluck("email_type")->toArray();
             $template_type = array_diff($this->template_type, $template_type);
             $this->data["types"] = $template_type;
@@ -66,6 +70,10 @@ class EmailController extends Controller
      */
     public function store(Request $request){
         try{
+
+            if(!PermissionController::hasAccess("emailtemplate_create")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $template_type = $this->template_type;
             $validator = Validator::make($request->all(), [
                 "email_type"    => ["required", "string", Rule::in(array_keys($template_type))],
@@ -77,7 +85,7 @@ class EmailController extends Controller
             if($validator->fails()){
                 return $this->apiOutput($this->getValidationError($validator));
             }
-            
+
             $template = new EmailTemplate();
             $template->email_type   = $request->email_type;
             $template->subject      = $request->subject;
@@ -86,7 +94,7 @@ class EmailController extends Controller
             $template->template     = $request->template;
             $template->created_by   = $request->user()->id;
             $template->save();
-           
+
             $this->data["email_templates"] = new EmailTemplateResource($template);
             $this->apiSuccess("Template Configuration Added Successfully");
             return $this->apiOutput();
@@ -100,6 +108,9 @@ class EmailController extends Controller
      */
     public function update(Request $request){
         try{
+            if(!PermissionController::hasAccess("emailtemplate_update")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $template_type = $this->template_type;
             $validator = Validator::make($request->all(), [
                 "id"            => ["required", "exists:email_templates,id"],
@@ -112,7 +123,7 @@ class EmailController extends Controller
             if($validator->fails()){
                 return $this->apiOutput($this->getValidationError($validator));
             }
-            
+
             $template = EmailTemplate::find($request->id);
             $template->email_type   = $request->email_type;
             $template->subject      = $request->subject;
@@ -121,7 +132,7 @@ class EmailController extends Controller
             $template->template     = $request->template;
             $template->updated_by   = $request->user()->id;
             $template->save();
-           
+
             $this->data["email_templates"] = new EmailTemplateResource($template);
             $this->apiSuccess("Template Configuration Updated Successfully");
             return $this->apiOutput();
@@ -141,7 +152,7 @@ class EmailController extends Controller
             if($validator->fails()){
                 return $this->apiOutput($this->getValidationError($validator));
             }
-            
+
             $template = EmailTemplate::withTrashed()->find($request->id);
             $template_type_use = EmailTemplate::select("email_type")
                 ->where("email_type", "!=", $template->email_type)->pluck("email_type")->toArray();
@@ -161,13 +172,16 @@ class EmailController extends Controller
      */
     public function delete(Request $request){
         try{
+            if(!PermissionController::hasAccess("emailtemplate_delete")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $validator = Validator::make($request->all(), [
                 "id"            => ["required", "exists:email_templates,id"],
             ]);
             if($validator->fails()){
                 return $this->apiOutput($this->getValidationError($validator));
             }
-            EmailTemplate::where("id", $request->id)->delete();            
+            EmailTemplate::where("id", $request->id)->delete();
             $this->apiSuccess("Template Configuration Deleted Successfully");
             return $this->apiOutput();
         }catch(Exception $e){
