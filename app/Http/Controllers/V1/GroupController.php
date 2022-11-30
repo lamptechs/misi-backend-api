@@ -21,6 +21,9 @@ class GroupController extends Controller
      */
     public function index()
     {
+        if(!PermissionController::hasAccess("group_list")){
+            return $this->apiOutput("Permission Missing", 403);
+        }
        try{
             if(!PermissionController::hasAccess("group_list")){
                 return $this->apiOutput("Permission Missing", 403);
@@ -52,7 +55,10 @@ class GroupController extends Controller
      */
     public function store(Request $request)
     {
-     
+        if(!PermissionController::hasAccess("group_create")){
+            return $this->apiOutput("Permission Missing", 403);
+        }
+
         try{
 
             if(!PermissionController::hasAccess("group_create")){
@@ -63,11 +69,11 @@ class GroupController extends Controller
                 'name' => 'required|min:4',
                 'description' => 'nullable|min:4',
             ]);
-                
-            if ($validator->fails()) {    
+
+            if ($validator->fails()) {
                 $this->apiOutput($this->getValidationError($validator), 400);
             }
-   
+
             $group = new Group();
             $group->name = $request->name ;
             $group->description = $request->description;
@@ -81,7 +87,7 @@ class GroupController extends Controller
             return $this->apiOutput($this->getError( $e), 500);
         }
     }
-    
+
 
     /**
      * Display the specified resource.
@@ -129,15 +135,18 @@ class GroupController extends Controller
     public function update(Request $request, $id)
     {
          try{
+            if(!PermissionController::hasAccess("group_update")){
+                return $this->apiOutput("Permission Missing", 403);
+            }
             $validator = Validator::make($request->all(),[
                 'name'          => ["required", "min:4"],
                 'description'   => ["nullable", "min:4"],
             ]);
-            
-            if ($validator->fails()) {    
+
+            if ($validator->fails()) {
                 return $this->apiOutput($this->getValidationError($validator), 400);
             }
-   
+
             $group = Group::find($id);
             if(empty($group)){
                 return $this->apiOutput("No Data Found", $group);
@@ -160,9 +169,13 @@ class GroupController extends Controller
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     */   
+     */
     public function destroy($id)
     {
+        if(!PermissionController::hasAccess("group_delete")){
+            return $this->apiOutput("Permission Missing", 403);
+        }
+        
         Group::where("id", $id)->delete();
         $this->apiSuccess();
         return $this->apiOutput("Group Deleted Successfully", 200);
