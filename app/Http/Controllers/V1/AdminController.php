@@ -130,6 +130,9 @@ class AdminController extends Controller
             $admin->bio = $request->bio;
             $admin->email = $request->email;
             $admin->group_id = $request->group_id;
+            if($request->hasFile('picture')){
+                $admin->profile_pic = $this->uploadFile($request, 'picture', $this->admin_uploads , null,null,$admin->profile_pic);
+            }
             $admin->password = !empty($request->password) ? bcrypt($request->password) : $admin->password ;
             $admin->save();
             try{
@@ -165,6 +168,9 @@ class AdminController extends Controller
             $admin->bio = $request->bio;
             $admin->email = $request->email;
             $admin->group_id = $request->group_id;
+            if($request->hasFile('picture')){
+                $admin->profile_pic = $this->uploadFile($request, 'picture', $this->admin_uploads , null,null,$admin->profile_pic);
+            }
             $admin->password = !empty($request->password) ? bcrypt($request->password) : $admin->password ;
             $admin->save();
             $this->apiSuccess("Admin Updated Successfully");
