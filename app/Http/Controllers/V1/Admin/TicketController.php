@@ -208,7 +208,7 @@ class TicketController extends Controller
                 "remarks"       => ["nullable", "string"],
                 "ticket_history"=> ["nullable", "string"],
                 "status"        => ["required", "boolean"],
-                "ticket_department_id" => ["required"],
+                //"ticket_department_id" => ["required"],
                 //"file"          => ["nullable", "file"],
             ]);
 
