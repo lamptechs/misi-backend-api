@@ -57,7 +57,7 @@ class AppointmentController extends Controller
                 $appoinement->where("therapist_id", $request->therapist_id);
             }
             $appoinement = $appoinement->get();
-            $this->data = AppointmentResource::collection($appoinement);
+            $this->data = AppointmentResource::collection($appoinement)->hide(["intake"]);
             $this->apiSuccess("Appointment Load has been Successfully done");
             return $this->apiOutput();
 
@@ -133,7 +133,7 @@ class AppointmentController extends Controller
             }
             DB::commit();
             $this->apiSuccess("Appointment Created Successfully");
-            $this->data = (new AppointmentResource($data));
+            $this->data = (new AppointmentResource($data))->hide(["intake"]);
             return $this->apiOutput();
         }catch(Exception $e){
             DB::rollBack();
@@ -193,7 +193,7 @@ class AppointmentController extends Controller
             if( empty($appointment) ){
                 return $this->apiOutput("Appointment Data Not Found", 400);
             }
-            $this->data = (new AppointmentResource ($appointment));
+            $this->data = (new AppointmentResource ($appointment))->hide(["intake"]);
             $this->apiSuccess("Appointment Detail Show Successfully");
             return $this->apiOutput();
         }catch(Exception $e){
@@ -274,7 +274,7 @@ class AppointmentController extends Controller
                 }
             }
             $this->apiSuccess("Appointment Updated Successfully");
-            $this->data = (new AppointmentResource($appoinement));
+            $this->data = (new AppointmentResource($appoinement))->hide(["intake"]);
             return $this->apiOutput();
 
         }catch(Exception $e){
@@ -302,7 +302,7 @@ class AppointmentController extends Controller
             $ticket->cancel_reason=$request->cancel_reason;
             $ticket->save();
             $this->apiSuccess("Assigned Ticket Cancelled successfully");
-            $this->data = (new AppointmentResource($ticket));
+            $this->data = (new AppointmentResource($ticket))->hide(["intake"]);;
             return $this->apiOutput();
         }catch(Exception $e){
             return $this->apiOutput($this->getError( $e), 500);

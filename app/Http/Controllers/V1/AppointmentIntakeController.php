@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AppointmentResource;
 use App\Http\Resources\IntakeResource;
 use App\Models\AppointmentIntake;
+use App\Models\Appointmnet;
 use App\Models\Intake;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -15,7 +17,9 @@ class AppointmentIntakeController extends Controller
 {
     public function index(){
         try{
-            $this->data=IntakeResource::collection(AppointmentIntake::all());
+            $appointments = Appointmnet::join("appointment_intakes as ai", "ai.appointment_id", "=", " appointmnets.id")
+                ->select("appointmnets.*")->groupBy("appointmnets.id")->get();
+            $this->data= AppointmentResource::collection($appointments);
             $this->apiSuccess("Appointment Intake Loaded Successfully");
             return $this->apiOutput();
 
