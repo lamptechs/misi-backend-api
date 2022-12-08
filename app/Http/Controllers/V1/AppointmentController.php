@@ -47,9 +47,9 @@ class AppointmentController extends Controller
             if( !empty($request->date) ){
                 $appoinement->where("date", $request->date);
             }
-            // else{
-            //     $appoinement->where("date", ">=", now()->format('Y-m-d'));
-            // }
+            else{
+                $appoinement->where("date", ">=", now()->format('Y-m-d'));
+            }
             if( !empty($request->patient_id) ){
                 $appoinement->where("patient_id", $request->patient_id);
             }

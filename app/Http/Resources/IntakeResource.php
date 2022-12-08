@@ -44,18 +44,9 @@ class IntakeResource extends JsonResource
             "id"                => $this->id,
             "appointment_id"    => $this->appointment_id,
             "intake_date"       => $this->intake_date,
-            "intake_number"     => $this->intake_number,
-            // "scale_value"   => $this->scale_value ?? 0,
-            // "status"        => $this->status,
-            // "remarks"       => $this->remarks,
-            // "created_at"    => $this->created_at,
-            // "updated_at"    => $this->updated_at,
-            
-             "appointment"       =>  isset($this->appointment) ? (new AppointmentResource($this->appointment))->hide([ "updated_by","created_by"]) :null,
-            // "pit_formula"   => isset($this->pitformula) ? (new PitFormulaResource($this->pitformula))->hide(["patient", "created_by", "updated_by", "ticket"]) : null,
-            // "question"      => isset($this->question) ? (new QuestionResource($this->question))->hide(["created_by", "updated_by"]) : null,
-            // "created_by"    => isset($this->createdBy) ? (new AdminResource($this->createdBy))->hide(["department", "created_by", "updated_by"]) : null,
-            // "updated_by"    => isset($this->updatedBy) ? (new AdminResource($this->updatedBy))->hide(["department", "created_by", "updated_by"]) : null,
+            "intake_number"     => $this->intake_number,            
+            "appointment"       =>  isset($this->appointment) ? (new AppointmentResource($this->appointment))->hide([ "updated_by","created_by"]) : null,
+            "schedule"          => isset($this->appointment->schedule) ? (new TherapistScheduleResource($this->appointment->schedule))->hide([ "updated_by","created_by", "therapist", "patient"]) : null,
         ]);
     }
 }
