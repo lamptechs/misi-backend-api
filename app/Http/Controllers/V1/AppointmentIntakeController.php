@@ -17,9 +17,9 @@ class AppointmentIntakeController extends Controller
 {
     public function index(){
         try{
-            $appointments = Appointmnet::join("appointment_intakes as ai", "ai.appointment_id", "=", " appointmnets.id")
+            $appointments = Appointmnet::join("appointment_intakes as ai", "ai.appointment_id", "=", "appointmnets.id")
                 ->select("appointmnets.*")->groupBy("appointmnets.id")->get();
-            $this->data= AppointmentResource::collection($appointments);
+            $this->data= AppointmentResource::collection($appointments)->hide(["upload_files", "patient_info", "therapist_info", "therapist_schedule", "ticket"]);
             $this->apiSuccess("Appointment Intake Loaded Successfully");
             return $this->apiOutput();
 
