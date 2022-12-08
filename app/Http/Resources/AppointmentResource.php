@@ -61,12 +61,12 @@ class AppointmentResource extends JsonResource
             "upload_files"      => AppointmentUploadResource::collection($this->fileInfo),
             "cancel_appointment_type" => $this->cancel_appointment_type,
             "cancel_reason"     =>$this->cancel_reason,
-            "appointment ticket status" => $this->appointment_ticket_status,
+            "appointment_ticket_status" => $this->appointment_ticket_status,
             "patient_info"          => isset($this->patient) ? (new UserResource($this->patient))->hide(["created_by", "updated_by"]) : null,
             "ticket"                => isset($this->ticket) ? (new TicketResource($this->ticket))->hide(["upload_files", "created_by", "updated_by", "therapist_info", "patient_info", "ticket_department_info", "replies"]) : null,
             "therapist_info"        => isset($this->therapist)? (new TherapistResource($this->therapist))->hide(["created_by", "updated_by"]) : null,
             "therapist_schedule"    => isset($this->schedule)? (new TherapistScheduleResource($this->schedule))->hide(["created_by", "updated_by"]) : null,
-            //"intake"              =>  IntakeResource::collection($this->intake),
+            //"intake"       =>  IntakeResource::collection($this->intake),
         ]);
     }
 }

@@ -45,7 +45,7 @@ class IntakeResource extends JsonResource
             "appointment_id"    => $this->appointment_id,
             "intake_date"       => $this->intake_date,
             "intake_number"     => $this->intake_number,            
-            "appointment"       =>  isset($this->appointment) ? (new AppointmentResource($this->appointment))->hide([ "updated_by","created_by"]) : null,
+            "appointment"       =>  isset($this->appointment) ? (new AppointmentResource($this->appointment))->hide([ "updated_by","created_by", "therapist_schedule", "therapist_info", "ticket", "patient_info"]) : null,
             "schedule"          => isset($this->appointment->schedule) ? (new TherapistScheduleResource($this->appointment->schedule))->hide([ "updated_by","created_by", "therapist", "patient"]) : null,
         ]);
     }
