@@ -224,6 +224,7 @@ Route::middleware(["auth:admin"])->group(function(){
         Route::get('/available-therapist-list', [TherapistScheduleController::class, 'therapistAvailableSchedule']);
         Route::post('/cancelTherapistSchedule', [TherapistScheduleController::class, 'cancelTherapistSchedule']);
         Route::post('delete', [TherapistScheduleController::class, 'destroy']);
+        Route::post('multiple-delete', [TherapistScheduleController::class, 'multipleDelete']);
     });
 
     //Appointment

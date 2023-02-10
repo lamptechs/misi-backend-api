@@ -190,6 +190,26 @@ class TherapistScheduleController extends Controller
         return $this->apiOutput();
     }
 
+    /**
+     * Multiple Schedule Delete
+     */
+    public function multipleDelete(Request $request){
+        $validator = Validator::make($request->all(),[
+            "id"    => ["required", "array"],
+            "id.*"  => ["exists:therapist_schedules,id"],
+        ],[
+            "id.required"   => "Therapist Schedule ID Required",
+            "id.array"      => "Accept Only Array List",
+        ]); 
+        if ($validator->fails()) {
+            return $this->apiOutput($this->getValidationError($validator), 400);
+        }
+        $schedule = TherapistSchedule::whereIn("id", $request->id)->where("status", "open")->delete();
+        $schedule->delete();
+        $this->apiSuccess("Multiple Schedule Deleted Successfully");
+        return $this->apiOutput();
+    }
+
 
     public function cancelTherapistSchedule(Request $request)
     {
